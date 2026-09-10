@@ -63,11 +63,24 @@ Discovered but not yet fully read:
 - GitHub's recursive tree and complete five-commit history.
 - Local clone remote, HEAD, clean status, and full-history flag.
 
-Discovered but not yet fully read:
+Additional plan-exit-review reads:
 
-- `docs/art-direction.md`, `src/engine/hallCache.ts`, procedural geometry,
-  simulation, camera, diagnostics internals, test bodies, workflows, and
-  individual evidence JSON/PNG pairs.
+- `src/world/contracts.ts`, `src/world/layout.ts`, the first 235 lines of
+  `src/world/simulation.ts`, and its exported function locations.
+- `src/engine/hall.ts`, `src/engine/hallCache.ts`, the later application loop
+  and teardown in `src/app/game.ts`, input mapping/tests, and
+  `src/diagnostics/metrics.ts`.
+- Gameplay, evidence, render-cache, and performance browser test files;
+  `playwright.config.ts`, `src/config/performanceBudget.ts`, and the first
+  230 lines of the simulation unit tests.
+
+These reads grounded the reuse decisions and exposed two adaptation risks:
+camera/size-only cache invalidation and `loadEventEnd`-based transfer accounting.
+No predecessor tests were run during this review.
+
+Remaining deeper inspection includes `docs/art-direction.md`, geometry and
+camera helpers, remaining simulation/test bodies, workflows, and individual
+evidence JSON/PNG pairs.
 
 ### E3: Street Scene One
 

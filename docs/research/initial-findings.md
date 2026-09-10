@@ -1,7 +1,9 @@
 # Initial Research Findings
 
-Saved September 10, 2026. These findings preserve the research already gathered
-before formal execution of the seven-stage plan.
+Saved September 10, 2026. These findings preserve the preparatory research.
+The subsequent plan-exit review consolidated the original seven stages into
+the three execution units now defined in `plan.md`; this document remains the
+home for the comparative explanation.
 
 Source labels E1-E7 refer to [the evidence index](evidence-index.md). Code,
 plans, manifests, and commit histories were inspected. No predecessor tests,

@@ -23,10 +23,11 @@ reuse, deterministic simulation, measurement, and performance implications.
 
 | Document | Contents |
 | --- | --- |
-| [Implementation plan](plan.md) | The complete seven-stage research and CS3 blueprint plan, task dependencies, and current status |
+| [Reviewed plan](plan.md) | Three execution units, settled architecture/site decisions, T1-T9 test map, and performance gates |
 | [Initial findings](docs/research/initial-findings.md) | Findings already gathered from CS1, CS2, Street Scene One, their plans, source, GitHub history, and delivery records |
 | [Evidence index](docs/research/evidence-index.md) | Source repositories, inspected files, revision pins, artifact hashes, and remaining evidence gaps |
 | [Cel Shift source and size audit](docs/research/cel-shift-source-audit.md) | Concept/game source comparison, all 49 master identities, preview sizes, and the nonduplicating reference-import plan |
+| [Deferred work](TODOS.md) | The three explicitly selected follow-ups, with rationale, context, and dependencies |
 
 ## Current status
 
@@ -34,10 +35,16 @@ Preparatory research and the plan are saved here. CS2 has been cloned alongside
 this repository at `../midcreek-cs-2`, with full history and a clean checkout at
 `7ce1aa3a9d11cc5198167221a11f0cc5edb214e4`.
 
-The seven formal research and blueprint tasks remain pending. No CS3 runtime,
-Blender export probe, browser validation, or final architecture has been
-implemented. Prior-project measurements in the research notes are historical
+The plan-exit review is complete. The reduced plan has three pending units:
+finish the evidence/comparison, prove a bounded export/load path, and produce
+one implementation-ready CS3 blueprint. No runtime, export probe, or browser
+test suite has been implemented. Prior-project measurements remain historical
 evidence, not results rerun in CS3.
+
+The approved first-playable direction reuses CS2's simulation and behavioral
+tests, adds explicit fixed-tick held-arrow walking, keeps layout/collision in
+TypeScript, and uses reusable Blender visual assets. Loading and shared-resource
+ownership must be explicit; normal rendering comes before speculative caching.
 
 The important pipeline distinction is already established: CS1 generated GLBs
 in Rust without Blender, CS2 generated geometry directly in Three.js, and Street
@@ -47,6 +54,21 @@ exists as a local design prompt, not an implemented export/runtime pipeline.
 The requested deliverables are both a comparative explanation of those projects
 and a CS3 implementation blueprint. The intended direction is Blender-authored
 assets consumed by Three.js; the export strategy still needs evidence.
+
+## Planned GitHub Pages experience
+
+A lightweight showcase will cover architecture/pipeline, concept art, Blender
+work, mechanics, and measured results, linking to a separate playable demo.
+Generated aspect-preserving thumbnails belong in ignored build output;
+approved original artwork loads on demand. The showcase must not preload the game,
+and the game must not fetch the reference catalog.
+
+Initial targets are 2 MB showcase transfer and 15 MB game transfer through
+interactive readiness. The game also has 250 draw-call / one-million-triangle
+limits and a named desktop qualification target of at least 59 FPS mean and at
+most 18 ms p95. These are requirements, not achieved measurements.
+
+## Art reference source
 
 The art reference source is `../midcreek-concept`: the complete Cel Shift
 direction, including shared foundations, prompts, and provenance. The

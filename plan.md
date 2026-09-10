@@ -1,335 +1,440 @@
-# Mid Creek CS Lineage and CS3 Blueprint Implementation Plan
+# Mid Creek CS3 Research and Blueprint Plan
 
-> **For agentic workers:** Use `executing-plans` to execute this plan task-by-task. Keep research claims tied to repository paths, commit SHAs, or retained artifact hashes.
+**Reviewed:** September 10, 2026, using plan-exit-review.
+**Scope choice:** 0A, scope reduction. Preserve the product goals; consolidate the work and documents.
+**Execution state:** Planning and review complete; R1-R3 below are pending.
 
-**Goal:** Explain how Mid Creek CS1 and CS2 were planned and built, recover the complete Cel Shift art direction from Midcreek Concept with Midcreek as a cross-check, document Street Scene One's Blender pipeline and its Blender-to-Three.js boundary, and turn those findings into an implementation-ready blueprint for Mid Creek CS3.
+**Goal:** Explain how CS1 and CS2 were built, recover the full Cel Shift art
+direction, understand Street Scene One's Blender workflow, prove a bounded
+Blender-to-Three.js boundary, and produce one implementation-ready CS3 blueprint.
 
-**Architecture:** Treat each predecessor as a separate evidence case, pin its repository revision, and trace plan decisions through commits into runtime code and validation. Synthesize the cases only after their individual reports are complete, then derive a CS3 architecture that explicitly adopts, adapts, or rejects each relevant pattern.
-
-**CS3 Tech Stack:** TypeScript, Three.js, DOM/CSS, Node.js/Vite, Vitest, Playwright, and Python/Blender tooling for glTF/GLB assets. Rust, Cargo, and Bevy are not dependencies. Exact tool versions are selected and pinned during code-level planning.
-
-**Historical Toolchains Only:** CS1 uses Rust 1.98 and Bevy 0.19.1; the Street Scene delivery reports Blender 5.2.1 LTS with Cycles/Metal. These identify the systems being studied, not CS3 version requirements.
-
-**Spec:** User request from September 10, 2026: produce both a comparative technical explainer and a CS3 implementation blueprint. The subsequent instruction makes this repository the durable home for the plan and accumulated research.
-
-**Artwork scope:** Include the full Cel Shift set, not the other concept themes.
-The user requested picture-size checks to avoid duplicate copies. Keep one
-master per artwork, with supporting prompts, shared foundations, and reviewed
-provenance. This revision documents the import; it does not copy artwork.
-
-## Global Constraints
-
-- Work in `midcreek-cs-3`; sibling Midcreek Concept, Midcreek, CS1, CS2, Street Scene One, Street Scene data, and Street Scene Showcase are read-only evidence sources.
-- Read CS2 locally at `../midcreek-cs-2`, pinned to `7ce1aa3a9d11cc5198167221a11f0cc5edb214e4`; use GitHub for supplementary history and deployment records.
-- Use `../midcreek-concept` at `870603632c4b6665c513d0fa692a3ee2dae2b683` as the primary art source and `../midcreek` at `b2e736726f7f9aea610274931b9c62555e9eeb67` as the master-artwork cross-check/fallback. Do not duplicate both catalogs.
-- Keep concept reference images outside the runtime bundle. A reference plate is not a game-ready mesh, sprite, texture, or HUD component.
-- Do not introduce Rust, Cargo, Bevy, a Rust asset generator, or a custom Rust-to-WASM stage into CS3. Reading historical Rust source does not require building it.
-- Do not modify the selected Street Scene blend file or its retained delivery artifacts.
-- Do not execute `street-scene-1/docs/plans/original-blender-unreal.md`; it is obsolete historical context only.
-- Separate repository facts from interpretation and recommendations.
-- Distinguish user acceptance, technical completion, and independent visual-reference matching.
-- Do not claim that a Three.js rendering can be pixel-identical to Blender Cycles.
-- Do not copy raw private plans, machine-specific paths, downloaded reference media, render sequences, or private run logs into public CS3 documentation.
-- Prefer small, reviewable documentation commits, with README progress updated as each durable artifact lands.
-- Saving this plan does not start a Blender job, export probe, runtime implementation, or deployment.
+This plan produces a comparative explanation, a reproducible technical probe,
+and the blueprint. It does not authorize implementation of the full game,
+artwork copying, model generation, or deployment during this review.
 
 ## CS3 Toolchain Decision: No Rust
 
-**Status: confirmed by the user on September 10, 2026.** CS2 dropped the
-Rust/Bevy runtime; CS3 keeps a TypeScript/Three.js browser runtime and adds
-Python/Blender asset authoring. The original mixed toolchain heading described
-the research subjects and was not a requirement; it is separated above.
+CS3 uses **TypeScript, Three.js, DOM/CSS, Node.js/Vite, Vitest, Playwright,
+and Python/Blender asset tooling**. There is no Rust, Cargo, Bevy, custom Rust
+asset generator, or Rust-to-WASM build stage.
+
+Rust/Bevy remain historical subjects in CS1 and Midcreek research. Read their
+code and retained measurements without requiring their toolchains. Port useful
+contracts and behavior, not crates or a language bridge. Rebuilding a
+predecessor would be a separately requested investigation, never a CS3 gate.
+
+Keep deterministic commands, seeded randomness, fixed ticks, explicit ordering,
+immutable snapshots, and bounded numeric state in TypeScript. Prove replay
+behavior with tests; changing languages does not preserve it automatically.
+Measure actual browser performance rather than assuming that dropping Rust
+improves or worsens it. Exact CS3 dependency versions are pinned in R2/R3.
+
+## Settled Scope and Source Boundaries
+
+- Reuse CS2's deterministic first-scenario core and behavioral tests.
+- Make held arrow-key walking explicit; reuse existing key mappings and movement commands rather than introducing a second simulation.
+- Use a shared TypeScript layout for placement/collision and Blender-authored reusable visual assets.
+- Use Midcreek Concept as the primary art source; use Midcreek's identical masters only as a fallback/cross-check.
+- Include all 49 Cel Shift masters, not every concept theme. Preserve early studies, headings, characters, faults, environments, and distinct revisions.
+- Keep originals once at 1536 x 1024. Exclude the 49 alternate 1280 x 720 copies and the second repository's duplicate masters from the future import.
+- Preserve shared foundations, the art bible, the projection decision, 47 prompts, the theme manifest, and reviewed provenance.
+- Keep reference material separate from runtime assets. Approve public gallery derivatives separately from the private/unapproved source material that must never be published.
+- Keep all sibling repositories and selected Street Scene artifacts read-only. Never execute the obsolete Blender/Unreal plan or reuse expired capture allowances.
+- Never present export success, user acceptance, reference fidelity, and performance qualification as equivalent.
+
+Master PNGs total **86,349,779 bytes / 82.35 MiB**. The full path, dimensions,
+and hash inventory is in `docs/research/cel-shift-source-audit.md`; do not create
+another hand-maintained live inventory.
+
+### Pinned sources
+
+| Source | Role | Evidence |
+| --- | --- | --- |
+| `williamsmat_microsoft/midcreek-concept` | Complete Cel Shift direction and prompt dependencies | E6 |
+| `azure-core/midcreek` | Identical original artwork; incomplete copied prompt dependencies | E7 |
+| `ridermw/midcreek-cs-1` | Rust/Bevy build history and asset/verification contracts | E1 |
+| `ridermw/midcreek-cs-2` | TypeScript gameplay, browser tests, diagnostics, and performance history | E2 |
+| `ridermw/street-scene-1` | Blender construction, capture, ownership, and evidence patterns | E3 |
+| `ridermw/street-scene-showcase` | Existing publication and local proposed Three.js extension | E4 |
+
+Full revisions, local/remote caveats, and Street Scene artifact hashes remain
+authoritative in `docs/research/evidence-index.md`. The selected scene is
+attempt 23. Its Three.js extension prompt is untracked planning evidence, not
+proof of an existing viewer.
+
+## What Already Exists
+
+| Sub-problem | Existing source | Reuse rather than rebuild |
+| --- | --- | --- |
+| Historical explanation | `docs/research/initial-findings.md` | Complete its CS1, CS2, and Street Scene chapters and comparison in place |
+| Source identities and caveats | `docs/research/evidence-index.md` | Finish pins, PR/review/workflow evidence, and provenance gaps |
+| Full Cel Shift inventory | `docs/research/cel-shift-source-audit.md` | Keep as a dated audit; derive the future browsing index from one manifest |
+| Simulation and commands | CS2 `src/world/contracts.ts`, `simulation.ts`, `layout.ts` | Retain the seeded single-fault behavior, fixed ticks, routing, repair, pause, and restart |
+| Input mapping | CS2 `src/input/keyboard.ts` | Preserve mappings; add a fixed-tick held-key adapter and browser coverage |
+| Behavioral/browser checks | CS2 world/input tests and `tests/e2e/` | Adapt relevant cases; do not import Windows-only screenshots as a cross-GPU oracle |
+| Evidence and ownership | Street Scene `pipeline/evidence.py`, `pipeline/capture.py` | Adapt hash, ownership, and explicit-failure contracts into the bounded probe |
+| Static hall optimization | CS2 `src/engine/hallCache.ts` | Study, but do not enable by default; its camera/size invalidation is insufficient for arbitrary animated assets |
+
+## Architecture and Ownership
 
 ```text
-Cel Shift art references
-  -> Blender authoring and Python export
-  -> validated GLB assets
-  -> TypeScript / Three.js runtime
-  -> Vite production build and static deployment
-
-Input commands -> deterministic TypeScript simulation -> scene and DOM HUD
+Concept masters + shared direction
+               |
+       Blender visual assets
+               |
+     GLB + validated asset manifest
+               |
+        asset-library owner
+     (shared geometry/materials/textures)
+               |
+       guarded load lifecycle
+               |
+          ready instances <------------------+
+               |                            |
+               v                            |
+Arrow/WASD -> held-key adapter               |
+Click/F    -> commands -> TS simulation -> snapshot
+                             ^               |  |
+                             |               |  +--> DOM HUD
+                         shared layout ------+----> Three.js
+                    (placement and collision)
 ```
 
-| Consideration | CS3 decision |
-| --- | --- |
-| Build and deployment | Use Node tooling for the browser app and Python/Blender for asset tooling. Do not require Cargo, Rust target installation, Bevy, or Rust-to-WASM compilation in development, CI, or deployment. |
-| Reuse from CS1 and Midcreek | Reuse art, contracts, reference data, and design lessons. Port only needed behavior into TypeScript; do not import Rust crates, create a language bridge, or rebuild the Rust asset generator. |
-| Deterministic simulation | Keep commands, seeded randomness, fixed ticks, ordering, and immutable snapshots explicit in TypeScript. Use bounded integer units where exact state matters, validate numeric limits, and cover replay equivalence with Vitest. A language change does not preserve these properties automatically. |
-| Test coverage | Use Vitest for pure runtime/state contracts, Playwright for real browser interaction, and Python/Blender plus glTF checks for exports. Translate relevant behavioral cases instead of carrying over Cargo test commands. |
-| Historical measurements | Existing CS1 measurement reports are evidence, not a required executable. New CS3 measurements must use its Node/Python/browser tools. Rebuilding a predecessor to reproduce a historical result would be a separate, optional investigation, never a CS3 gate. |
-| Performance | Do not assume either a gain or loss from dropping Rust. Profile the actual browser and asset workload; reduce allocation, batch rendering, or consider workers only where measurements justify it. Reintroducing Rust/WASM would require a separate approved architecture change, not an automatic optimization. |
-| Asset boundary | Blender/Python produces runtime-ready GLBs; TypeScript loads them. Concept plates remain reference material, and a Blender export does not require CS1's custom Rust serializer. |
+The runtime layout owns stable logical IDs, transforms, and gameplay
+footprints. Blender templates own visual geometry and declared bounds.
+Validate the join before play: missing IDs, wrong scale, or visuals extending
+outside the permitted footprint must produce a named error, not invisible
+collision changes or guessed placement.
 
-**Acceptance:** The eventual CS3 app can be installed, built, tested, and
-deployed without a Rust toolchain. The asset-authoring/export path likewise
-must not invoke a Rust compiler or generator. Inspect build scripts,
-dependencies, and CI for accidental reintroduction before the blueprint is
-considered complete.
+The asset library owns shared GPU resources. Instances own transforms and
+animation state; per-instance visual overrides must be deliberate. Removing
+one instance must not dispose shared resources or change another instance's
+appearance. Use small ownership helpers, not a general resource framework.
 
-## Saved Progress
+### Loading and movement
 
-Preparatory inspection and CS2 cloning are complete. The initial findings and
-source index are saved in `docs/research/`. They are a research snapshot, not a
-claim that the formal case studies or export audit are complete.
+```text
+loading --all required assets valid + first frame--> ready
+   |                                                |
+   +--request/contract failure--> failed <---context loss
+   |                                |
+   +--> disposed <------------------+------ teardown
+           |
+           '-- late completion: discard/release, never attach
 
-The art-source comparison and PNG dimension/size/hash inventory are also
-complete: 49 master files and 49 lower-resolution counterparts were identified.
-The future import selects the masters only; see
-`docs/research/cel-shift-source-audit.md` for each path and hash. No images,
-original prompts, or metadata sidecars have been imported.
+failed -> visible explanation + reload
+reload -> a new application lifecycle, not an in-place retry framework
 
-| Task ID | Task | Status | Depends on |
+held keys -> fixed-tick adapter -> existing move command
+   +-- opposite inputs: cancel
+   +-- perpendicular inputs: documented deterministic precedence
+   '-- release / blur / hide / pause / failure: clear held state
+
+idle --move/dispatch--> walking --arrival--> idle or repairing
+repairing --valid manual move--> walking; repair cancels per CS2 behavior
+repairing --required work ticks--> resolved
+```
+
+No diagonal movement is introduced implicitly. The blueprint must pin the
+perpendicular-key precedence policy and test it. Preserve focus guards: keys
+used in form controls must not move the technician; gameplay keys must not
+interfere with the showcase. Required assets must be ready before gameplay
+advances. Restart must clear held state and reproduce the same seed.
+
+## GitHub Pages Product Scope
+
+**Decision 16A:** A lightweight project showcase plus a separate playable demo.
+No frontend framework or documentation platform is required merely to provide
+these two entry points.
+
+Routes below are site-relative. The planned Project Pages prefix is
+`/midcreek-cs-3/`, so the deployed entries are `/midcreek-cs-3/` and
+`/midcreek-cs-3/play/`. Resolve links and asset requests against the configured
+base path, not hardcoded origin-root URLs; test that prefixed production build.
+
+```text
+Showcase "/"
+  +--> architecture and Blender-to-Three.js pipeline
+  +--> approved concept artwork
+  +--> approved Blender renders/export studies
+  +--> game mechanics and controls
+  +--> measured results, or explicit "not measured yet"
+  '--> "/play/" -> isolated playable demo
+
+gallery -> small generated thumbnail -> selected original on demand
+source metadata -> review/allowlist gate -> public gallery metadata
+```
+
+Generate small aspect-preserving thumbnails into ignored build output; retain
+each master once in source. Do not import the alternate 720p files merely to
+serve previews. Lazy-load galleries and request original masters only after
+selection. The showcase must not preload the game/GLBs; the game must not
+fetch the reference catalog. Preserve the source metadata hash while producing
+only explicitly allowed public metadata fields.
+
+Missing gallery media must show an understandable placeholder/error, not break
+navigation. Unfinished Blender work or unmeasured performance must be labeled
+honestly; reference images must not masquerade as game screenshots.
+
+## Three Execution Units
+
+| ID | Task | Status | Dependency |
 | --- | --- | --- | --- |
-| `pin-evidence` | Pin the evidence baseline | Pending | None |
-| `reconstruct-cs1` | Reconstruct CS1 build lineage | Pending | `pin-evidence` |
-| `reconstruct-cs2` | Reconstruct CS2 build lineage | Pending | `pin-evidence` |
-| `audit-street-scene` | Audit Street Scene and the export boundary | Pending | `pin-evidence` |
-| `compare-predecessors` | Compare predecessor architectures | Pending | All three case studies |
-| `design-cs3` | Design the CS3 blueprint | Pending | `compare-predecessors` |
-| `review-deliverables` | Review the deliverables | Pending | `design-cs3` |
+| R1 / `consolidate-evidence` | Finish evidence and the comparative explanation | Pending | None |
+| R2 / `prove-export-boundary` | Prove the bounded Blender export/load boundary | Pending | R1 and new resource approval |
+| R3 / `write-cs3-blueprint` | Produce one implementation-ready CS3 blueprint | Pending | R1 and R2 |
 
-The next substantive task is to finish the evidence baseline, particularly the
-CS1 local/remote revision mismatch, untracked/ignored planning artifacts, and
-the provenance/publication review for the deduplicated Cel Shift reference set.
-Task state is also tracked in the session database; this table preserves the
-state outside that session.
+The previous seven pending tasks are consolidated into these three. The
+comparison remains in the existing findings document; decisions belong in
+the blueprint rather than another parallel decision-matrix document.
 
-## Current-State Findings
+### R1: Complete the evidence and comparison
 
-- CS3 started as an empty Git repository. It now contains this plan and the saved research documentation, not application code.
-- Midcreek Concept is `williamsmat_microsoft/midcreek-concept`; it contains the Cel Shift masters, preview variants, 47 prompts, theme manifest, shared foundations, art bible, and projection decision. Midcreek is `azure-core/midcreek` according to its local origin and contains an identical copy of the 49 masters but lacks the shared files required by its copied prompts.
-- Every master is 1536 x 1024; every `-720p` counterpart is 1280 x 720. Masters total 86,349,779 bytes, previews 54,022,414 bytes. No byte-identical duplicates were found within the 98 concept PNGs; the lower-resolution counterparts and cross-repository copies are excluded from the planned import.
-- CS1 is `ridermw/midcreek-cs-1`. It built the Cel Shift proof of concept in Rust/Bevy, generated deterministic GLBs from repository-owned RON without Blender, shipped native verification plus WASM, and accumulated a long contract- and evidence-driven history.
-- CS2 is `ridermw/midcreek-cs-2`, cloned on September 10, 2026 to `../midcreek-cs-2` with full history and a clean `main` checkout at `7ce1aa3a9d11cc5198167221a11f0cc5edb214e4`. It rebuilt the concept directly in Three.js using procedural/instanced geometry, a pure fixed-step simulation, DOM HUD, browser tests, diagnostics, and a static color/depth render cache.
-- Street Scene One is split across `street-scene-1` for private Blender authoring, `street-scene-1-data` for generated artifacts, and `street-scene-showcase` for public-safe publication.
-- The selected Street Scene artifact is attempt 23, scene SHA-256 `0e4c90b1ab5bcfb052d2f5d2c5c4628a89b5b7145f6b6e9bf399d7f31cda4d05`. Its manifest records 299 objects, 360,561 vertices, 120 frames at 24 FPS, Cycles/Metal, AgX, and a five-second car/camera sequence.
-- Street Scene One currently renders Blender output to PNG/MP4; no Blender-to-Three.js implementation was found in the inspected sources. The local, untracked `street-scene-showcase/THREEJS-SESSION-PROMPT.md` describes a proposed export/runtime boundary, not shipped code.
+**Files:** Update `docs/research/evidence-index.md`,
+`docs/research/initial-findings.md`, `docs/research/cel-shift-source-audit.md`,
+and the README index/status.
 
-## Planned CS3 Documentation Shape
+1. Resolve CS1's local/remote revision mismatch without overwriting either source. Attribute inspected local code and later remote history separately until reconciled.
+2. Finish relevant plans, pivotal diffs, PR/review discussions, workflow records, and source attribution. Prioritize decisions that affect CS3 rather than narrating every commit.
+3. Explain CS1's generated GLBs, plugin scheduling, gameplay, verification, and publication, including corrections and limitations.
+4. Explain CS2's pure simulation, procedural rendering, controls, browser acceptance, rejected quality reductions, and measured cache experiment.
+5. Explain Street Scene's Blender construction, materials, ownership, evidence, guarded capture, and separate technical/visual acceptance results.
+6. Verify that every Cel Shift master has its dependency/provenance association. Preserve 49 distinct masters and all six referenced prose bases plus the JSON foundation.
+7. Specify one future machine-readable reference manifest with source revision/path, SHA-256, width, height, bytes, artwork family, master/derivative role, sidecar mapping, and approval/provenance status. Generate the browsing index from it; retain the existing audit as historical evidence.
+8. Specify a staged, all-or-nothing future import: reject hash/dimension/dependency/path/provenance failures, retain the previous complete package, and report the failed file. Do not silently skip an invalid master.
+9. Preserve the relative `references/midcreek/themes/{cel-shift,_shared}` layout in the import design so copied prompt references remain valid.
+10. Consolidate the comparison and remaining unknowns in the existing findings document. Distinguish historical prompt text from the accepted camera/scale direction.
 
-- `README.md`: purpose, evidence sources, document index, and implementation status; now exists.
-- `plan.md`: this authoritative repository plan.
-- `docs/research/evidence-index.md`: inspected sources, revision pins, caveats, and remaining evidence gaps; initial snapshot exists.
-- `docs/research/initial-findings.md`: research gathered before formal execution; exists.
-- `docs/research/cel-shift-source-audit.md`: source comparison, picture dimensions/bytes/hashes, dependency gaps, and reference-import rules; exists.
-- `docs/research/cs1-build-lineage.md`: plan-to-code-to-history reconstruction of CS1.
-- `docs/research/cs2-build-lineage.md`: plan-to-code-to-history reconstruction of CS2.
-- `docs/research/street-scene-pipeline.md`: Blender authoring/capture pipeline and tested Blender-to-GLB/Three.js boundary.
-- `docs/research/comparative-analysis.md`: side-by-side decisions, outcomes, costs, failures, and reusable lessons.
-- `docs/architecture/cs3-blueprint.md`: selected CS3 architecture, interfaces, pipeline, gates, milestones, and rejected alternatives.
-- `docs/architecture/decision-matrix.md`: explicit adopt/adapt/reject ledger with evidence references.
+**Completion:** Both games and the Street Scene workflow are explained with
+source evidence; the complete nonduplicating reference-import contract is
+documented; provenance/publication blockers are explicit. R1 does not itself
+copy artwork or re-render prompts.
 
----
+### R2: Prove a bounded export/load path
 
-### Task 1: Pin the Evidence Baseline
+**Files:** Version a minimal probe procedure and its assertions in CS3; keep
+large generated scene/GLB/capture artifacts outside Git. Record the result in
+the existing findings and evidence index, not a fourth historical report.
 
-**Files:** Extend `README.md`, `docs/research/evidence-index.md`, and `docs/research/cel-shift-source-audit.md`.
+1. Establish a new, approved output location and resource allowance. Check source-scene identity; never modify the accepted scene or reuse its expired construction/capture budget.
+2. Select a bounded static/animated sample and representative material/texture content from a copy of the retained scene. Do not recreate the full street, all lighting, or a standalone showcase viewer.
+3. Record actual Blender and Three.js versions, exporter options, source hash, selected objects, script revision, output hashes, size, and warnings. Keep the scripts/assertions, not just a successful screenshot.
+4. Validate GLB structure and declared content: nodes, transforms, units, pivots, bounds, materials, textures, and animation clips. Successful exporter exit or structural validity alone is insufficient.
+5. Load the sample in a minimal Three.js probe. Check required asset readiness, material/texture bindings, clip timing, and representative poses/camera views. Repeat from a fresh run.
+6. Compare exported results with the corresponding Blender sample. Report preserved, approximated, reconstructed, or unsupported features. Do not claim that a Street Scene material proves Cel Shift fidelity.
+7. Exercise missing/corrupt assets, wrong source identity, invalid declared content, and interrupted/late load completion. Record explicit failures and retain the last complete evidence.
+8. Record unresolved export limitations as concrete blockers or blueprint constraints. Do not substitute a procedural placeholder and report a successful export.
 
-**Interfaces:**
-- Consumes: all six source Git repositories, GitHub API metadata, Street Scene retained manifests, and the Cel Shift source/size audit.
-- Produces: one immutable evidence index used by every later report.
+**Completion:** A fresh run can reproduce a small, tested export/load result or
+a specific incompatibility. Source bytes remain unchanged. GLB correctness,
+appearance comparison, and user acceptance are separate outcomes.
 
-**Steps:**
+### R3: Produce the CS3 blueprint
 
-1. Record the exact local and remote repository identities for Midcreek Concept, Midcreek, CS1, CS2, Street Scene One, Street Scene Showcase, and CS3.
-2. Pin the six source repositories to full commit SHAs; record branch, commit date, and dirty-state caveats. Resolve the CS1 local/remote mismatch before treating them as one revision.
-3. Record the selected Street Scene scene, manifest, delivery report, source commit, source-scene hash, and video hash.
-4. Inventory authoritative plans, architecture documents, READMEs, source entry points, tests, workflows, evidence captures, and release/deployment records.
-5. Mark each source as public-safe, private/read-only, generated-local, obsolete, or excluded. Separately identify untracked and ignored documents.
-6. Add an evidence citation convention: repository-relative path plus line range for files, full SHA for commits, and SHA-256 for retained artifacts.
-7. Verify every later planned document can cite a pinned source rather than a moving branch tip.
-8. Commit the completed evidence index and README update.
+**File:** Create `docs/architecture/cs3-blueprint.md`; update the existing plan
+status, source findings if R2 changes them, and README.
 
-**Cel Shift reference extraction design:**
+1. Embed the settled decisions below and the evidence that supports them.
+2. Define the first playable around CS2's seeded single-fault core, preserving repair/pause/restart behavior and adding the fixed-tick held-arrow adapter.
+3. Define exact runtime module interfaces and asset/layout/animation contracts. Preserve one layout authority and explicit shared-resource ownership.
+4. Define the no-Rust Blender/Python -> GLB -> TypeScript pipeline and its failure/recovery behavior from the actual R2 result.
+5. Pin the actual dependency versions, development/build commands, export procedure, artifact locations, and permission/resource prerequisites.
+6. Include the complete reference-adoption unit: all 49 masters once, shared foundations, reviewed provenance, generated index, staged promotion, and publication allowlist.
+7. Define the showcase and `/play/` entry points, architecture/mechanics content, approved galleries, deferred loading, and honest result/status presentation.
+8. Provide code-level implementation units with exact files, interfaces, ordered changes, and acceptance tests. Include R2's reusable procedure rather than rebuilding another parallel probe.
+9. Carry forward the test map, failure registry, performance budgets, and qualification conditions below. Update every nearby ASCII diagram when its behavior changes.
+10. Check source coverage, consistency, links, private-data boundaries, and missing prerequisites. The blueprint must be usable for implementation without another mandatory planning cycle.
 
-1. Select all 49 master paths listed in the source audit, rather than relying on the stale README claim of 45 plates. Preserve distinct early studies, headings, calibration plates, characters, faults, and environments.
-2. Use the concept repository as the single source. Verify fallback master bytes against the same hashes if Midcreek is used; never copy both trees.
-3. Keep master dimensions and bytes unchanged. Exclude `*-720p.png` and their derivative sidecars from the reference import. Record the alternate files in the audit rather than deleting or modifying them upstream.
-4. Include the matching master provenance records, 47 prompts, `theme.yaml`, `ART-BIBLE.md`, `docs/decisions/projection.md`, and every file in `themes/_shared/`. Do not copy just `foundation.json`: prompt generation uses the shared prose.
-5. Preserve the relative theme/shared layout under a future `references/midcreek/` root so `plan: ../../_shared/...` resolves. Write a CS3-specific index instead of importing broken cross-theme README navigation.
-6. Review source terms and metadata before publication. Keep provenance and source hashes, but do not blindly publish account/service identifiers, private references, or obsolete prompt text as current art requirements.
-7. Require a reference manifest with source repository/revision, source path, SHA-256, width, height, bytes, artwork family, master/derivative role, paired sidecar, and approval/provenance status.
-8. Resolve stale overview statements using the shared foundation, art bible, projection decision, and measured-art record. Distinguish the rounded 35-degree concept contract, CS2's 35.264-degree runtime value, and CS1's historical 57-degree plan.
-9. Keep all reference plates out of production asset loading. Generate separate runtime assets through the later Blender pipeline.
+**Completion:** One coherent, implementation-ready blueprint covers the game,
+asset workflow, and Pages site. This review does not implement that blueprint.
 
-The reference copy is a later, explicitly executed action. This task first
-finishes its documentation and provenance gates.
+## Required Test Map
 
-**Validation:**
-- Every repository and artifact used later has a stable identifier.
-- No raw private content or machine-specific source path is copied into public-facing prose. Identify local-only evidence without publishing its contents.
-- The reference-import specification covers all 49 masters once, excludes alternate-resolution duplicates, preserves all prompt dependencies, and carries an explicit rights/metadata review gate.
+All tests below are **planned**, not implemented or passing in CS3. Reuse the
+appropriate CS2 cases; the new boundaries require new tests. JS/TS covers
+application and data contracts; real Blender/Python integration additionally
+proves export behavior. No Rails or Rust test stack is introduced.
 
----
+```text
+Pinned sources
+  |
+  +-- [N:T1] manifest + dimensions + hashes + metadata + prompt bases
+  |             +-- invalid/interrupted -> error; previous package retained
+  |             '-- valid -> complete reference package
+  |
+  '-- [N:T2] owned copy -> bounded export -> declared-content validation
+                +-- wrong source/export failure/missing content -> reject
+                '-- valid GLB + receipt
+                        |
+                   [N:T3] guarded loading
+                     +-- loading -> controls disabled
+                     +-- failed -> error/reload
+                     +-- disposed -> late result released
+                     '-- ready
+                          |
+                   [N:T4] shared-layout/asset join
+                     +-- ID/bounds/scale mismatch -> named error
+                     '-- valid instances
+                          |
+       [N:T5] held arrows + focus ----+---- [R:T6] click/dispatch/pause
+         +-- opposite -> cancel      |         |
+         +-- blur/hide -> clear      '--> deterministic world
+         '-- fixed-tick command               |
+                                      immutable snapshot
+                                        /           \
+                                [N:T7] animation    DOM HUD
+                                 +-- missing clip -> reject
+                                 '-- pose/occlusion/camera checks
 
-### Task 2: Reconstruct How CS1 Was Built
+Build -> [N:T8] base paths + publication allowlist + no Rust prerequisite
+           +-- unexpected/private file or missing route/GLB -> fail release
+           '-- valid -> deployable site
 
-**Files:** Create `docs/research/cs1-build-lineage.md`; modify `README.md`.
+Showcase [N:T9] -> sections/galleries -> original on demand
+    +-- missing media -> explicit fallback; navigation still works
+    +-- no results -> "not measured yet"
+    '-- /play/ -> separate game assets; no catalog fetch on game startup
+```
 
-**Interfaces:**
-- Consumes: Task 1 evidence index; CS1 plan, source, tests, workflows, and history.
-- Produces: a chronological and architectural CS1 case study.
+`N` identifies new integration/behavior; `R` identifies reused behavior.
 
-**Steps:**
+### Failure registry and proposed coverage
 
-1. Read `docs/implementation-plan.md` as the product contract and extract its locked decisions, plugin graph, runtime flow, asset pipeline, verification design, objective gates, failure registry, and task ordering.
-2. Trace the initial implementation sequence from commit `a3a10dc` through authored assets, hall construction, technician movement, camera orbit, repair gameplay, HUD, verification, WASM publication, and later fidelity-contract work.
-3. Map `CellShiftPlugin` and `CellShiftSet` scheduling to `assets`, `world`, `player`, `camera`, `operations`, `hud`, and native-only verification modules.
-4. Explain the no-Blender asset pipeline: RON schema, deterministic tessellation, rig/animation generation, stable GLB serialization, committed generated assets, `--write`/`--check`, and stale/nondeterministic failure modes.
-5. Explain how runtime and verification share production plugins while verification changes the driver, window, capture state machine, and software-adapter compatibility profile.
-6. Document publication architecture: native site generation, WASM packaging, progress/evidence publication, last-green retention, and GitHub Pages.
-7. Use Git history to identify significant corrections and what they reveal: glTF skin semantics, rendered-coverage separation, camera clamping, animation reset, input/browser ownership, readback readiness, software-rasterizer behavior, baseline binding, and policy/measurement separation.
-8. Summarize strengths, complexity costs, portability problems, reported render-contract limitations, and which CS1 patterns are candidates for CS3.
-9. Update the README index and commit the CS1 case study.
+| Flow | Required JS/TS test surface | Realistic failure | Required handling and visible outcome |
+| --- | --- | --- | --- |
+| T1 | `tests/reference-contract.test.ts` | Wrong master size/hash, missing shared base, disallowed path/metadata, or interrupted import | Reject the staged package, name the file/reason, preserve the previous complete package |
+| T2 | `tests/asset-contract.test.ts`, plus a real Blender/Python integration check | Export reports success but omits a declared node, texture, or clip | Reject output/receipt; export compatibility remains failed |
+| T3 | `src/assets/library.test.ts` and `tests/e2e/assets.spec.ts` | Load completes after teardown, texture fails, or one instance disposes shared resources | Guard completion, release late resources, keep gameplay disabled on failure, show reload/error |
+| T4 | Extend `src/world/layout.test.ts` and asset-contract tests | Imported geometry exceeds its gameplay footprint or has a wrong logical ID | Named contract error before play, not a visual/collision mismatch |
+| T5 | Extend `src/input/keyboard.test.ts` and browser gameplay tests | Lost keyup, OS-repeat dependence, or focused controls cause unintended movement | Fixed-tick input, cleared held state, focus isolation, unchanged collision commands |
+| T6 | Reuse `src/world/simulation.test.ts` | Adapter changes replay, pause, arrival, repair timing/cancellation, or restart | Exact tick/command assertions detect regression; preserve existing user-visible rejection messages |
+| T7 | `tests/e2e/assets.spec.ts` | Walking uses the wrong clip, instance animation leaks, or technician draws through a rack | Validate declared clips; assert state/pose independence, transforms, and fixed-view appearance |
+| T8 | `tests/e2e/release.spec.ts` plus artifact-content/build checks | Wrong deployment prefix, missing GLB, private/unapproved source publication, or accidental Cargo requirement | Fail qualification with an explicit route/file/dependency error |
+| T9 | `tests/e2e/showcase.spec.ts` | Galleries preload all masters/game code, media fails, or unavailable results look verified | Assert isolated loading, usable navigation, image failure states, accurate labels, and showcase transfer cap |
 
-**Validation:**
-- Every architectural claim points to a plan/code source and, where relevant, the commit that introduced or corrected it.
-- The report clearly distinguishes the original planned architecture from later evolved behavior.
-- Read CS1 source and retained reports without requiring its Rust toolchain. Label any optional historical rerun separately from CS3 prerequisites or gates.
+The original plan had **one critical silent-failure gap**: publishing
+reference/private files without a rejecting release check. Decisions 11A and
+17A address it in the design through T8's reviewed-publication allowlist.
+Approved gallery derivatives are permitted; raw/private/unapproved material
+is not. The guard and tests remain implementation requirements, not completed
+protections.
 
----
+### Specific input, visual, and prompt coverage
 
-### Task 3: Reconstruct How CS2 Was Built
+- Test all four arrows at all four camera headings, held duration, release, opposing inputs, deterministic perpendicular-key precedence, focus, blur, hiding, pause, loading failure, blocked moves, and restart.
+- Preserve pointer movement, dispatch, repair cancellation on valid manual movement, fixed repair timing, and seeded replay. Do not use WASD-only tests as a proxy for arrow-key acceptance.
+- Inject delayed/failed loads, late completion after disposal, context loss, missing clips, and shared-instance resource/animation changes.
+- Capture declared camera/viewport/time states in the actual browser. Keep structural assertions separate from screenshot tolerances; do not demand cross-GPU PNG equality.
+- No `CLAUDE.md` or eval registry exists in CS3 at this review. Unchanged source prompts need preservation checks, not fresh model generation.
+- Check prompt hashes, base resolution, master/sidecar mapping, and prose/JSON agreement against the pinned Concept source. Historical sidecar text remains historical.
+- If later work changes prompt behavior or generates art, define a separately approved evaluation scope and budget; do not silently reuse this structural-only approval.
 
-**Files:** Create `docs/research/cs2-build-lineage.md`; modify `README.md`.
+### Inline diagram maintenance
 
-**Interfaces:**
-- Consumes: Task 1 evidence index; CS2's pinned local checkout and five-commit history, supplemented by GitHub records.
-- Produces: a chronological and architectural CS2 case study directly comparable to Task 2.
+The blueprint should place concise ASCII ownership/state diagrams beside the
+eventual asset loader/library, held-key adapter, reference importer, and
+export-probe procedure. Test fixtures with non-obvious lifecycle sequences
+should show the sequence being exercised. Reuse existing module locations
+where practical; do not create new modules merely to house diagrams. Update
+diagrams in the same change as behavior and flag stale diagrams during review.
 
-**Steps:**
+## Performance and Delivery Contract
 
-1. Pin and retrieve CS2's README, `docs/architecture.md`, `docs/art-direction.md`, `docs/hill-climb.md`, package manifest, workflows, runtime modules, tests, and evidence artifacts.
-2. Trace the five commits from scaffold (`02f9674`) through simulation (`e5b0e8a`), first playable (`40976cf`), verified release record (`dac6940`), and static render caching (`7ce1aa3`).
-3. Explain the separation between normalized browser commands, fixed 30 Hz deterministic simulation, immutable snapshots, Three.js rendering, DOM/CSS HUD, and read-only diagnostics.
-4. Explain procedural scene construction, instanced racks, camera measurement, pathfinding, repair flow, input handling, explicit GPU-resource disposal, and WebGL context-loss behavior.
-5. Explain the evidence loop: fixed seed/scenario/view, Vitest contracts, Playwright gameplay tests, screenshots, frame-time/draw-call/triangle/transfer measurements, and exact deployed-build verification.
-6. Reconstruct the performance hill climb, including rejected no-MSAA and reduced-raster experiments, promoted planar geometry, the SwiftShader constraint, and the full-resolution color/depth static hall cache.
-7. Document why CS2 avoided imported detailed assets for the first playable and what that decision gained and lost versus CS1.
-8. Summarize strengths, limitations, current budgets, and which CS2 patterns are candidates for CS3.
-9. Update the README index and commit the CS2 case study.
+Start with normal rendering and shared resources. Do not copy CS2's static
+color/depth cache into CS3 before profiling. Its camera/size-only invalidation
+does not cover arbitrary imported animation, material, or lighting changes.
 
-**Validation:**
-- The report reproduces documented before/after cache metrics without converting them into unsupported hardware-GPU claims.
-- The five-commit narrative matches the pinned GitHub history and current module boundaries.
+| Gate | Initial requirement |
+| --- | --- |
+| Game draw calls | At most 250 per frame; report peak as well as steady work |
+| Game visible triangles | At most 1,000,000 per frame |
+| Game initial transfer | At most 15,000,000 bytes through the first required-asset-ready, rendered, interactive state |
+| Showcase initial transfer | At most 2,000,000 bytes; subsequent selected-original downloads reported separately |
+| Named desktop timing target | At least 59 mean FPS and at most 18 ms p95 frame interval |
+| Reproducible comparison | Fixed seed/scenario and 1280 x 720 CSS viewport; record actual renderer size, drawing-buffer size, and DPR |
 
----
+These are starting gates, not achieved results. R3 must identify the browser,
+GPU/backend, device, and DPR used for qualification. Retain CS2's fixed-DPR
+comparison protocol and record any different application DPR explicitly.
 
-### Task 4: Audit Street Scene One and Prove the Blender-to-Three.js Boundary
+Measure navigation-to-interactive startup separately from the first 300
+rendered frames and sustained play. Retain the fixed warm-up protocol from
+CS2 when making before/after claims. Record walking, dispatch/repair, and
+orbit/resize workloads with phase labels; do not call an idle window an
+active-repair measurement or count callbacks as proof of actual rendering.
 
-**Files:** Create `docs/research/street-scene-pipeline.md`; modify `README.md`.
+CS2's `navigation.loadEventEnd` transfer cutoff must not be reused unchanged:
+it can omit GLBs fetched after page load. Required delayed assets must count
+through game readiness; later gallery activity must not change that frozen
+startup result. Test this distinction explicitly.
 
-**Interfaces:**
-- Consumes: Task 1 evidence index; Street Scene plan, source, selected `.blend`, manifests, delivery report, public showcase, and local Three.js session prompt.
-- Produces: an authoring-pipeline explanation plus an evidence-backed export compatibility report.
+Read/hash reference files sequentially or with bounded concurrency; do not
+decode all 49 masters at once just to validate dimensions. Avoid repeated
+downloads for instances sharing an asset. Generate gallery thumbnails only
+into ignored build output and preserve aspect ratio.
 
-**Steps:**
+Keep deterministic CI separate from the named hardware timing run. A skipped
+timing test is unqualified, not passed. The site must label unavailable or
+unmeasured results accordingly; do not claim universal 60 FPS from one target.
 
-1. Reconstruct the Blender pipeline from the reviewed plan and three source commits: scene generation, procedural geometry modules, original vehicle construction, material provenance, isolated background Blender execution, Cycles/Metal configuration, and editable controls.
-2. Explain the run-safety and evidence layers: owned process groups, one-heavy-job lock, pause/deadline/disk controls, atomic records, dependency retention by hash, review fingerprints, capture forecasting, scene ownership, frozen-scene checks, resumable frames, encoding, and delivery manifests.
-3. Explain the visual iteration history and keep the outcome fields separate: workflow passed, user acceptance passed, video reference match failed, photograph criterion unevaluated.
-4. Inspect the selected blend through a read-only Blender summary or a copy: scenes, collections, objects, meshes, materials, packed images, cameras, lights, animation actions, constraints, modifiers, drivers, custom properties, and linked/missing files.
-5. After execution and resource approval, export a disposable copy to GLB with a reproducible script. Record Blender version, export options, source hash, output hash, size, warnings, and export duration; test determinism rather than assuming it.
-6. Validate the GLB structurally with a glTF validator and inspect nodes, meshes, materials, textures, cameras, lights, and animation clips.
-7. Load the GLB in a minimal temporary Three.js probe outside committed CS3 sources. Confirm coordinate orientation, scale, frame range/timing, hero-car and camera animation, texture resolution, material compatibility, and browser console cleanliness.
-8. Classify each Blender feature as preserved, approximated, reconstructed in Three.js, baked, or unsupported. Pay special attention to Cycles shader nodes, sky/world lighting, AgX appearance, displacement, packed textures, camera animation, sun shadows, collection hierarchy, and custom editing metadata.
-9. Compare start, middle, and end Three.js captures against accepted Blender frames for framing, silhouette, street scale, facade openings, fire escapes, vehicles, sun/shadows, material response, distant architecture, and continuity.
-10. Recommend one of three CS3 asset strategies: direct GLB playback, GLB plus Three.js reconstruction layers, or export-derived procedural/runtime data. Explain why the other two are rejected or deferred.
-11. Update the README index and commit the pipeline report. Do not commit the disposable export unless the later CS3 blueprint deliberately promotes it with provenance and budgets.
+## NOT in Scope
 
-**Validation:**
-- The original selected `.blend` hash remains unchanged.
-- The report names every material or animation loss rather than presenting a partial export as success.
-- The Three.js probe either demonstrates a viable path or records a concrete blocker with reproducible evidence.
-- No expired Street Scene allowance is extended or reused.
+- Full Street Scene viewer or complete Cycles-to-WebGL recreation: deferred to D1; the bounded probe suffices for this plan.
+- Static caching, workers, or other speculative rendering optimization: deferred to D2 until measurements show a need.
+- Additional browser/GPU qualification beyond the first named target: deferred to D3; responsive-layout checks still apply.
+- New fault systems, minigames, or broader gameplay beyond CS2's first scenario: not part of the initial behavioral baseline.
+- Fresh prompt/model rerenders: unchanged reference inputs require structural checks, not new image generation.
+- Rust/Cargo/Bevy integration or a custom Rust-to-WASM pipeline: explicitly excluded.
+- Unrelated concept themes, duplicate alternate-size images, and private source photography: outside the selected reference set.
+- Application implementation, artwork copying, public deployment, or heavy jobs during this review: not authorized by saving the plan.
 
----
+## Review Decision Ledger
 
-### Task 5: Produce the Comparative Technical Explainer
+| Issue | Chosen direction |
+| --- | --- |
+| 0A | Reduce to three units and existing evidence documents plus one blueprint |
+| 1A | Reuse CS2 core/behavioral tests; explicitly require arrow-key walking |
+| 2A | Runtime-owned shared layout, Blender visual templates |
+| 3A | Version the bounded probe's procedure and assertions |
+| 4A | Explicit guarded loading lifecycle |
+| 5A | Fixed-tick held-key input using existing movement commands |
+| 6A | One reference manifest with generated browsing index |
+| 7A | Staged all-or-nothing import and explicit metadata policy |
+| 8A | Shared GPU-resource ownership, instance-owned transforms/animation |
+| 9A | Negative asset/import fixtures and real export/load proof |
+| 10A | Full arrow/heading unit matrix and real-browser input acceptance |
+| 11A | Lifecycle/presentation fault injection and release gates |
+| 12A | Structural prompt checks and runtime captures; no model rerenders |
+| 13A | Normal-render baseline; optimize measured bottlenecks only |
+| 14A | Account for required assets through interactive readiness |
+| 15A | Explicit initial game budgets and named hardware qualification |
+| 16A | Showcase plus separate playable demo |
+| 17A | Build-only thumbnails, deferred originals, 2 MB showcase cap, T9 and revised T8 |
+| 18A/B/C | Capture all three selected deferred items in `TODOS.md` |
+| 19A | Save the reduced plan and review decisions in the repository; documents only |
 
-**Files:** Create `docs/research/comparative-analysis.md` and `docs/architecture/decision-matrix.md`; modify `README.md`.
+### Retrospective and completion summary
 
-**Interfaces:**
-- Consumes: Tasks 2-4 case studies.
-- Produces: a normalized comparison and adopt/adapt/reject ledger.
+The reviewed branch contained `926aaba` and `04f0bda`, both documentation
+commits. There was no earlier implementation/review-refactor cycle on this
+branch. The latter corrected toolchain ambiguity and art sourcing; preserve
+those corrections. Review references to the old plan apply to `04f0bda`,
+before this consolidation.
 
-**Steps:**
+| Review item | Result |
+| --- | --- |
+| Step 0 | User chose SCOPE REDUCTION |
+| Architecture | 4 issues reviewed; separate Pages scope decision also resolved |
+| Code quality | 4 issues reviewed |
+| Tests | Diagram produced; 4 coverage-gap groups reviewed; T1-T9 specified |
+| Performance | 4 issues reviewed, including the new showcase scope |
+| NOT in scope | Written above |
+| What already exists | Written above |
+| TODOS.md | 3 items proposed, all selected and documented |
+| Failure modes | 1 critical gap identified and addressed in the design; tests/guards not yet implemented |
 
-1. Compare CS1, CS2, and Street Scene One across goals, rendering/runtime architecture, asset creation, animation, simulation, UI, testing, visual validation, performance, deployment, provenance, reproducibility, failure handling, and operating complexity.
-2. Compare CS1/CS2's inherited art contracts with the pinned Concept foundation; use Midcreek's catalog to verify artwork lineage, not as a complete prompt-generation source.
-3. Normalize terminology so similarly named concepts are not falsely equated: Bevy verification versus browser acceptance, deterministic GLB generation versus Blender export, procedural runtime geometry versus authored scene geometry, and user acceptance versus reference matching.
-4. Add a chronological lineage showing which problems each successor intentionally simplified or solved differently.
-5. Identify reusable patterns with evidence: deterministic core state, explicit ownership, production-path testing, fixed-view evidence, content hashes, honest failure states, bounded performance budgets, and public/private artifact separation.
-6. Evaluate possible high-cost patterns against evidence: verification coupling, software-renderer dependence, importing fidelity too early, unbounded visual iteration, and treating render success as visual success.
-7. Fill the decision matrix with one explicit status for every candidate pattern: adopt unchanged, adapt, defer, or reject. Include rationale and source citations.
-8. Update the README index and commit the comparative explainer.
-
-**Validation:**
-- Recommendations never rely on one project's terminology alone; each is tied to observed outcomes.
-- Contradictions between plans and final implementations are surfaced, not smoothed over.
-
----
-
-### Task 6: Design the Mid Creek CS3 Blueprint
-
-**Files:** Create `docs/architecture/cs3-blueprint.md`; modify `docs/architecture/decision-matrix.md` and `README.md`.
-
-**Interfaces:**
-- Consumes: Task 1's complete art-reference contract and Tasks 4-5 export findings and decision matrix.
-- Produces: an implementation-ready CS3 architecture and milestone sequence.
-
-**Steps:**
-
-1. State CS3's product boundary and first vertical slice: a TypeScript/Three.js runtime using Blender-authored, reproducibly exported assets, with deterministic TypeScript interaction/simulation kept independent from presentation. Preserve the confirmed no-Rust toolchain decision; confirm concrete gameplay scope before code-level planning.
-2. Define repository boundaries for Blender sources, export scripts, promoted GLBs/textures, Three.js runtime, simulation, UI, diagnostics, tests, evidence, and deployment.
-3. Define the asset contract from the full Cel Shift master set and shared foundation: palette, shading/outline rules, camera, technician/rack scale, coordinate system, meters, naming, origins/pivots, collections, material subset, texture formats, animation naming/timing, custom metadata, provenance, hashes, size budgets, and stale-export detection. Treat historical image-generation metadata as provenance, not an override of current direction.
-4. Define the export pipeline from an immutable/copy-on-write `.blend` source through reproducible Blender CLI export, validation, optional optimization, manifest generation, and browser smoke loading.
-5. Define TypeScript interfaces between asset loading, renderer, authored animation, deterministic simulation, input commands, DOM HUD, camera policy, diagnostics, and lifecycle/disposal; do not introduce Rust crates or a WASM language bridge.
-6. Select the rendering approach based on Task 4: GLB baseline, explicit Three.js lights/shadows/color management, bounded DPR, responsive resize, loading/error states, WebGL fallback, and optional inspection controls.
-7. Define validation layers with Vitest for pure TypeScript simulation/runtime tests, Python/Blender exporter checks, glTF validation, asset budgets, Playwright gameplay/loading/fallback tests, fixed-view screenshots, start/middle/end animation captures, performance measurements, and deployed-path checks. No Cargo gate is required.
-8. Define measurable initial budgets for GLB/textures, initial transfer, draw calls, triangles, load time, sustained frame timing, and visual-comparison evidence. Mark platform-specific performance as measured rather than inferred.
-9. Define milestone order: repository/evidence foundation; one Blender-to-GLB fixture; one production scene slice in Three.js; deterministic interaction; visual comparison/material correction; performance hill climb; Pages deployment and exact-build verification.
-10. Add failure and recovery behavior for export errors, missing textures, unsupported materials, stale hashes, model-load failures, WebGL loss, animation mismatch, visual-regression failure, and deployment-path errors.
-11. Record the disposition of alternatives: reject the CS1-style Rust runtime/custom GLB generator under the confirmed toolchain decision; evaluate CS2-only procedural geometry and a monolithic Blender-rendered video experience against the Blender-to-Three.js goal.
-12. Update the README with the recommended architecture and commit the CS3 blueprint.
-
-**Validation:**
-- Every adopted decision traces back to evidence in the comparative analysis.
-- Every blueprint component has a clear owner, input, output, failure mode, and test surface.
-- The first milestone can produce a working, reviewable vertical slice without requiring the full scene or game.
-- Development, asset generation, application build, CI, and deployment do not depend on Rust, Cargo, or Bevy.
-
----
-
-### Task 7: Review the Deliverables as an Executable Starting Point
-
-**Files:** Modify planned documentation as findings require.
-
-**Interfaces:**
-- Consumes: Tasks 1-6.
-- Produces: a consistent, source-backed documentation set ready for a separate code-level implementation plan.
-
-**Steps:**
-
-1. Check source coverage: every important plan, runtime subsystem, pivotal commit, retained Street Scene artifact, and Three.js export finding appears in at least one report.
-2. Check internal consistency across repository names, SHAs, metrics, dates, scene hashes, architecture terms, budgets, and milestone names.
-3. Search for placeholders, unsupported certainty, stale branch-tip references, leaked private paths, and claims that confuse acceptance with fidelity.
-4. Walk the CS3 blueprint from Blender source to deployed browser and confirm every transition has an explicit artifact and validation gate.
-5. Review the decision matrix against the blueprint and resolve any adopt/adapt/reject contradictions.
-6. Run documentation link/path checks and any repository-standard Markdown formatting checks introduced during execution.
-7. Perform a plan-exit or adversarial architecture review of the finished CS3 blueprint before generating code-level implementation tasks.
-8. Commit the review corrections as a final documentation-only increment.
-
-**Validation:**
-- A new engineer can explain CS1, CS2, and Street Scene One without opening their source repositories first.
-- The same engineer can derive a code-level CS3 implementation plan without reopening unresolved architectural questions.
-
-## Notes and Considerations
-
-- CS2 clone preparation is complete. The seven research and blueprint tasks remain pending; cloning and saving the initial findings did not complete them.
-- Both art-source repositories already exist locally. Include the complete Cel Shift direction, not all 30 concept themes or private reference photography; retain one full-resolution master per artwork and omit alternate-size copies from the future import.
-- Street Scene One's current Three.js material is a local, untracked design prompt. Task 4 must validate the proposed GLB boundary rather than repeat the prompt as fact.
-- The selected scene's delivery report says it contains packed images and no linked Blender libraries. Treat Cycles world/shader fidelity and AgX appearance as export risks to investigate, not established compatibility.
-- CS1 uses generated committed GLBs; CS2 uses runtime procedural geometry. The proposed CS3 direction is Blender-authored GLBs, not a default combination of all three asset-generation systems.
-- Rust remains relevant to explaining CS1 and Midcreek history only. Their source/toolchain descriptions must never be copied into CS3 setup instructions as requirements.
-- This plan produces research and architecture documentation, with an explicitly bounded export probe. After Task 7, create a separate code-level implementation plan for the selected CS3 vertical slice.
+**Unresolved review decisions that may bite later:** none; all presented
+choices were answered. **Execution prerequisites are still open:** final
+source/provenance qualification, CS1 revision reconciliation, actual export
+compatibility, a new probe resource allowance, and a named performance target.
+Report a concrete blocker if any cannot be established; do not infer success.
