@@ -2,3 +2,9 @@ __pycache__/
 /.artifacts/
 probes/r2/node_modules
 *.pyc
+/node_modules/
+/dist/
+/references/midcreek
+/references/.midcreek-*
+/test-results/
+/playwright-report/

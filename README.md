@@ -1,6 +1,39 @@
 # Mid Creek CS3
 
-Research and planning for a Blender-authored, Three.js-based Mid Creek experiment.
+A Blender-authored, Three.js-based Mid Creek experiment.
+
+## Implementation checkpoint
+
+**U1 complete; U2-U10 pending.** The September 10, 2026 launch authorization
+now permits unattended implementation on `main`. The exact user-approved
+envelope, subsequent credit amendment, pinned input identities, resource
+receipts and failed/successful checks are retained locally under
+`.artifacts/implementation/20260910T232859Z/`. That authorization does not
+permit Pages deployment or constitute final human appearance acceptance.
+
+The root toolchain is exactly pinned and independently locked from R2.
+Both `/midcreek-cs-3/` and `/midcreek-cs-3/play/` build and navigate in installed
+Chrome. At this checkpoint they are honest entry shells, not a playable game
+or a populated/qualified gallery. URL and build contracts pass 24 cases;
+the browser navigation contract and five resource-supervisor checks pass.
+
+```sh
+npm ci
+npm run typecheck
+npm test
+npm run build
+npm run test:e2e -- tests/e2e/build.spec.ts
+npm run dev -- --host 127.0.0.1
+```
+
+During the authorized run, commands execute through `tools/run_guard.py`,
+which uses the retained R2 ownership helpers, enforces the total repository
+disk delta/deadline/free-space limits, and writes unique job logs and receipts.
+Browser evidence uses a separate directory per job, retaining failed attempts.
+Runtime asset, appearance, performance and release-content qualification are
+still pending. The original R1-R3 records below describe their historical
+research checkpoints; the implementation status above supersedes their
+pre-launch state.
 
 ## CS3 toolchain
 
@@ -41,7 +74,7 @@ this work to `main` on September 10, 2026; this is not R3 approval or permission
 to implement or deploy. The immutable handoff's `docs/research-plan` branch
 and R1-only instructions are historical. Human review stops still apply.
 
-## Current status
+## Retained research status
 
 **R2 technical proof was approved September 10, 2026.** The user supplied
 `approve-r2` for probe commit `a28f58c` and findings commit `7144246`.
@@ -52,7 +85,7 @@ to be recorded in the single launch preflight before U1.
 The [blueprint](docs/architecture/cs3-blueprint.md) specifies ten ordered units
 covering tooling, simulation/layout, held input/replay, reference adoption,
 Blender assets, guarded loading, playable animation, qualification, showcase
-and release-content gates. None has been implemented.
+and release-content gates. None had been implemented at the R3 handoff.
 R1 was approved
 September 10, 2026 at retained commit
 `5ceac6f4d4e2f3357b27990d8badf39c4e34240c`. The user subsequently approved

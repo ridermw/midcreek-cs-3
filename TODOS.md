@@ -11,17 +11,18 @@ authorization to implement them or to expand the three-unit plan.
 | R2 / `approve-r2` | Complete / user-approved for `a28f58c` and `7144246`, recorded at `806d3c5` |
 | R3 / `write-cs3-blueprint` | Documentation deliverable complete at [cs3-blueprint.md](docs/architecture/cs3-blueprint.md); ten implementation units specified, not executed |
 | `approve-r3` | **Satisfied:** user supplied `approve-r3` for `732ff39` on September 10, 2026 at 18:26:14 EDT |
-| Launch preflight | **Blocked on missing inputs:** record finite resource limits and explicit source/publication grant together; no additional R3 review |
-| Blueprint execution | **Not started**; proceed through U1-U10 without mid-run human checkpoints once the launch envelope is complete |
+| Launch preflight | **Satisfied:** user approved the launch envelope and source/publication uses September 10, 2026; subsequent credit amendment and exact limits remain in the ignored authorization receipt |
+| Blueprint execution | **U1 complete; U2-U10 pending**; proceed without mid-run human checkpoints under `.artifacts/implementation/20260910T232859Z/authorization.json` |
 | Post-U10 human review | Final appearance/release review and deployment decision; no live deployment in the unattended run |
 
-The closed R2 allowance is not renewed. Collect required reference/publication
-permissions, finite budgets and host access before U1 using the
-[launch envelope](docs/architecture/cs3-blueprint.md#one-front-loaded-human-checkpoint).
+The closed R2 allowance is not renewed. The new implementation
+[launch envelope](docs/architecture/cs3-blueprint.md#one-front-loaded-human-checkpoint)
+is authorized; interruption does not renew its clock or limits.
 Agent appearance, technical and publication-policy checks run without human
 interruptions; results are not human-approved until final review.
 D1/D3 remain deferred. D2 is dormant until a measured miss and may activate
-within the completed launch scope/budget; no implementation or experiment has started.
+within the completed launch scope/budget. U1 establishes only the toolchain,
+guarded job execution and isolated entry builds, not gameplay qualification.
 
 ## D1: Complete Street Scene interactive viewer
 

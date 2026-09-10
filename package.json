@@ -1,0 +1,28 @@
+{
+  "name": "midcreek-cs-3",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A reproducible data-hall repair scenario with Blender-authored Three.js assets.",
+  "engines": { "node": "22.23.1", "npm": "10.9.8" },
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "three": "0.185.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "@types/node": "26.4.0",
+    "@types/three": "0.185.4",
+    "gltf-validator": "2.0.0-dev.3.10",
+    "typescript": "6.0.3",
+    "vite": "8.2.2",
+    "vitest": "3.2.7"
+  }
+}
