@@ -41,7 +41,9 @@ stops still apply.
 
 ## Current status
 
-**R2 technical proof is complete and awaiting user review.** R1 was approved
+**R2 technical proof was approved September 10, 2026.** The user supplied
+`approve-r2` for probe commit `a28f58c` and findings commit `7144246`.
+R3 is authorized but has not been started. R1 was approved
 September 10, 2026 at retained commit
 `5ceac6f4d4e2f3357b27990d8badf39c4e34240c`. The user subsequently approved
 R2's resource allowance, then amended the output location to **inside CS3,
@@ -68,10 +70,10 @@ Start review with `last-complete.json`, `negative-evidence-final.json`, and
 explain the exact checks and commands.
 
 This is **technical compatibility after adaptation**, not source-look or
-Cel Shift fidelity, user acceptance, full-game performance qualification, or
+Cel Shift fidelity, full-game performance qualification, or
 a Street Scene viewer. R1's predecessor measurements remain historical.
 The accepted scene's hash is unchanged; sibling work was not modified.
-`approve-r1` is satisfied; `approve-r2` and `approve-r3` remain blocked.
+`approve-r1` and `approve-r2` are satisfied; `approve-r3` remains blocked.
 R3 has not been started, prepared, scheduled or delegated. No game, reference
 importer or deployment was built.
 
@@ -95,7 +97,7 @@ The evidence index records those distinct observations. R1 did not run or
 validate that work; it is not evidence of a successful Blender-to-browser path.
 
 The comparative explanation and bounded export proof are saved for review.
-The CS3 blueprint remains gated and unstarted.
+The CS3 blueprint is authorized and unstarted; its own approval gate remains.
 
 ## Planned GitHub Pages experience
 
@@ -128,4 +130,5 @@ project documentation. Sibling repositories and retained Street Scene artifacts
 remain read-only reference sources. Raw private plans, logs, reference media,
 and large delivery files have not been copied here.
 
-Awaiting user review of R2.
+R2 approved; R3 authorized but not started. The closed R2 resource allowance
+is not renewed by this approval.

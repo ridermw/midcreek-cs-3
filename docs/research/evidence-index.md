@@ -6,6 +6,12 @@ complete. The R1 sections retain their inspection-only scope; the
 bounded export/load runs. Neither constitutes publication-rights, whole-game
 performance or user appearance approval.
 
+**Subsequent approval, September 10, 2026:** The user's `approve-r2` accepts
+the R2 handoff at probe commit `a28f58c59e2f02a4fbbe151dd84dea2203887d64`
+and findings commit `7144246e27e68b786abc121ce5fa6101a8dc0583`, with its recorded
+limitations. R3 is authorized but unstarted. Historical receipts and intake/
+closeout approval states are unchanged; the R2 resource allowance is not renewed.
+
 **Evidence classes:** **Source** means inspected code, configuration, history,
 or a GitHub record; **Historical result** means a retained run's report;
 **Inference** means a conclusion not demonstrated by execution here. All
@@ -463,4 +469,5 @@ It does **not** validate the changing showcase implementation, whole-scene
 fidelity, accepted video bytes/encoding, Cel Shift artwork, publication
 permissions or game performance. See the findings for exact reproduction and
 remaining material/color questions. R1 source history remains retained;
-`approve-r2` is blocked for user review and R3 remains unstarted.
+`approve-r2` was blocked at closeout and subsequently satisfied by the user on
+September 10, 2026. R3 is authorized but remains unstarted.

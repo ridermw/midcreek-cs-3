@@ -4,7 +4,7 @@
 **Scope choice:** 0A, scope reduction. Preserve the product goals; consolidate the work and documents.
 **Execution state:** Planning/review and R1 source research complete.
 R1 was approved by the user on September 10, 2026. R2 technical proof is
-complete under the fresh allowance below and awaits user review; R3 is unauthorized.
+complete and user-approved September 10, 2026. R3 is authorized but unstarted.
 
 **Goal:** Explain how CS1 and CS2 were built, recover the full Cel Shift art
 direction, understand Street Scene One's Blender workflow, prove a bounded
@@ -54,7 +54,7 @@ Authorize R1 -> autonomous R1 -> HARD STOP: review R1
 | Gate ID | Required user action | Current state |
 | --- | --- | --- |
 | `approve-r1` | Review completed R1 and authorize R2; R2 also needs its resource allowance | Satisfied September 10, 2026 for reviewed commit `5ceac6f4d4e2f3357b27990d8badf39c4e34240c`; subsequent R2 allowance recorded below |
-| `approve-r2` | Review completed R2 and authorize R3 | Blocked |
+| `approve-r2` | Review completed R2 and authorize R3 | Satisfied September 10, 2026 for probe `a28f58c59e2f02a4fbbe151dd84dea2203887d64` and findings `7144246e27e68b786abc121ce5fa6101a8dc0583`; R3 authorized, not started |
 | `approve-r3` | Review completed R3; any subsequent execution needs explicit authorization | Blocked |
 
 These are human checkpoints, not agent work items. Keep each gate blocked
@@ -234,8 +234,8 @@ honestly; reference images must not masquerade as game screenshots.
 | ID | Task | Status | Start requirement |
 | --- | --- | --- | --- |
 | R1 / `consolidate-evidence` | Research existing sources and write the comparative explanation; no builds | Complete; user approved September 10, 2026 | `approve-r1` satisfied for `5ceac6f4d4e2f3357b27990d8badf39c4e34240c` |
-| R2 / `prove-export-boundary` | Prove the bounded Blender export/load boundary | Complete technical proof; awaiting user review | Fresh allowance approved September 10, 2026; output location amended to ignored in-repository artifacts |
-| R3 / `write-cs3-blueprint` | Produce one implementation-ready CS3 blueprint | Pending | R1/R2 complete and `approve-r2` satisfied |
+| R2 / `prove-export-boundary` | Prove the bounded Blender export/load boundary | Complete; user approved September 10, 2026 | Fresh allowance approved September 10, 2026; output location amended to ignored in-repository artifacts |
+| R3 / `write-cs3-blueprint` | Produce one implementation-ready CS3 blueprint | Authorized; not started | R1/R2 complete and `approve-r2` satisfied September 10, 2026 |
 
 The previous seven pending tasks are consolidated into these three. The
 comparison remains in the existing findings document; decisions belong in
@@ -352,6 +352,14 @@ differences. Artifacts stay ignored; source/procedure/assertions are versioned
 in `probes/r2/`. See the existing findings and evidence index for identities,
 commands, warnings, outcome distinctions and unresolved questions.
 No R3 work or approval is implied; `approve-r2` remains blocked.
+
+**Subsequent user approval, September 10, 2026:** The user explicitly supplied
+`approve-r2` for the completed probe at `a28f58c59e2f02a4fbbe151dd84dea2203887d64`
+and findings at `7144246e27e68b786abc121ce5fa6101a8dc0583`. This satisfies the
+R2 review gate and authorizes R3 only; this approval update does not start R3.
+The recorded material/fidelity/performance limitations remain. The closed R2
+execution allowance is not renewed, and no implementation, asset import,
+publication or deployment is authorized by this approval.
 
 **Files:** Version a minimal probe procedure and its assertions in CS3; keep
 large generated scene/GLB/capture artifacts outside Git. Record the result in

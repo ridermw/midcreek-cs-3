@@ -19,7 +19,10 @@ Previously recorded image/hash measurements were not repeated.
 R1 was approved by the user on September 10, 2026 at commit
 `5ceac6f4d4e2f3357b27990d8badf39c4e34240c`. R2 scope is authorized, but its
 separate output/resource approval was initially missing. The later approved
-allowance enabled the completed R2 proof below; user review of R2 remains pending.
+allowance enabled the completed R2 proof below. The user supplied `approve-r2`
+on September 10, 2026 for probe `a28f58c` and findings `7144246`; R3 is
+authorized but unstarted. Historical intake/closeout records below retain
+their then-current approval state.
 The immutable handoff
 remains a planning-session snapshot. In particular, its prompt-only description
 of Street Scene Showcase is historical: newer tracked guards and untracked
@@ -785,7 +788,8 @@ That intake blocker was subsequently resolved by the explicit allowance below.
 **Fresh observation, September 10, 2026:** R2 demonstrates both a working
 adapted Blender-to-GLB-to-Three.js boundary and a specific direct-material
 export incompatibility. This completes the technical proof, **not user
-acceptance of its appearance**. `approve-r2` remains blocked. No R3 work,
+acceptance of source-look equivalence**. The user subsequently satisfied
+`approve-r2` on September 10, 2026; the documented limitations remain. No R3 work,
 blueprint, game, full-street viewer, reference import, push or deployment occurred.
 
 ### Permission, Inputs and Scope
