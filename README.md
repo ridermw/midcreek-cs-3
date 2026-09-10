@@ -30,6 +30,11 @@ reuse, deterministic simulation, measurement, and performance implications.
 | [Deferred work](TODOS.md) | The three explicitly selected follow-ups, with rationale, context, and dependencies |
 | [R1 handoff and goal prompt](docs/handoffs/r1-research.md) | New-session orientation and a copyable research-only goal with a mandatory R1 review stop |
 
+**New-session branch:** Use `main`. The immutable handoff captured the earlier
+`docs/research-plan` checkout and its publication state at that time. Substitute
+`main` for that branch when using its goal prompt; the R1-only scope and human
+review stops still apply.
+
 ## Current status
 
 Preparatory research and the plan are saved here. CS2 has been cloned alongside
