@@ -4,7 +4,7 @@ A Blender-authored, Three.js-based Mid Creek experiment.
 
 ## Implementation checkpoint
 
-**U1-U2 complete; U3-U10 pending.** The September 10, 2026 launch authorization
+**U1-U3 complete; U4-U10 pending.** The September 10, 2026 launch authorization
 now permits unattended implementation on `main`. The exact user-approved
 envelope, subsequent credit amendment, pinned input identities, resource
 receipts and failed/successful checks are retained locally under
@@ -44,6 +44,15 @@ five-template join, identity/unit scale, envelopes, rack fronts/service cells,
 grounded actor/fault visuals and outside-hall cooling units. All 55 current
 unit/contract tests pass. Real Blender geometry remains U5 work; these
 declarations are not an export or appearance pass.
+
+U3 adds fixed-tick held arrows/WASD, opposite-key cancellation and
+vertical-first precedence at every camera heading. The session owns ordered
+commands, pause/restart epochs, hidden-time clearing and JSON-replayable
+operations. The browser adapter preserves native focus/button behavior and
+the pinned camera shortcuts. The current 89 unit/contract checks and 21
+Chrome checks pass. Input browser checks mount the actual production
+session/input/camera modules in an isolated test fixture; the scene/HUD
+journey still belongs to U7, not a second simulation in the fixture.
 
 ## CS3 toolchain
 

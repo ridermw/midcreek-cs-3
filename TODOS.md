@@ -12,7 +12,7 @@ authorization to implement them or to expand the three-unit plan.
 | R3 / `write-cs3-blueprint` | Documentation deliverable complete at [cs3-blueprint.md](docs/architecture/cs3-blueprint.md); ten implementation units specified, not executed |
 | `approve-r3` | **Satisfied:** user supplied `approve-r3` for `732ff39` on September 10, 2026 at 18:26:14 EDT |
 | Launch preflight | **Satisfied:** user approved the launch envelope and source/publication uses September 10, 2026; subsequent credit amendment and exact limits remain in the ignored authorization receipt |
-| Blueprint execution | **U1-U2 complete; U3-U10 pending**; proceed without mid-run human checkpoints under `.artifacts/implementation/20260910T232859Z/authorization.json` |
+| Blueprint execution | **U1-U3 complete; U4-U10 pending**; proceed without mid-run human checkpoints under `.artifacts/implementation/20260910T232859Z/authorization.json` |
 | Post-U10 human review | Final appearance/release review and deployment decision; no live deployment in the unattended run |
 
 The closed R2 allowance is not renewed. The new implementation
@@ -25,6 +25,8 @@ within the completed launch scope/budget. U1 establishes only the toolchain,
 guarded job execution and isolated entry builds, not gameplay qualification.
 U2 adds the preserved deterministic core and validated visual placement
 contracts; real media and integrated gameplay are still pending.
+U3 qualifies fixed-tick input, ordered replay and the production browser
+input adapter. Full scene/HUD interaction remains U7 work.
 
 ## D1: Complete Street Scene interactive viewer
 
