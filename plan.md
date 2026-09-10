@@ -3,7 +3,8 @@
 **Reviewed:** September 10, 2026, using plan-exit-review.
 **Scope choice:** 0A, scope reduction. Preserve the product goals; consolidate the work and documents.
 **Execution state:** Planning/review and R1 source research complete.
-R1 awaits user review; R2/R3 remain pending and unauthorized.
+R1 was approved by the user on September 10, 2026. R2 scope is authorized
+but execution is blocked on a new output/resource approval; R3 is unauthorized.
 
 **Goal:** Explain how CS1 and CS2 were built, recover the full Cel Shift art
 direction, understand Street Scene One's Blender workflow, prove a bounded
@@ -50,9 +51,9 @@ Authorize R1 -> autonomous R1 -> HARD STOP: review R1
 
 ### Human-only tracker gates
 
-| Gate ID | Required user action | Initial state |
+| Gate ID | Required user action | Current state |
 | --- | --- | --- |
-| `approve-r1` | Review completed R1 and authorize R2; R2 also needs its resource allowance | Blocked |
+| `approve-r1` | Review completed R1 and authorize R2; R2 also needs its resource allowance | Satisfied September 10, 2026 for reviewed commit `5ceac6f4d4e2f3357b27990d8badf39c4e34240c`; resource gate remains open |
 | `approve-r2` | Review completed R2 and authorize R3 | Blocked |
 | `approve-r3` | Review completed R3; any subsequent execution needs explicit authorization | Blocked |
 
@@ -232,8 +233,8 @@ honestly; reference images must not masquerade as game screenshots.
 
 | ID | Task | Status | Start requirement |
 | --- | --- | --- | --- |
-| R1 / `consolidate-evidence` | Research existing sources and write the comparative explanation; no builds | Complete; awaiting user review | Authorized R1 completed September 10, 2026; `approve-r1` remains blocked |
-| R2 / `prove-export-boundary` | Prove the bounded Blender export/load boundary | Pending | R1 complete, `approve-r1` satisfied, and new resource approval |
+| R1 / `consolidate-evidence` | Research existing sources and write the comparative explanation; no builds | Complete; user approved September 10, 2026 | `approve-r1` satisfied for `5ceac6f4d4e2f3357b27990d8badf39c4e34240c` |
+| R2 / `prove-export-boundary` | Prove the bounded Blender export/load boundary | Blocked before probe execution | R1 approved and R2 scope authorized; explicit output location, fresh time/disk limits and recovery reserve still required |
 | R3 / `write-cs3-blueprint` | Produce one implementation-ready CS3 blueprint | Pending | R1/R2 complete and `approve-r2` satisfied |
 
 The previous seven pending tasks are consolidated into these three. The
@@ -255,9 +256,12 @@ Unresolved source identity, export/material/animation compatibility, delivery
 encoding provenance, public-art permissions and later runtime qualification
 are recorded in `docs/research/initial-findings.md#unresolved-questions-and-r1-hard-stop`.
 Existing hashes/dimensions/results are historical evidence, not rerun checks.
-R1 approval is still blocked. R2/R3 have not been started, prepared, scheduled
-or delegated. This completion record does not change the architecture,
-resource prerequisites, or human-only approval gates below.
+The user approved this R1 output on September 10, 2026 and authorized R2 only.
+The reviewed commit `5ceac6f4d4e2f3357b27990d8badf39c4e34240c` was confirmed
+available on local `docs/r1-research` without resetting or discarding work.
+R2's separate resource gate remains unresolved. R3 has not been started,
+prepared, scheduled or delegated. This approval does not waive the
+architecture, resource prerequisites, or remaining human-only gates below.
 
 **Files:** Update `docs/research/evidence-index.md`,
 `docs/research/initial-findings.md`, `docs/research/cel-shift-source-audit.md`,
@@ -310,6 +314,16 @@ for the user to review the outputs and explicitly authorize R2. Do not create
 probe code, install dependencies, or start Blender while waiting.
 
 ### R2: Prove a bounded export/load path
+
+**Intake checkpoint, September 10, 2026:** Blocked, not completed proof.
+The current request authorizes R2 scope but supplies no approved external
+output directory, new time/disk limits, or recovery reserve. These were
+requested explicitly; the user was unavailable, so no approval was inferred.
+Only local history inspection and approval/blocker documentation occurred.
+No probe code, dependencies, source copies, Blender/browser jobs, or workers
+were created or started. No source-scene hash or exporter candidate was freshly
+verified. Existing artifact identities remain historical records.
+`approve-r2` remains blocked until actual user review; R3 is untouched.
 
 **Files:** Version a minimal probe procedure and its assertions in CS3; keep
 large generated scene/GLB/capture artifacts outside Git. Record the result in

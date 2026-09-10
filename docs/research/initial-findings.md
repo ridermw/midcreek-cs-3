@@ -13,7 +13,10 @@ are distinguished below. No executable checks were performed: no tests,
 builds, benchmarks, validators, Blender jobs, export probes, or browser runs.
 Previously recorded image/hash measurements were not repeated.
 
-R1 is complete for user review, not approval of R2. The immutable handoff
+R1 was approved by the user on September 10, 2026 at commit
+`5ceac6f4d4e2f3357b27990d8badf39c4e34240c`. R2 scope is authorized, but its
+separate output/resource approval is missing (see the intake checkpoint below).
+The immutable handoff
 remains a planning-session snapshot. In particular, its prompt-only description
 of Street Scene Showcase is historical: newer tracked guards and untracked
 viewer/exporter work were visible at intake, and its checkout advanced again
@@ -738,7 +741,36 @@ GitHub job metadata are identified separately. Neither missing evidence nor
 successful historical jobs waive later gates.
 
 Both R1 research workers finished; documentation has one owner. R1 changed no
-sibling source or artwork and performed no executable checks. R2 and R3 remain
-pending and unauthorized; all human approval gates remain blocked.
+sibling source or artwork and performed no executable checks.
 
-Awaiting user review of R1.
+## R2 Intake Checkpoint: Resource Approval Blocked
+
+On September 10, 2026, local Git inspection confirmed the reviewed R1 commit
+`5ceac6f4d4e2f3357b27990d8badf39c4e34240c` is retained on
+`docs/r1-research`; the intake worktree was clean. No reset, checkout change,
+or discard was needed. The user's R1 approval satisfies `approve-r1` and
+authorizes R2 scope only.
+
+The request and plan contain no explicitly approved external output location,
+fresh time/disk limits, or recovery reserve. Those permissions were requested,
+but the user was unavailable. No defaults or expired Street Scene allowances
+were substituted. R2 is **blocked before execution**, not complete and not a
+reproducible incompatibility.
+
+No probe code, installs, asset copies, source rehashes, exporter reuse,
+Blender/browser runs, or generated artifacts exist from this checkpoint.
+All declared-content, material/FONT-curve, timing, color-management,
+repeatability, matched-view and failure-injection checks remain unexecuted.
+The validation loop remains the approved R2 contract: owned source copy,
+bounded export, structural/semantic checks, actual Three.js load and matched
+views, fresh repeat, then negative cases preserving the last complete evidence.
+There is no executed reproduction procedure to report yet.
+
+The existing questions above remain unresolved; historical identities and
+sibling implementation observations have not become fresh runtime evidence.
+No R2 workers or owned long-running processes were launched. Siblings and
+accepted artifacts were not modified. No material was published or pushed.
+`approve-r2` remains blocked pending actual user review. R3 has not been
+started, prepared, scheduled or delegated.
+
+Awaiting user review of R2.

@@ -34,14 +34,21 @@ reuse, deterministic simulation, measurement, and performance implications.
 it has not been pushed. The earlier new-session guidance pointed at `main`,
 and the immutable handoff captured `docs/research-plan`. Use the local R1
 review branch for these conclusions rather than assuming either older branch
-contains them. The R1-only scope and human review stops still apply.
+contains them. The handoff's R1-only instructions are historical; the current
+R2 authorization and unresolved resource gate are recorded below. Human review
+stops still apply.
 
 ## Current status
 
-**R1 source research is complete and awaiting user review.** The comparative
+**R1 was approved September 10, 2026; R2 is blocked before probe execution.** The comparative
 explanation and reference-import requirements are saved in the three research
-documents above. R2 and R3 remain pending and unauthorized; all human approval
-gates remain blocked. Completion of R1 does not authorize export experiments.
+documents above. The user reviewed commit
+`5ceac6f4d4e2f3357b27990d8badf39c4e34240c`, confirmed available on local
+`docs/r1-research`, and authorized R2 only. Its separate output/resource gate
+is unresolved: no explicit external output directory, fresh time/disk limits,
+or recovery reserve was supplied. Approval was requested but unavailable.
+`approve-r1` is satisfied; `approve-r2` and `approve-r3` remain blocked.
+R3 is unauthorized and has not been started, prepared, scheduled or delegated.
 
 R1 reconciled CS1's local/remote divergence: production source matches, but
 remote render-test policy and documentation differ. It distinguished CS2's
@@ -50,7 +57,11 @@ qualified its dirty-candidate, platform-specific performance evidence. Street
 Scene's selected delivery passed technical/user acceptance while missing the
 reference target; export compatibility remains unproven here.
 
-**No executable checks were performed.** R1 produced documentation only:
+**No export/load checks were performed.** R2 intake only inspected local Git
+history and recorded the approval/blocker; no probe code, installs, scene copies,
+Blender/browser jobs or workers were started. No generated artifact paths or
+reproduction commands exist. This is a permission blocker, not a demonstrated
+compatibility or incompatibility. R1 produced documentation only:
 no application/helper code, scripts, tests, builds, benchmarks, validators,
 installs, prototypes, Blender launches, asset processing/copying or deployment.
 Prior-project measurements, hashes and dimensions remain recorded evidence,
@@ -116,4 +127,4 @@ project documentation. Sibling repositories and retained Street Scene artifacts
 remain read-only reference sources. Raw private plans, logs, reference media,
 and large delivery files have not been copied here.
 
-Awaiting user review of R1.
+Awaiting user review of R2.

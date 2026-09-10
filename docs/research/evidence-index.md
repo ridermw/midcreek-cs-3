@@ -338,3 +338,25 @@ binding, complete artwork publication permissions, and runtime visual fidelity.
 These are explicit limits, not waived requirements. The findings' question
 register records what requires later approval or execution; no R2/R3 work,
 procedure, schedule, or delegation was started here.
+
+## R2 Intake Evidence: September 10, 2026
+
+This checkpoint records local history and permission status only, not an
+export/load experiment.
+
+| Check | Fresh observation |
+| --- | --- |
+| Reviewed R1 history | `git show --no-patch --format=fuller 5ceac6f4d4e2f3357b27990d8badf39c4e34240c` succeeded |
+| Retained branch | `git branch --contains 5ceac6f4d4e2f3357b27990d8badf39c4e34240c` included current `docs/r1-research` |
+| Intake worktree | `git status --short --untracked-files=all` returned no changes |
+| R1 approval | User explicitly approved that output on September 10, 2026 and authorized R2 only |
+| R2 resource permission | No approved output directory, fresh time/disk limits or recovery reserve supplied; explicit request could not be answered because the user was unavailable |
+| Execution result | Blocked before probe execution; neither compatibility nor incompatibility demonstrated |
+
+No reset/discard, sibling write, accepted-scene access, new scene hash,
+exporter pin/reuse, dependency install, export, browser check or capture was
+performed. No R2 workers or long-running processes were started. There are no
+new scene/GLB/capture paths, output hashes, tool-version receipts or executable
+reproduction instructions. E4 and E5 remain the dated observations above,
+not revalidated inputs. The findings and plan record this blocker;
+`approve-r2` remains blocked and no R3 work was undertaken.
