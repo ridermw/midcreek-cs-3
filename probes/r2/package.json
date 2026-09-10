@@ -1,0 +1,13 @@
+{
+  "name": "cs3-r2-boundary-probe",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test *.test.mjs"
+  },
+  "dependencies": {
+    "three": "0.185.1",
+    "playwright": "1.63.0",
+    "gltf-validator": "2.0.0-dev.3.10"
+  }
+}

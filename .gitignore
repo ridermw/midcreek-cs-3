@@ -1,0 +1,4 @@
+__pycache__/
+/.artifacts/
+probes/r2/node_modules
+*.pyc
