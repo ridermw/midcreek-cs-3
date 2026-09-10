@@ -11,6 +11,8 @@ including limitations; it is not a completed evidence audit.
 | E2 | `ridermw/midcreek-cs-2` / `../midcreek-cs-2` | `7ce1aa3a9d11cc5198167221a11f0cc5edb214e4` | Full-history clone; clean `main` tracking `origin/main` |
 | E3 | `ridermw/street-scene-1` / `../street-scene-1` | `ae5a4e780ae4565294a882ffa931f41b623504d5` | Private source; clean tracked tree does not mean ignored plans are committed |
 | E4 | `ridermw/street-scene-showcase` / `../street-scene-showcase` | `1538d862d1ceec391d7f7d94993d8d5980ec30ef` | `THREEJS-SESSION-PROMPT.md` is untracked |
+| E6 | `williamsmat_microsoft/midcreek-concept` / `../midcreek-concept` | `870603632c4b6665c513d0fa692a3ee2dae2b683` | Clean checkout; primary art source; overview contains stale count/camera wording |
+| E7 | `azure-core/midcreek` / `../midcreek` | `b2e736726f7f9aea610274931b9c62555e9eeb67` | Clean checkout; master-art mirror, but all 47 copied prompts lack their referenced shared bases |
 
 CS3's repository identity is `ridermw/midcreek-cs-3`. It had no commits or
 application files when research began.
@@ -126,11 +128,53 @@ Artifact identities recorded by those manifests:
 The manifests were read; the large scene/video files have not been independently
 rehash-verified, opened, rendered, or exported during this research session.
 
+### E6: Midcreek Concept
+
+- Root README, `ART-BIBLE.md`, `themes/cel-shift/README.md`, and
+  `themes/cel-shift/theme.yaml`.
+- `themes/_shared/foundation.md`, `themes/_shared/foundation.json`, and the
+  tracked shared-file inventory.
+- `docs/decisions/projection.md`, including the explicit reversal of the
+  axis-aligned recommendation.
+- `themes/cel-shift/prompts/key-art-diamond.mock.md` and all 47 prompts' shared
+  `plan:` dependency targets.
+- `tests/test_site.py:300-350,549-589`: prompt dependency and prose/JSON
+  consistency contracts; read, not executed.
+- The original and preview metadata for `key-art/04-diamond-bright.png`.
+- Git tree comparison against E7, actual PNG headers/byte lengths and SHA-256
+  hashes for all 98 tracked Cel Shift images.
+- Art-source history through `8706036`, including `eedfcff` for preview
+  additions and `0ed9011`/`b6b1c6a` for camera/reference/scale corrections.
+
+The [source audit](cel-shift-source-audit.md) records 49 full-resolution masters
+and 49 alternate-resolution previews. The 45-plate count in the root README
+does not match the tracked inventory. The README's axis-aligned wording also
+conflicts with the accepted diamond-projection decision and shared foundation.
+
+### E7: Midcreek
+
+- Origin, local HEAD, clean status, root README, and `AGENTS.md`.
+- `docs/artwork/README.md`, tracked catalog/support inventory, and
+  `docs/artwork/prompts/key-art-diamond.mock.md`.
+- Git blob comparison for every shared artwork-catalog path against E6.
+- The artwork import/catalog commits `b81b083` and `b2e7367`.
+
+All 49 masters, 49 master sidecars, 47 prompts, and `theme.yaml` have identical
+Git blobs to E6; the catalog README differs. The concept repo additionally has
+49 preview images and 49 corresponding sidecars. Every copied game prompt
+still references `../../_shared/`, but none of those six base paths resolves
+from its new location.
+
 ## Evidence Rules for Continuation
 
 Use source-relative paths and full commit IDs for tracked content. Hash
 untracked/ignored planning inputs separately before relying on them as frozen
 evidence. Record historical metrics as reported results unless actually rerun.
+
+Reading CS1 and Midcreek's Rust source does not make Rust a CS3 requirement.
+CS3 uses TypeScript/Three.js and Python/Blender tooling. Historical executable
+reproduction, if separately requested, is not part of CS3 setup, CI, or
+deployment, and a missing Rust compiler does not block this document research.
 
 Do not infer a feature exists because a plan mentions it. Do not infer that
 visual acceptance passed because a build, export, or video encode succeeded.
@@ -147,3 +191,5 @@ media merely because they were consulted.
    the preparation inspected commit lists, not the complete GitHub discussion.
 5. Verify selected artifact hashes and inspect the actual Blender scene before
    an export-compatibility claim.
+6. Complete the Cel Shift metadata/rights review and document the import
+   manifest; do not copy preview variants or duplicate masters from both sources.

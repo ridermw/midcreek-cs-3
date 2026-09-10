@@ -3,7 +3,7 @@
 Saved September 10, 2026. These findings preserve the research already gathered
 before formal execution of the seven-stage plan.
 
-Source labels E1-E5 refer to [the evidence index](evidence-index.md). Code,
+Source labels E1-E7 refer to [the evidence index](evidence-index.md). Code,
 plans, manifests, and commit histories were inspected. No predecessor tests,
 Blender jobs, export probes, or browser measurements were run in this session.
 
@@ -14,11 +14,19 @@ Blender jobs, export probes, or browser measurements were run in this session.
 | CS1 | Cel Shift data-hall technician/repair POC | Declarative RON -> custom Rust tessellation/rigging -> committed GLBs; explicitly no Blender | Bevy native and browser WASM |
 | CS2 | Smaller reproducible Cel Shift repair game | Procedural and instanced geometry created in Three.js | Three.js/WebGL2 browser game |
 | Street Scene One | Editable animated street scene and selected five-second video | Python scene/geometry construction in Blender, packed permitted materials | Cycles/Metal frames -> FFmpeg MP4 |
-| CS3 | Not implemented | Proposed Blender-authored assets -> validated GLB | Proposed Three.js runtime |
+| CS3 | Not implemented | Blender/Python-authored assets -> validated GLB | Planned TypeScript/Three.js runtime; no Rust |
 
 Sources: E1 `docs/implementation-plan.md`, `src/assetgen.rs`, `src/lib.rs`;
 E2 README, architecture and hill-climb documents; E3 README and construction
 script; E4 local Three.js prompt.
+
+**CS3 decision:** Rust was dropped in CS2 and is not part of the CS3 pipeline.
+The user reaffirmed this boundary on September 10, 2026. CS3's browser runtime
+and simulation use TypeScript; asset authoring/export uses Python and Blender.
+The Rust/Bevy details below describe predecessors only. Their algorithms,
+contracts, and measurements can inform CS3 without importing their crates,
+Cargo commands, or Rust-to-WASM build. The [toolchain decision](../../plan.md#cs3-toolchain-decision-no-rust)
+records the deterministic-state, testing, reuse, and performance implications.
 
 ## CS1: How It Was Built
 
@@ -389,5 +397,28 @@ These are candidate recommendations, not an approved final blueprint:
 6. Keep the new pipeline small: Blender-authored assets and explicit runtime
    equivalents, not simultaneous custom Rust generation, procedural Three.js
    construction, and unexamined Blender exports.
+
+## Cel Shift Art Sources Added to the Plan
+
+The source/size audit established that `midcreek-concept` is the complete
+upstream direction, while `midcreek/docs/artwork` mirrors its full-resolution
+artwork but omits the shared prompt bases. The primary source contains 49
+1536 x 1024 masters and 49 1280 x 720 preview counterparts; the game catalog's
+49 masters, metadata, prompts, and manifest match the concept versions exactly.
+
+The user selected the full Cel Shift set with size checks to avoid duplicate
+copies. The future import therefore takes one master per artwork, all required
+shared foundations and prompts, and reviewed provenance, but not the preview
+images or a second copy from Midcreek. No artwork has been copied.
+
+The source overview has stale statements: it says 45 plates and describes an
+axis-aligned camera, while the tracked catalog has 49 masters and the accepted
+projection decision specifies diamond framing. The foundation and art bible
+document the corrected approximately 35-degree elevation; historical render
+metadata can still contain the superseded 55-60-degree instruction. These must
+be treated as different versions of evidence, not silently merged.
+
+See [the full source and picture-size audit](cel-shift-source-audit.md) for
+the master-by-master inventory and dependency findings.
 
 The remaining work and its acceptance criteria are in [the plan](../../plan.md).
