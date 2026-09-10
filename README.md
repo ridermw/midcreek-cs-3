@@ -32,13 +32,12 @@ reuse, deterministic simulation, measurement, and performance implications.
 | [Deferred work](TODOS.md) | The three explicitly selected follow-ups, with rationale, context, and dependencies |
 | [R1 handoff and goal prompt](docs/handoffs/r1-research.md) | New-session orientation and a copyable research-only goal with a mandatory R1 review stop |
 
-**Review branch:** Completed R1 is retained locally on `docs/r1-research`;
-it has not been pushed. The earlier new-session guidance pointed at `main`,
-and the immutable handoff captured `docs/research-plan`. Use the local R1
-review branch for these conclusions rather than assuming either older branch
-contains them. The handoff's R1-only instructions are historical; the current
-R2 authorization and completed technical proof are recorded below. Human review
-stops still apply.
+**Current branch:** `main` contains the completed R1-R3 research, probe source
+and blueprint. The local `docs/r1-research` branch retains the R3 review
+checkpoint at `ca8852d`. The user separately authorized committing and pushing
+this work to `main` on September 10, 2026; this is not R3 approval or permission
+to implement or deploy. The immutable handoff's `docs/research-plan` branch
+and R1-only instructions are historical. Human review stops still apply.
 
 ## Current status
 
@@ -104,7 +103,8 @@ The evidence index records those distinct observations. R1 did not run or
 validate that work; it is not evidence of a successful Blender-to-browser path.
 
 The comparative explanation, bounded export proof and implementation-ready
-blueprint are retained locally on `docs/r1-research`. R3 review remains pending.
+blueprint are consolidated on `main`, with the local `docs/r1-research`
+checkpoint retained. R3 review remains pending.
 Reference/publication permissions, production-asset and appearance qualification,
 and named-target performance measurements remain gates, not achieved results.
 
