@@ -3,8 +3,8 @@
 **Reviewed:** September 10, 2026, using plan-exit-review.
 **Scope choice:** 0A, scope reduction. Preserve the product goals; consolidate the work and documents.
 **Execution state:** Planning/review and R1 source research complete.
-R1 was approved by the user on September 10, 2026. R2 scope is authorized
-but execution is blocked on a new output/resource approval; R3 is unauthorized.
+R1 was approved by the user on September 10, 2026. R2 technical proof is
+complete under the fresh allowance below and awaits user review; R3 is unauthorized.
 
 **Goal:** Explain how CS1 and CS2 were built, recover the full Cel Shift art
 direction, understand Street Scene One's Blender workflow, prove a bounded
@@ -53,7 +53,7 @@ Authorize R1 -> autonomous R1 -> HARD STOP: review R1
 
 | Gate ID | Required user action | Current state |
 | --- | --- | --- |
-| `approve-r1` | Review completed R1 and authorize R2; R2 also needs its resource allowance | Satisfied September 10, 2026 for reviewed commit `5ceac6f4d4e2f3357b27990d8badf39c4e34240c`; resource gate remains open |
+| `approve-r1` | Review completed R1 and authorize R2; R2 also needs its resource allowance | Satisfied September 10, 2026 for reviewed commit `5ceac6f4d4e2f3357b27990d8badf39c4e34240c`; subsequent R2 allowance recorded below |
 | `approve-r2` | Review completed R2 and authorize R3 | Blocked |
 | `approve-r3` | Review completed R3; any subsequent execution needs explicit authorization | Blocked |
 
@@ -234,7 +234,7 @@ honestly; reference images must not masquerade as game screenshots.
 | ID | Task | Status | Start requirement |
 | --- | --- | --- | --- |
 | R1 / `consolidate-evidence` | Research existing sources and write the comparative explanation; no builds | Complete; user approved September 10, 2026 | `approve-r1` satisfied for `5ceac6f4d4e2f3357b27990d8badf39c4e34240c` |
-| R2 / `prove-export-boundary` | Prove the bounded Blender export/load boundary | Blocked before probe execution | R1 approved and R2 scope authorized; explicit output location, fresh time/disk limits and recovery reserve still required |
+| R2 / `prove-export-boundary` | Prove the bounded Blender export/load boundary | Complete technical proof; awaiting user review | Fresh allowance approved September 10, 2026; output location amended to ignored in-repository artifacts |
 | R3 / `write-cs3-blueprint` | Produce one implementation-ready CS3 blueprint | Pending | R1/R2 complete and `approve-r2` satisfied |
 
 The previous seven pending tasks are consolidated into these three. The
@@ -259,7 +259,7 @@ Existing hashes/dimensions/results are historical evidence, not rerun checks.
 The user approved this R1 output on September 10, 2026 and authorized R2 only.
 The reviewed commit `5ceac6f4d4e2f3357b27990d8badf39c4e34240c` was confirmed
 available on local `docs/r1-research` without resetting or discarding work.
-R2's separate resource gate remains unresolved. R3 has not been started,
+R2's separate resource gate was subsequently approved as recorded below. R3 has not been started,
 prepared, scheduled or delegated. This approval does not waive the
 architecture, resource prerequisites, or remaining human-only gates below.
 
@@ -315,8 +315,8 @@ probe code, install dependencies, or start Blender while waiting.
 
 ### R2: Prove a bounded export/load path
 
-**Intake checkpoint, September 10, 2026:** Blocked, not completed proof.
-The current request authorizes R2 scope but supplies no approved external
+**Historical intake checkpoint, September 10, 2026:** Blocked, not completed proof.
+The initial request authorized R2 scope but supplied no approved external
 output directory, new time/disk limits, or recovery reserve. These were
 requested explicitly; the user was unavailable, so no approval was inferred.
 Only local history inspection and approval/blocker documentation occurred.
@@ -324,6 +324,34 @@ No probe code, dependencies, source copies, Blender/browser jobs, or workers
 were created or started. No source-scene hash or exporter candidate was freshly
 verified. Existing artifact identities remain historical records.
 `approve-r2` remains blocked until actual user review; R3 is untouched.
+
+**Resource approval, September 10, 2026:** The user subsequently approved
+90 minutes from execution start, including a final 10-minute closeout reserve;
+4 GiB additional disk including a 512 MiB recovery reserve; a 10 GiB free-space
+floor; and one heavy job at a time. Execution started at 19:26:51 UTC:
+heavy work stops by 20:46:51 UTC and closeout by 20:56:51 UTC.
+The user then amended the output location to be **inside CS3 and Git-ignored**:
+`.artifacts/r2/20260910T192651Z/`. This supersedes the earlier outside-repository
+location requirement, but not the limits or clock. All generated scenes,
+GLBs, captures, logs and temporary dependencies stay ignored and uncommitted.
+Probe source, lockfile, assertions and documentation remain versioned.
+No approval of R2 results or authorization of R3 is implied.
+
+**Completion record, September 10, 2026:** Two fresh owned-copy exports
+(`run-d`, `run-e`) produced byte-identical adapted and direct GLBs.
+Both browser runs (`checks-3.json`) passed 16 checks and retained ten matched
+three-way capture comparisons. The adapted GLB passes the Khronos validator
+with zero errors/warnings; the direct brick material fails with three invalid
+texture-coordinate references. The eight-node sample, 4,764 triangles, six
+materials and two baked textures is a bounded technical proof, not a full scene.
+Six Python tests, seven Node tests, and three real wrong-source,
+corrupt-promotion and supervisor-interruption checks cover the failure boundary.
+Source bytes remain unchanged. Findings include material-bake appearance loss,
+FONT evaluated-bounds correction, 119/24-second clip timing and color-profile
+differences. Artifacts stay ignored; source/procedure/assertions are versioned
+in `probes/r2/`. See the existing findings and evidence index for identities,
+commands, warnings, outcome distinctions and unresolved questions.
+No R3 work or approval is implied; `approve-r2` remains blocked.
 
 **Files:** Version a minimal probe procedure and its assertions in CS3; keep
 large generated scene/GLB/capture artifacts outside Git. Record the result in

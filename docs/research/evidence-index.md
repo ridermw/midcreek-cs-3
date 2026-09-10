@@ -1,8 +1,10 @@
 # Evidence Index
 
-Snapshot: September 10, 2026. R1 source research is complete, with the
-limitations below. This is an inspection record, not runtime, export,
-publication-rights, or performance qualification.
+Updated September 10, 2026. R1 source research and R2 technical proof are
+complete. The R1 sections retain their inspection-only scope; the
+[fresh R2 evidence](#fresh-r2-execution-evidence-september-10-2026) records the
+bounded export/load runs. Neither constitutes publication-rights, whole-game
+performance or user appearance approval.
 
 **Evidence classes:** **Source** means inspected code, configuration, history,
 or a GitHub record; **Historical result** means a retained run's report;
@@ -339,7 +341,7 @@ These are explicit limits, not waived requirements. The findings' question
 register records what requires later approval or execution; no R2/R3 work,
 procedure, schedule, or delegation was started here.
 
-## R2 Intake Evidence: September 10, 2026
+## Historical R2 Intake Evidence: September 10, 2026
 
 This checkpoint records local history and permission status only, not an
 export/load experiment.
@@ -360,3 +362,105 @@ new scene/GLB/capture paths, output hashes, tool-version receipts or executable
 reproduction instructions. E4 and E5 remain the dated observations above,
 not revalidated inputs. The findings and plan record this blocker;
 `approve-r2` remains blocked and no R3 work was undertaken.
+
+## Fresh R2 Execution Evidence: September 10, 2026
+
+The later explicit resource approval and in-repository ignored-output amendment
+supersede the intake blocker, not the original R2/R3 human-review boundary.
+The root is **`.artifacts/r2/20260910T192651Z/`**, excluded by `/.artifacts/`.
+Its `allowance.json` records the unchanged 19:26:51 UTC start, 20:46:51 UTC
+heavy-work deadline, 20:56:51 UTC closeout deadline, 4 GiB cap with 512 MiB
+reserve, 10 GiB free floor and one heavy job. Paths below are relative to that
+root unless explicitly marked otherwise. Assets/captures/candidate snapshots
+are retained locally, not committed, pushed or published.
+The versioned probe is local commit
+`a28f58c59e2f02a4fbbe151dd84dea2203887d64` on `docs/r1-research`.
+
+At the 19:52:58 UTC closeout check, the artifact root used **238,559,232 bytes**
+and the volume had **128,350,650,368 bytes free**, safely within the allowance.
+All 23 recorded job PIDs/process groups had ended. Owned npm/node temporary
+caches were removed; installed dependencies and complete/failed evidence remain.
+The original and owned input hashes still matched. `closeout.json` records the
+final post-commit snapshot without extending the allowance.
+
+### Fresh Input and Candidate Pins
+
+| Input | Identity / disposition |
+| --- | --- |
+| Accepted scene, freshly rehashed | `../street-scene-1-data/run-20260909T124848Z/attempt-23/scene.blend`; SHA-256 `0e4c90b1ab5bcfb052d2f5d2c5c4628a89b5b7145f6b6e9bf399d7f31cda4d05` |
+| Owned input | `source.blend`, same SHA-256; source-copy checks precede Blender access |
+| Candidate considered | `street-scene-showcase` revision `3298bec1b1a853ada041d33576296ba910142a8f`; **not reused** |
+| Candidate `blender/export_gltf.py` | SHA-256 `96d8846b3e92db5966471ac149b7df0e7cf21dc0051f998d89cb6fad6a205fc1` |
+| Candidate `blender/gltf_materials.py` | SHA-256 `5c17626bb01811adf8deba1f88dfe2e03cb37040e4a3ca1cfeb0709e04cca15a` |
+| Snapshot qualification | Both snapshot hashes were compared to `git show` bytes at the candidate commit and matched; no assumption about a changing worktree |
+| Independent later sibling observation | Showcase advanced to `8d1b1195b31138da68cf200f16589a754b5c3b88` during R2; not the inspected/reused pin and not validated by CS3 |
+| Independent CS3 exporter | `probes/r2/export_sample.py`, SHA-256 `089050fff0dd9b8135ca487d1a57f26377e3f2e709220ecddb528de85bae50a7` |
+
+`source-identity.json` records the source/candidate identities and non-reuse
+reason. `inventory.json` records the owned scene's materials, packed-image
+hashes, units, animation, color settings and bundled exporter option inventory.
+`run-d/export.json` and `run-e/export.json` record exact selected roles,
+packed source-image hashes, export flags, poses/evaluated bounds, conversions,
+lighting, camera records and all exported/captured file hashes/sizes.
+
+### Actual Toolchain
+
+| Tool / surface | Observed value |
+| --- | --- |
+| Blender | `5.2.1 LTS`, build `9e2066aef7ef`, built August 25, 2026 |
+| Bundled glTF exporter | `5.2.40`, recorded in `exporter-version.log` |
+| Python | `3.14.7` |
+| Node / npm | `v22.23.1` / `10.9.8` |
+| Three.js | `0.185.1` |
+| Playwright | `1.63.0`, installed Chrome channel; no browser download |
+| Khronos validator package | `gltf-validator` `2.0.0-dev.3.10` |
+| Chrome | `153.0.8010.37` |
+| Actual WebGL renderer | WebGL2; `ANGLE (Apple, ANGLE Metal Renderer: Apple M4 Pro, Unspecified Version)` |
+| Browser target | Headless, 640x360 drawing buffer/viewport, DPR 1, loopback-only asset traffic |
+| Versioned dependency manifest | `probes/r2/package.json`, SHA-256 `3cec850bf8a74b09001c7a2d8ee33372e6179c1436fcb0774e38f6fab6df9e44` |
+| Versioned dependency lock | `probes/r2/package-lock.json`, SHA-256 `be936e762a422c91e0c89889ad4b1f485c9767dca491005e68b211dc1a03ed5a` |
+
+### Qualifying Artifacts and Checks
+
+Both fresh export runs produce these identical files:
+
+| Artifact | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `direct.glb` | 3,066,148 | `42941fd8c27e58d62867f75e6d09fc9073bcdbbc83b86ccaf3b4761861873d98` |
+| `portable.glb` | 265,352 | `b70e082d676c1d92d1dc3892fcbb4f056c97683987c2226d7e9e7b31577f096d` |
+
+| Retained evidence | Result / meaning |
+| --- | --- |
+| `run-d/checks-3.json`, `run-e/checks-3.json` | Two fresh real browser processes, **16 passed checks each**, ten captures and ten three-way comparisons each |
+| `run-*/checks-3-validator-portable.json` | Zero errors, zero warnings; one informational unused sign UV |
+| `run-*/checks-3-validator-direct.json` | Three invalid brick `texCoord: -1` errors, one tangent-space warning; direct export incompatibility reproduced |
+| `run-*/checks-3-comparison-*.png` | Left to right: source Blender / adapted Blender / adapted browser; appearance evidence, not an acceptance gate |
+| `run-e/emission-diagnostic-2/` | Corrected orthographic emission-only material diagnostic; script/input/capture hashes and camera metadata in its receipt |
+| `last-complete.json` | Atomically promoted `run-d`/`run-e` current-code evidence, SHA-256 `ecbe78ab03d43ab547a3c2796b1f1bd301d3570bf68ebed3b2731c05a5a26a81` |
+| `negative-evidence-final.json` | Wrong identity, corrupt candidate and real supervisor SIGINT: **3 passed**, pointer hash unchanged before/after |
+| `final-python-tests.log`, `final-node-tests.log` | **6 Python / 7 Node tests passed**; guarded receipts retain commands and log hashes |
+| `*.job.json`, matching `.log` | Exact owned command/PID, allowance, timeout, exit/outcome, resource usage and log hash, including failed attempts |
+| `closeout.json` | Final source/pointer/code identities, local commit, resource/time snapshot and owned-process status |
+
+Final checker identities are also embedded in both qualifying check receipts:
+
+| File in `probes/r2/` | SHA-256 |
+| --- | --- |
+| `browser.mjs` | `9da14f88b3a0f80a878a88f2bafd8a88cceea1357ec4b1a8fc8162b26805229c` |
+| `lifecycle.mjs` | `578fb16b40361020f5ed8383d80f9b17f341a3e2710946c9a6b6781e3dd83502` |
+| `glb.mjs` | `2f27d1425edd08d565892b41706f73c9b8fbb8f98f298d3cc094e15f5ae0a7dc` |
+| `check.mjs` | `9dc0c36ca9bfd0754655d252aa2c7e8c3372b82ffc9b5234f007cd83912cf4d2` |
+
+`run-a`, `run-b`, `run-c`, earlier `checks`/`checks-2` receipts, and the first
+emission diagnostic are developmental or superseded observations, not the final
+proof. In particular, the first emission diagnostic had mismatched perspective/
+orthographic cameras; only `emission-diagnostic-2` supports the material-isolation
+finding. Failed runs remain available rather than being rewritten as successes.
+
+Fresh R2 supports the bounded adapted technical path, direct-export failure,
+FONT geometry, sampled animation and explicit failure/lifecycle boundary.
+It does **not** validate the changing showcase implementation, whole-scene
+fidelity, accepted video bytes/encoding, Cel Shift artwork, publication
+permissions or game performance. See the findings for exact reproduction and
+remaining material/color questions. R1 source history remains retained;
+`approve-r2` is blocked for user review and R3 remains unstarted.

@@ -1,7 +1,10 @@
 # Initial Research Findings
 
-Updated September 10, 2026 for completed R1 source research. These findings
-extend and correct the preparatory research.
+Updated September 10, 2026 for completed R1 research and R2 technical proof.
+These findings extend and correct the preparatory research. The comparative
+sections retain R1's dated observations; the
+[R2 result](#r2-result-reproducible-bounded-exportload-proof) records fresh
+execution, appearance limits and reproduction instructions.
 The subsequent plan-exit review consolidated the original seven stages into
 the three execution units now defined in `plan.md`; this document remains the
 home for the comparative explanation.
@@ -9,19 +12,21 @@ home for the comparative explanation.
 Source labels E1-E7 refer to [the evidence index](evidence-index.md). Code,
 plans, manifests, commit histories, and GitHub discussions were inspected.
 **Source observations**, **historical reported results**, and **inference**
-are distinguished below. No executable checks were performed: no tests,
+are distinguished below. No executable checks were performed **during R1**: no tests,
 builds, benchmarks, validators, Blender jobs, export probes, or browser runs.
 Previously recorded image/hash measurements were not repeated.
 
 R1 was approved by the user on September 10, 2026 at commit
 `5ceac6f4d4e2f3357b27990d8badf39c4e34240c`. R2 scope is authorized, but its
-separate output/resource approval is missing (see the intake checkpoint below).
+separate output/resource approval was initially missing. The later approved
+allowance enabled the completed R2 proof below; user review of R2 remains pending.
 The immutable handoff
 remains a planning-session snapshot. In particular, its prompt-only description
 of Street Scene Showcase is historical: newer tracked guards and untracked
 viewer/exporter work were visible at intake, and its checkout advanced again
 before closure. The evidence index pins each observation; none is qualified
-as a CS3 export result.
+as a CS3 export result. R2 evaluates an independent bounded CS3 probe, not that
+changing sibling implementation.
 
 ## Main Distinction
 
@@ -743,7 +748,7 @@ successful historical jobs waive later gates.
 Both R1 research workers finished; documentation has one owner. R1 changed no
 sibling source or artwork and performed no executable checks.
 
-## R2 Intake Checkpoint: Resource Approval Blocked
+## Historical R2 Intake Checkpoint: Resource Approval Blocked
 
 On September 10, 2026, local Git inspection confirmed the reviewed R1 commit
 `5ceac6f4d4e2f3357b27990d8badf39c4e34240c` is retained on
@@ -773,4 +778,220 @@ accepted artifacts were not modified. No material was published or pushed.
 `approve-r2` remains blocked pending actual user review. R3 has not been
 started, prepared, scheduled or delegated.
 
-Awaiting user review of R2.
+That intake blocker was subsequently resolved by the explicit allowance below.
+
+## R2 Result: Reproducible Bounded Export/Load Proof
+
+**Fresh observation, September 10, 2026:** R2 demonstrates both a working
+adapted Blender-to-GLB-to-Three.js boundary and a specific direct-material
+export incompatibility. This completes the technical proof, **not user
+acceptance of its appearance**. `approve-r2` remains blocked. No R3 work,
+blueprint, game, full-street viewer, reference import, push or deployment occurred.
+
+### Permission, Inputs and Scope
+
+The user approved 90 minutes, with the final ten reserved for closeout; 4 GiB
+additional disk including a 512 MiB recovery reserve; a 10 GiB free-space floor;
+and one heavy job at a time. Execution began **19:26:51 UTC**; heavy work must
+stop by **20:46:51 UTC**, with absolute closeout by **20:56:51 UTC**.
+The user's subsequent location amendment put generated output **inside CS3,
+Git-ignored**, at `.artifacts/r2/20260910T192651Z/`. It did not restart the clock.
+`guard.py` serializes jobs, checks deadlines/disk, bounds each invocation,
+records failures and terminates only its owned process group. All dependencies,
+temporary browser profiles, scenes, GLBs, captures and logs are in that root.
+
+The retained `attempt-23/scene.blend` was freshly hashed against R1's recorded
+SHA-256, copied with identity checks, and never opened directly in Blender.
+The accepted original and owned input remained unchanged. The considered
+showcase scripts exactly match commit `3298bec1b1a853ada041d33576296ba910142a8f`
+at their recorded hashes, but were **not reused**: they require a full-scene
+inventory and seven textured groups. The sibling advanced independently during
+R2; its later tip is not the evaluated dependency. The evidence index preserves
+both dated observations. Sibling files were not written.
+
+The independent `probes/r2/` procedure selects these eight objects:
+
+| Retained source name | Exported role | Treatment |
+| --- | --- | --- |
+| `Hero car path` | `Hero` | Animated parent transform |
+| `Hero.FrontL.Hub` | `Wheel` | Animated wheel transform/pivot |
+| `Hero.FrontL.Rubber tire` | `Tire` | Selected mesh/material unchanged |
+| `Hero.FrontL.Split spoke 0 -1` | `Spoke` | Asymmetric spoke makes rotation observable |
+| `Hero.Floating red roof` | `Roof` | Lacquer/clearcoat material |
+| `Hero.Broad rising diffuser tray` | `Carbon` | Procedural-material probe |
+| `Original market sign` | `Sign` | FONT curve/text geometry probe |
+| `Brick facades 0` | `Brick` | First connected box: eight vertices, six faces only |
+
+The GLBs contain **8 nodes, 6 meshes, 6 materials, 4,764 triangles and one clip**.
+The adapted GLB contains two embedded 256x256 images. Geometry uses meters and
+Blender `(x,y,z)` to glTF `(x,z,-y)` axis conversion; hierarchy/pivots are retained,
+not recentered. The reconstructed neutral studio is deliberately not the
+delivered street's sky, lighting or composition.
+
+### Actual Outcome and Feature Classification
+
+| Feature | Classification | Fresh evidence and limitation |
+| --- | --- | --- |
+| Selected static geometry, hierarchy, units, pivots and poses | Preserved within measured tolerance | Local/world matrices and evaluated mesh bounds at frames 1, 61 and 120 pass `2e-4`; maximum matrix error `1.534963303573278e-6`, bounds error `1.2819192853896766e-6` m |
+| Selected animation | Preserved for declared samples | `Manhattan Rear Chase`, 24 fps, frames 1-120; actual duration **119/24 = 4.958333... s**, not five seconds; a 5 s browser sample clamps to the final pose |
+| Lacquer, tire, spoke and sign PBR values/bindings | Preserved as exported parameters | Base color, metallic, roughness and clearcoat values are checked; this does not establish pixel-equivalent shading |
+| FONT sign | Export-supported; explicit mesh in adapted sample | Direct `export_apply=True` already exports the FONT as mesh; adapted path explicitly converts it; glyph/extrusion bounds pass |
+| Brick source graph | Direct export unsupported in this configuration; reconstructed/approximated adaptation | Direct GLB has three invalid `texCoord: -1` references; adapted base color is baked to a UV atlas, roughness fixed to 0.65 and original bump omitted |
+| Procedural carbon | Direct graph unsupported; reconstructed/approximated adaptation | Direct GLB has no base-color texture; adapted base color is a 256x256 bake with explicit UVs, fixed roughness and no source bump |
+| Street lighting and composition | Not preserved or qualified | Neutral studio with matched camera/time replaces the original environment; this is not a whole-scene reconstruction |
+| Source look / Cel Shift fidelity / performance | Not accepted or qualified | Visible material differences remain; no game budgets or Cel Shift catalog were exercised |
+
+The two independent export directories, `run-d` and `run-e`, contain
+byte-identical `portable.glb` (265,352 bytes) and `direct.glb` (3,066,148 bytes).
+The adapted artifact has **zero validator errors and zero warnings**, plus one
+informational unused sign UV attribute. The direct artifact has **three
+`VALUE_NOT_IN_RANGE` errors** on the brick material's base-color,
+metallic-roughness and normal `texCoord` fields, plus one tangent-generation
+warning. Successful Blender export alone therefore does not prove a valid GLB.
+Exact output identities and versions are in the evidence index.
+
+### Readiness, Animation and Failure Checks
+
+Each fresh Chrome process actually runs Three.js `GLTFLoader`, waits for decoded
+textures, checks exact image/material/UV/color-space bindings and clip metadata,
+renders a nonempty first declared view, and finishes GPU work before `ready`.
+The initial view records four draw calls / 4,164 triangles because it shows the
+selected hero parts, not every mesh in the sample.
+
+Both final `checks-3.json` receipts passed these **16 named checks**:
+
+1. Adapted Khronos validation.
+2. Direct export incompatibility, missing procedural-carbon texture and FONT mesh support.
+3. Declared nodes/parents/triangles/materials/UVs/images/clip.
+4. Invalid declared content rejection.
+5. Real loader readiness and bindings, including a completed nonempty first frame.
+6. Local/world transforms, pivots and bounds at frames 1/61/120.
+7. Five-second sample clamps to the 119/24-second final keyframe.
+8. Ten matched camera/viewport/time browser captures with actual pose checks.
+9. Ten three-way appearance comparisons, explicitly **not an acceptance gate**.
+10. Missing GLB fails explicitly.
+11. Corrupt GLB fails explicitly.
+12. Missing required texture fails explicitly.
+13. Invalid declared node fails before attachment.
+14. Disposal during a delayed real load prevents attachment and releases the late asset.
+15. Timeout remains failed after late real completion and releases that asset.
+16. A superseded delayed request cannot attach over or dispose the newer ready request.
+
+The final Python suite passes **6 tests**; the Node suite passes **7 tests**,
+including exact texture-image mismatch rejection and first-frame attachment
+failure. `negative-evidence-final.json` separately records **3 real checks**:
+wrong source hash rejected before copying, corrupt candidate refused promotion,
+and SIGINT of the owned supervisor with its child reaped. Each leaves the
+previous `last-complete.json` bytes unchanged. The guard/promotion code has no
+placeholder-as-success branch. Expected 404/missing-image diagnostics are
+retained; no uncaught page error or unexpected external asset request occurred.
+
+The initial bounds discrepancy was an oracle defect, not missing FONT content:
+the raw FONT `bound_box` excluded its +/-5 mm extrusion, while evaluated mesh
+vertices included it. The corrected oracle uses those vertices, with unchanged
+tolerance. Independent animation samples reset/play the action because a
+clamped `LoopOnce` action remains paused after reaching its end; setting mixer
+time alone had produced stale earlier poses.
+
+### Appearance and Color Management
+
+For each view, the contact sheet is **source material in Blender / adapted
+material in Blender / adapted GLB in Three.js**, in that order. Cameras,
+orthographic framing, visible objects, time and 640x360 viewport are matched.
+Blender uses a CPU Cycles studio; Three.js uses a directional light and a
+constant PMREM environment so metallic parts are not evaluated without reflected
+environment. These lighting implementations are approximations, not identical
+integrators.
+
+The baseline preserves Blender AgX / Medium High Contrast / exposure 0.3 and
+uses Three.js AgX / exposure `2**0.3` / sRGB output. A second brick view pairs
+Blender Standard / None / exposure 0 with Three.js NoToneMapping / exposure 1.
+Adapted-Blender/browser foreground RGB mean absolute error is **15.924/255**
+in the AgX comparison versus **2.001/255** in the Standard comparison. This
+demonstrates a substantial color-pipeline contribution, not complete equivalence
+or a general recommendation to disable tone mapping.
+
+**Material baking is not appearance-preserving here.** Brick frequency/detail
+and carbon weave visibly differ. The corrected supplemental emission diagnostic
+at `run-e/emission-diagnostic-2/` removes roughness, bump and lighting from the
+comparison and still shows source/adapted differences. The exact source-coordinate
+reconstruction / finite-atlas loss mechanism remains unresolved. Do not attribute
+all appearance differences to color management.
+
+The recorded `silhouetteIoU` uses a background-color threshold, **not semantic
+geometry masks**; dark metallic/carbon shading can lower it despite correct
+geometry. Use the separately checked matrices/bounds for geometric claims.
+No cross-GPU pixel-equality threshold, visual approval or whole-game performance
+claim is inferred from these measurements.
+Execution was on macOS; the guard uses POSIX locks/process groups. Windows
+execution and cross-platform appearance have not been qualified.
+
+### Reproduction Procedure
+
+Run from this checkout with the original retained input available. **A new
+explicit allowance is mandatory for another run**; the dated allowance above
+is not reusable permission. Agree on a fresh ignored root, new UTC start/work/
+closeout deadlines, disk cap, reserve and free-space floor. Create that root's
+`allowance.json` using the same field schema as the retained receipt
+(`root`, `started_utc`, `work_deadline_utc`, `closeout_deadline_utc`, `max_bytes`,
+`reserve_bytes`, `min_free_bytes`, `max_heavy_jobs`), with absolute root and
+newly approved values. Keep one heavy job at a time.
+
+The following commands assume `ROOT` is exported to that approved **absolute**
+path, its allowance exists, and Blender, Node, Python and installed Chrome match
+the versions in the evidence index. They deliberately use fresh run/job names.
+For a checkout with an existing `probes/r2/node_modules` symlink, stop its owned
+jobs and explicitly repoint only that ignored symlink; do not overwrite an
+unrelated dependency directory.
+
+```sh
+(
+set -eu
+mkdir -p "$ROOT/toolchain" "$ROOT/tmp"
+cp probes/r2/package.json probes/r2/package-lock.json "$ROOT/toolchain/"
+python3 -B probes/r2/guard.py --allowance "$ROOT/allowance.json" \
+  --name dependencies --seconds 180 -- \
+  npm ci --prefix "$ROOT/toolchain" --ignore-scripts --no-audit --no-fund
+ln -s "$ROOT/toolchain/node_modules" probes/r2/node_modules
+
+python3 -B probes/r2/guard.py --allowance "$ROOT/allowance.json" \
+  --name source-copy --seconds 30 -- \
+  python3 -B -c 'import sys; sys.path.insert(0,"probes/r2"); from guard import verified_copy; verified_copy(*sys.argv[1:])' \
+  ../street-scene-1-data/run-20260909T124848Z/attempt-23/scene.blend \
+  "$ROOT/source.blend" \
+  0e4c90b1ab5bcfb052d2f5d2c5c4628a89b5b7145f6b6e9bf399d7f31cda4d05
+
+TMPDIR="$ROOT/tmp" python3 -B -m unittest discover -s probes/r2 -p 'test_*.py'
+node --test probes/r2/*.test.mjs
+
+for RUN in run-1 run-2; do
+  python3 -B probes/r2/guard.py --allowance "$ROOT/allowance.json" \
+    --name "export-$RUN" --seconds 360 -- \
+    blender --background --factory-startup --disable-autoexec \
+    --python-exit-code 1 --python probes/r2/export_sample.py -- \
+    --source "$ROOT/source.blend" --output "$ROOT/$RUN"
+  python3 -B probes/r2/guard.py --allowance "$ROOT/allowance.json" \
+    --name "browser-$RUN" --seconds 180 -- \
+    node probes/r2/check.mjs "$ROOT/$RUN" checks
+done
+
+python3 -B probes/r2/promote.py --root "$ROOT" --runs run-1 run-2 --tag checks
+python3 -B probes/r2/negative_evidence.py --root "$ROOT" --label final
+)
+```
+
+Stop on any failure rather than promote or continue; inspect the named job
+log/receipt. Promotion independently refuses incomplete, stale-code or changed
+artifacts. The negative-evidence script must **not** be nested in another guard,
+because it starts its own guarded interruption job. Export output directories
+must be new and share the owned source's approved parent root. Keep
+`--python-exit-code 1` **before** `--python`. Chrome is launched via Playwright's
+installed `chrome` channel; this procedure neither downloads a browser nor
+requires a global npm install. The Node server binds loopback and closes on exit.
+
+Review the generated `export.json`, `checks.json`, validator reports, comparison
+PNGs, `last-complete.json` and negative-evidence receipt. Rehash the accepted
+original afterward; record resource usage and verify every recorded job PID/
+process group has ended. Preserve both completed and failed evidence. Any new
+appearance investigation or broader qualification needs separate authorization;
+these commands do not authorize R3.

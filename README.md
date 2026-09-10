@@ -24,7 +24,8 @@ reuse, deterministic simulation, measurement, and performance implications.
 | Document | Contents |
 | --- | --- |
 | [Reviewed plan](plan.md) | Three execution units, settled architecture/site decisions, T1-T9 test map, and performance gates |
-| [Research findings](docs/research/initial-findings.md) | Completed R1 comparison, corrective history, transferable contracts, historical-result limitations, and unresolved questions |
+| [Research findings](docs/research/initial-findings.md) | R1 comparison and fresh R2 export/load results, appearance limits and reproduction procedure |
+| [R2 probe source](probes/r2/) | Bounded Blender export, real Three.js checks, resource guard and negative evidence tests; not a game |
 | [Evidence index](docs/research/evidence-index.md) | Reconciled revisions, inspected source and GitHub discussions/workflows, recorded artifact identities, and evidence limits |
 | [Cel Shift source and size audit](docs/research/cel-shift-source-audit.md) | Existing 49-master inventory, prompt/sidecar provenance, publication blockers, and the documentation-only manifest/atomic-import contract |
 | [Deferred work](TODOS.md) | The three explicitly selected follow-ups, with rationale, context, and dependencies |
@@ -35,43 +36,44 @@ it has not been pushed. The earlier new-session guidance pointed at `main`,
 and the immutable handoff captured `docs/research-plan`. Use the local R1
 review branch for these conclusions rather than assuming either older branch
 contains them. The handoff's R1-only instructions are historical; the current
-R2 authorization and unresolved resource gate are recorded below. Human review
+R2 authorization and completed technical proof are recorded below. Human review
 stops still apply.
 
 ## Current status
 
-**R1 was approved September 10, 2026; R2 is blocked before probe execution.** The comparative
-explanation and reference-import requirements are saved in the three research
-documents above. The user reviewed commit
-`5ceac6f4d4e2f3357b27990d8badf39c4e34240c`, confirmed available on local
-`docs/r1-research`, and authorized R2 only. Its separate output/resource gate
-is unresolved: no explicit external output directory, fresh time/disk limits,
-or recovery reserve was supplied. Approval was requested but unavailable.
+**R2 technical proof is complete and awaiting user review.** R1 was approved
+September 10, 2026 at retained commit
+`5ceac6f4d4e2f3357b27990d8badf39c4e34240c`. The user subsequently approved
+R2's resource allowance, then amended the output location to **inside CS3,
+Git-ignored**. All generated assets and captures are under
+`.artifacts/r2/20260910T192651Z/`; none is committed.
+
+Two fresh Blender runs and two fresh browser processes reproduce an eight-node,
+4,764-triangle sample. The adapted **265,352-byte GLB** is byte-identical across
+exports and passes 16 checks per browser run. It includes static brick geometry,
+animated hero/wheel parts, six material bindings, two baked textures and a FONT
+sign. Tests cover first-frame readiness, transforms/bounds, clip timing,
+matched views, explicit load failures and last-complete evidence preservation.
+
+**Direct material export is incompatible with this tested configuration.**
+It produces three invalid `texCoord: -1` values, and procedural carbon has no
+exported base-color texture. Explicit UV/base-color baking makes the small
+sample loadable, but visibly changes its materials. FONT geometry exports
+successfully with `export_apply=True`; its evaluated mesh, not the raw FONT
+bounding box, is the correct bounds oracle.
+
+Start review with `last-complete.json`, `negative-evidence-final.json`, and
+`run-e/checks-3-comparison-*.png` in that ignored directory. The
+[R2 findings and reproduction instructions](docs/research/initial-findings.md#r2-result-reproducible-bounded-exportload-proof)
+explain the exact checks and commands.
+
+This is **technical compatibility after adaptation**, not source-look or
+Cel Shift fidelity, user acceptance, full-game performance qualification, or
+a Street Scene viewer. R1's predecessor measurements remain historical.
+The accepted scene's hash is unchanged; sibling work was not modified.
 `approve-r1` is satisfied; `approve-r2` and `approve-r3` remain blocked.
-R3 is unauthorized and has not been started, prepared, scheduled or delegated.
-
-R1 reconciled CS1's local/remote divergence: production source matches, but
-remote render-test policy and documentation differ. It distinguished CS2's
-repeat-driven keyboard behavior from the required held-arrow adapter and
-qualified its dirty-candidate, platform-specific performance evidence. Street
-Scene's selected delivery passed technical/user acceptance while missing the
-reference target; export compatibility remains unproven here.
-
-**No export/load checks were performed.** R2 intake only inspected local Git
-history and recorded the approval/blocker; no probe code, installs, scene copies,
-Blender/browser jobs or workers were started. No generated artifact paths or
-reproduction commands exist. This is a permission blocker, not a demonstrated
-compatibility or incompatibility. R1 produced documentation only:
-no application/helper code, scripts, tests, builds, benchmarks, validators,
-installs, prototypes, Blender launches, asset processing/copying or deployment.
-Prior-project measurements, hashes and dimensions remain recorded evidence,
-not results rerun in CS3. Two bounded read-only workers finished; one owner
-made the documentation edits. No sibling source was modified by R1.
-
-No CS3 runtime, export probe or browser suite exists. The findings record
-questions about source identity, material/animation portability, encoding
-provenance, publication permission and later qualification; they do not
-prepare or start the next units.
+R3 has not been started, prepared, scheduled or delegated. No game, reference
+importer or deployment was built.
 
 **Autopilot is unit-scoped:** complete the authorized R1, R2, or R3
 autonomously, then **hard-stop for user review**. Each next unit requires
@@ -92,9 +94,8 @@ untracked exporter/viewer work at R1 intake, then advanced again during research
 The evidence index records those distinct observations. R1 did not run or
 validate that work; it is not evidence of a successful Blender-to-browser path.
 
-The comparative explanation is complete for review. The requested export proof
-and CS3 blueprint remain later gated work. The intended direction is
-Blender-authored assets consumed by Three.js; compatibility still needs evidence.
+The comparative explanation and bounded export proof are saved for review.
+The CS3 blueprint remains gated and unstarted.
 
 ## Planned GitHub Pages experience
 
