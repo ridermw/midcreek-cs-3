@@ -3,6 +3,20 @@
 Selected during the September 10, 2026 plan-exit review. These items are not
 authorization to implement them or to expand the three-unit plan.
 
+## Research checkpoint
+
+| Unit / gate | State on September 10, 2026 |
+| --- | --- |
+| R1 / `approve-r1` | Complete / user-approved at `5ceac6f` |
+| R2 / `approve-r2` | Complete / user-approved for `a28f58c` and `7144246`, recorded at `806d3c5` |
+| R3 / `write-cs3-blueprint` | Documentation deliverable complete at [cs3-blueprint.md](docs/architecture/cs3-blueprint.md); ten implementation units specified, not executed |
+| `approve-r3` | **Blocked: actual user review required** |
+| Blueprint execution | **Not authorized**; approval of R3 alone does not authorize implementation, artwork import or deployment |
+
+The closed R2 allowance is not renewed. Production asset/appearance,
+reference/publication and named-machine qualification gates are specified in
+the blueprint. D1-D3 below remain deferred, not current execution work.
+
 ## D1: Complete Street Scene interactive viewer
 
 **What:** Build a full Three.js interpretation of the selected Street Scene

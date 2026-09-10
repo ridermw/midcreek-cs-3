@@ -4,7 +4,8 @@
 **Scope choice:** 0A, scope reduction. Preserve the product goals; consolidate the work and documents.
 **Execution state:** Planning/review and R1 source research complete.
 R1 was approved by the user on September 10, 2026. R2 technical proof is
-complete and user-approved September 10, 2026. R3 is authorized but unstarted.
+complete and user-approved September 10, 2026. R3's implementation-ready
+blueprint is complete; actual user review remains pending.
 
 **Goal:** Explain how CS1 and CS2 were built, recover the full Cel Shift art
 direction, understand Street Scene One's Blender workflow, prove a bounded
@@ -54,7 +55,7 @@ Authorize R1 -> autonomous R1 -> HARD STOP: review R1
 | Gate ID | Required user action | Current state |
 | --- | --- | --- |
 | `approve-r1` | Review completed R1 and authorize R2; R2 also needs its resource allowance | Satisfied September 10, 2026 for reviewed commit `5ceac6f4d4e2f3357b27990d8badf39c4e34240c`; subsequent R2 allowance recorded below |
-| `approve-r2` | Review completed R2 and authorize R3 | Satisfied September 10, 2026 for probe `a28f58c59e2f02a4fbbe151dd84dea2203887d64` and findings `7144246e27e68b786abc121ce5fa6101a8dc0583`; R3 authorized, not started |
+| `approve-r2` | Review completed R2 and authorize R3 | Satisfied September 10, 2026 for probe `a28f58c59e2f02a4fbbe151dd84dea2203887d64` and findings `7144246e27e68b786abc121ce5fa6101a8dc0583`; R3 deliverable now complete |
 | `approve-r3` | Review completed R3; any subsequent execution needs explicit authorization | Blocked |
 
 These are human checkpoints, not agent work items. Keep each gate blocked
@@ -235,7 +236,7 @@ honestly; reference images must not masquerade as game screenshots.
 | --- | --- | --- | --- |
 | R1 / `consolidate-evidence` | Research existing sources and write the comparative explanation; no builds | Complete; user approved September 10, 2026 | `approve-r1` satisfied for `5ceac6f4d4e2f3357b27990d8badf39c4e34240c` |
 | R2 / `prove-export-boundary` | Prove the bounded Blender export/load boundary | Complete; user approved September 10, 2026 | Fresh allowance approved September 10, 2026; output location amended to ignored in-repository artifacts |
-| R3 / `write-cs3-blueprint` | Produce one implementation-ready CS3 blueprint | Authorized; not started | R1/R2 complete and `approve-r2` satisfied September 10, 2026 |
+| R3 / `write-cs3-blueprint` | Produce one implementation-ready CS3 blueprint | Complete; awaiting actual user review | R1/R2 complete and `approve-r2` satisfied September 10, 2026; `approve-r3` remains blocked |
 
 The previous seven pending tasks are consolidated into these three. The
 comparison remains in the existing findings document; decisions belong in
@@ -384,6 +385,20 @@ assignment and wait for the user to review the outputs and explicitly
 authorize R3. Do not start drafting the R3 blueprint in the background.
 
 ### R3: Produce the CS3 blueprint
+
+**Completion record, September 10, 2026:** The documentation deliverable is
+complete at [docs/architecture/cs3-blueprint.md](docs/architecture/cs3-blueprint.md).
+It defines ten ordered implementation units, exact simulation/input and
+asset/layout/animation ownership, the R2-derived export/load workflow,
+reference adoption/publication boundaries, separate site entries, T1-T9
+failure coverage and unqualified performance gates. Pinned E2/E6 source,
+approved local commit history and retained R2 final receipts/comparisons
+were read without rerunning the probe. One documentation owner reviewed
+coverage, interfaces, diagrams, dependencies, links and remaining prerequisites.
+No workers, application implementation, asset import/generation, dependency
+installation, Blender/browser experiment, benchmark, push or deployment occurred.
+`approve-r3` is still blocked; actual user review and a separate execution
+instruction are required before any blueprint implementation.
 
 **File:** Create `docs/architecture/cs3-blueprint.md`; update the existing plan
 status, source findings if R2 changes them, and README.
@@ -599,8 +614,10 @@ before this consolidation.
 | Failure modes | 1 critical gap identified and addressed in the design; tests/guards not yet implemented |
 
 **Unresolved review decisions that may bite later:** none; all presented
-choices were answered. **Execution prerequisites are still open:** final
-source/provenance qualification, actual export compatibility, a new probe
-resource allowance, and a named performance target. R1 resolved CS1 revision
-reconciliation by source/history inspection only.
+choices were answered. **Current execution prerequisites:** reference/publication
+permissions, production-library export/appearance qualification, fresh resource
+allowances, and actual measurement on the blueprint's named target.
+R2 established the bounded adapted export path, not production compatibility
+or fidelity. R3 specifies the target/procedures without running them.
+R1 resolved CS1 revision reconciliation by source/history inspection only.
 Report a concrete blocker if any cannot be established; do not infer success.

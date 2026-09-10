@@ -9,7 +9,10 @@ performance or user appearance approval.
 **Subsequent approval, September 10, 2026:** The user's `approve-r2` accepts
 the R2 handoff at probe commit `a28f58c59e2f02a4fbbe151dd84dea2203887d64`
 and findings commit `7144246e27e68b786abc121ce5fa6101a8dc0583`, with its recorded
-limitations. R3 is authorized but unstarted. Historical receipts and intake/
+limitations. R3's [blueprint](../architecture/cs3-blueprint.md) is complete and
+awaiting actual user review. R3 re-read pinned E2/E6 source, approved commit
+history and retained final R2 receipts/comparisons without a new experiment.
+Historical receipts and intake/
 closeout approval states are unchanged; the R2 resource allowance is not renewed.
 
 **Evidence classes:** **Source** means inspected code, configuration, history,
@@ -470,4 +473,5 @@ fidelity, accepted video bytes/encoding, Cel Shift artwork, publication
 permissions or game performance. See the findings for exact reproduction and
 remaining material/color questions. R1 source history remains retained;
 `approve-r2` was blocked at closeout and subsequently satisfied by the user on
-September 10, 2026. R3 is authorized but remains unstarted.
+September 10, 2026. R3 subsequently completed its documentation-only blueprint;
+`approve-r3` remains blocked and no implementation is authorized.

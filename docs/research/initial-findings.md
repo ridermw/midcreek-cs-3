@@ -20,8 +20,10 @@ R1 was approved by the user on September 10, 2026 at commit
 `5ceac6f4d4e2f3357b27990d8badf39c4e34240c`. R2 scope is authorized, but its
 separate output/resource approval was initially missing. The later approved
 allowance enabled the completed R2 proof below. The user supplied `approve-r2`
-on September 10, 2026 for probe `a28f58c` and findings `7144246`; R3 is
-authorized but unstarted. Historical intake/closeout records below retain
+on September 10, 2026 for probe `a28f58c` and findings `7144246`.
+R3's [blueprint](../architecture/cs3-blueprint.md) is now complete and awaiting
+actual user review; no implementation or new experiment occurred.
+Historical intake/closeout records below retain
 their then-current approval state.
 The immutable handoff
 remains a planning-session snapshot. In particular, its prompt-only description

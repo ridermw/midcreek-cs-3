@@ -24,6 +24,7 @@ reuse, deterministic simulation, measurement, and performance implications.
 | Document | Contents |
 | --- | --- |
 | [Reviewed plan](plan.md) | Three execution units, settled architecture/site decisions, T1-T9 test map, and performance gates |
+| [CS3 blueprint](docs/architecture/cs3-blueprint.md) | R3 implementation-ready contracts, ten ordered implementation units, reference/asset/site workflow and qualification gates; awaiting user review |
 | [Research findings](docs/research/initial-findings.md) | R1 comparison and fresh R2 export/load results, appearance limits and reproduction procedure |
 | [R2 probe source](probes/r2/) | Bounded Blender export, real Three.js checks, resource guard and negative evidence tests; not a game |
 | [Evidence index](docs/research/evidence-index.md) | Reconciled revisions, inspected source and GitHub discussions/workflows, recorded artifact identities, and evidence limits |
@@ -43,7 +44,12 @@ stops still apply.
 
 **R2 technical proof was approved September 10, 2026.** The user supplied
 `approve-r2` for probe commit `a28f58c` and findings commit `7144246`.
-R3 is authorized but has not been started. R1 was approved
+**R3's documentation deliverable is complete and awaiting user review.**
+The [blueprint](docs/architecture/cs3-blueprint.md) specifies ten ordered units
+covering tooling, simulation/layout, held input/replay, reference adoption,
+Blender assets, guarded loading, playable animation, qualification, showcase
+and release-content gates. None has been implemented.
+R1 was approved
 September 10, 2026 at retained commit
 `5ceac6f4d4e2f3357b27990d8badf39c4e34240c`. The user subsequently approved
 R2's resource allowance, then amended the output location to **inside CS3,
@@ -74,8 +80,9 @@ Cel Shift fidelity, full-game performance qualification, or
 a Street Scene viewer. R1's predecessor measurements remain historical.
 The accepted scene's hash is unchanged; sibling work was not modified.
 `approve-r1` and `approve-r2` are satisfied; `approve-r3` remains blocked.
-R3 has not been started, prepared, scheduled or delegated. No game, reference
-importer or deployment was built.
+R3 used pinned source reads and retained receipts/comparisons only, with one
+documentation owner and no workers or executable experiments.
+No game, reference importer or deployment was built.
 
 **Autopilot is unit-scoped:** complete the authorized R1, R2, or R3
 autonomously, then **hard-stop for user review**. Each next unit requires
@@ -96,8 +103,10 @@ untracked exporter/viewer work at R1 intake, then advanced again during research
 The evidence index records those distinct observations. R1 did not run or
 validate that work; it is not evidence of a successful Blender-to-browser path.
 
-The comparative explanation and bounded export proof are saved for review.
-The CS3 blueprint is authorized and unstarted; its own approval gate remains.
+The comparative explanation, bounded export proof and implementation-ready
+blueprint are retained locally on `docs/r1-research`. R3 review remains pending.
+Reference/publication permissions, production-asset and appearance qualification,
+and named-target performance measurements remain gates, not achieved results.
 
 ## Planned GitHub Pages experience
 
@@ -130,5 +139,7 @@ project documentation. Sibling repositories and retained Street Scene artifacts
 remain read-only reference sources. Raw private plans, logs, reference media,
 and large delivery files have not been copied here.
 
-R2 approved; R3 authorized but not started. The closed R2 resource allowance
-is not renewed by this approval.
+R1/R2 approved; R3 deliverable complete, `approve-r3` blocked pending actual
+user review. The closed R2 resource allowance is not renewed. Even after
+blueprint approval, implementation, artwork import and deployment need a
+separate explicit instruction. No push or publication is part of R3.
