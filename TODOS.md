@@ -10,12 +10,17 @@ authorization to implement them or to expand the three-unit plan.
 | R1 / `approve-r1` | Complete / user-approved at `5ceac6f` |
 | R2 / `approve-r2` | Complete / user-approved for `a28f58c` and `7144246`, recorded at `806d3c5` |
 | R3 / `write-cs3-blueprint` | Documentation deliverable complete at [cs3-blueprint.md](docs/architecture/cs3-blueprint.md); ten implementation units specified, not executed |
-| `approve-r3` | **Blocked: actual user review required** |
-| Blueprint execution | **Not authorized**; approval of R3 alone does not authorize implementation, artwork import or deployment |
+| `approve-r3` | **Blocked: actual approval of revised R3 and complete launch envelope required** |
+| Blueprint execution | **Not started or authorized**; the single combined approval will cover U1-U10 without mid-run human checkpoints |
+| Post-U10 human review | Final appearance/release review and deployment decision; no live deployment in the unattended run |
 
-The closed R2 allowance is not renewed. Production asset/appearance,
-reference/publication and named-machine qualification gates are specified in
-the blueprint. D1-D3 below remain deferred, not current execution work.
+The closed R2 allowance is not renewed. Collect required reference/publication
+permissions, finite budgets and host access before U1 using the
+[launch envelope](docs/architecture/cs3-blueprint.md#one-front-loaded-human-checkpoint).
+Agent appearance, technical and publication-policy checks run without human
+interruptions; results are not human-approved until final review.
+D1/D3 remain deferred. D2 is dormant until a measured miss and may activate
+within the up-front approved scope/budget; nothing is currently authorized.
 
 ## D1: Complete Street Scene interactive viewer
 
@@ -61,6 +66,9 @@ introduce a cache merely because CS2 used one.
 
 **Depends on / blocked by:** Implemented first playable, trustworthy
 asset-ready metrics, hardware qualification, and an observed budget miss.
+The combined R3/launch approval covers bounded D2 work inside U1-U10 without
+a further human instruction. Preserve matched quality, behavior and target
+gates; no expansion into D1/D3 or extension of the resource allowance.
 If the normal renderer meets the targets, close this item as unnecessary.
 
 ## D3: Extend browser and GPU qualification

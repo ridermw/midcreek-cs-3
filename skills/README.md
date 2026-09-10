@@ -14,6 +14,9 @@ The [CS3 blueprint](../docs/architecture/cs3-blueprint.md) remains the authority
 for implementation and qualification. `approve-r3` is still blocked.
 Documentation or tool availability does not authorize implementation,
 generation, reference import, experiments, or deployment.
+The revised [launch checkpoint](../docs/architecture/cs3-blueprint.md#one-front-loaded-human-checkpoint)
+collects the actual permissions once, before U1, and delegates bounded
+non-interactive checks until human review after U10.
 
 ## Download and installation sources
 

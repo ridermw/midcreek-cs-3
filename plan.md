@@ -19,7 +19,7 @@ artwork copying, model generation, or deployment during this review.
 then write source-backed conclusions. Executable experiments begin in R2,
 not R1.
 
-## Autopilot Within Units, Human Approval Between Units
+## Research Gates and the Unattended Implementation Launch
 
 **Hard rule:** Work autonomously within the currently authorized unit, then
 stop for user review. Completing R1, R2, or R3 never authorizes the next unit.
@@ -37,18 +37,38 @@ Authorize R1 -> autonomous R1 -> HARD STOP: review R1
                                       v
                   autonomous R3 -> HARD STOP: review R3
                                       |
-                      separately authorize any follow-up
+                 HUMAN: approve revised R3 + complete launch envelope
+                                      |
+                     unattended implementation U1 ... U10
+                                      |
+                  HUMAN: final results / appearance / deployment
 ```
 
-- Scope each autopilot or fleet assignment to one unit and its review handoff, not to completing R1-R3 together.
+- Scope each research autopilot assignment to one R-unit and its review handoff, not to completing R1-R3 together. The subsequent U1-U10 implementation goal uses the single launch gate below.
 - Within that unit, finish the authorized work without routine micro-approvals. Stop early for missing permissions, exhausted resources, material scope changes, or a decision that cannot be resolved within the agreed constraints.
 - Before the checkpoint, save the unit's outputs and finish or stop its workers and heavy jobs. Do not launch, queue, scaffold, or perform next-unit work in the background while awaiting review.
 - Present the completed work, artifact paths/commit, evidence, limitations, unresolved questions, and the exact next unit requiring authorization. In the R1 report, explicitly state that no executable checks were performed.
 - End autonomous execution with **"Awaiting user review of R1"**, **R2**, or **R3**, as appropriate. Do not continue polling, schedule a continuation, or answer the approval request automatically.
 - Only an explicit user response reviewing the completed output and authorizing progression opens the next gate. Test success, agent reviews, dependency completion, earlier blanket approval, silence, and automated affirmative responses do not count.
-- Record which output was reviewed and which next unit the user authorized. An approval applies to that boundary only; it cannot pre-approve unseen results from later units.
+- Record which research output was reviewed and which next R-unit the user authorized. Later implementation can delegate bounded validation of unseen outputs under an approved policy, but cannot call that a human inspection of those outputs.
 - If the user requests revisions, stay in the same unit, make the authorized revisions, and stop for review again.
-- After R3, stop before implementing the blueprint, importing artwork, or deploying the site. Accepting a blueprint is not automatic authorization to build it; require an explicit follow-up execution request.
+- After R3, stop until the user approves the revised blueprint and its complete launch envelope. That single approval authorizes U1-U10 without a second launch instruction; live deployment stays after U10.
+
+**September 10, 2026 workflow amendment:** The user requested an unattended
+implementation-and-hill-climbing goal, potentially running 24-48 hours, with
+approvals collected before execution and the next normal human notification
+after U10. The blueprint's
+[front-loaded checkpoint](docs/architecture/cs3-blueprint.md#one-front-loaded-human-checkpoint)
+is canonical for the authorization record, missing budget/access prerequisites,
+delegated appearance/provenance/publication-policy checks and safe terminal
+exceptions. No mid-unit permission prompts or speculative scope expansion.
+Exact finite resource limits still need approval; the stated horizon is not
+an unlimited allowance. This workflow amendment is not actual R3 approval.
+
+Commit and push every coherent, verified sub-checkpoint and milestone well
+before one hour between commits during active work. Split oversized work
+early; no unfinished/WIP or empty commits to meet a timer. Keep progress
+in commits and local receipts, not routine user notifications.
 
 ### Human-only tracker gates
 
@@ -56,13 +76,14 @@ Authorize R1 -> autonomous R1 -> HARD STOP: review R1
 | --- | --- | --- |
 | `approve-r1` | Review completed R1 and authorize R2; R2 also needs its resource allowance | Satisfied September 10, 2026 for reviewed commit `5ceac6f4d4e2f3357b27990d8badf39c4e34240c`; subsequent R2 allowance recorded below |
 | `approve-r2` | Review completed R2 and authorize R3 | Satisfied September 10, 2026 for probe `a28f58c59e2f02a4fbbe151dd84dea2203887d64` and findings `7144246e27e68b786abc121ce5fa6101a8dc0583`; R3 deliverable now complete |
-| `approve-r3` | Review completed R3; any subsequent execution needs explicit authorization | Blocked |
+| `approve-r3` | Approve revised R3 plus the complete front-loaded launch envelope; this authorizes U1-U10 together | Blocked; missing rights/budget/access decisions must be resolved before launch |
 
 These are human checkpoints, not agent work items. Keep each gate blocked
 until the user's actual response permits it to be completed. Marking the
 preceding unit done must not mark its approval gate done. Any future task
-implementing the blueprint must depend on R3 review and its own execution
-authorization.
+implementing the blueprint must depend on the combined R3/launch approval,
+not a newly requested human gate for each unit. Final human appearance/release
+review and any deployment decision occur after U10.
 
 ## CS3 Toolchain Decision: No Rust
 
@@ -397,8 +418,9 @@ were read without rerunning the probe. One documentation owner reviewed
 coverage, interfaces, diagrams, dependencies, links and remaining prerequisites.
 No workers, application implementation, asset import/generation, dependency
 installation, Blender/browser experiment, benchmark, push or deployment occurred.
-`approve-r3` is still blocked; actual user review and a separate execution
-instruction are required before any blueprint implementation.
+At the original R3 closeout, actual user review and a separate execution
+instruction were required. The later workflow amendment above combines those
+into one revised-R3/launch approval; `approve-r3` remains blocked.
 
 **File:** Create `docs/architecture/cs3-blueprint.md`; update the existing plan
 status, source findings if R2 changes them, and README.
@@ -419,8 +441,10 @@ asset workflow, and Pages site. This review does not implement that blueprint.
 
 **HARD STOP AFTER R3:** Present the blueprint and its implementation breakdown
 for user review, then end the R3 autopilot assignment. Do not roll directly
-into application implementation, artwork import, or deployment. Further
-execution requires a new explicit user instruction.
+into application implementation, artwork import, or deployment without the
+combined approval. Once the revised R3 and complete launch envelope are
+approved, U1-U10 run without planned human checkpoints; deployment stays
+outside that run.
 
 ## Required Test Map
 
@@ -560,7 +584,7 @@ unmeasured results accordingly; do not claim universal 60 FPS from one target.
 ## NOT in Scope
 
 - Full Street Scene viewer or complete Cycles-to-WebGL recreation: deferred to D1; the bounded probe suffices for this plan.
-- Static caching, workers, or other speculative rendering optimization: deferred to D2 until measurements show a need.
+- Static caching, workers, or other speculative rendering optimization: D2 remains dormant until measurements show a need; the up-front launch envelope may authorize bounded activation without a mid-run question.
 - Additional browser/GPU qualification beyond the first named target: deferred to D3; responsive-layout checks still apply.
 - New fault systems, minigames, or broader gameplay beyond CS2's first scenario: not part of the initial behavioral baseline.
 - Fresh prompt/model rerenders: unchanged reference inputs require structural checks, not new image generation.
@@ -592,6 +616,7 @@ unmeasured results accordingly; do not claim universal 60 FPS from one target.
 | 17A | Build-only thumbnails, deferred originals, 2 MB showcase cap, T9 and revised T8 |
 | 18A/B/C | Capture all three selected deferred items in `TODOS.md` |
 | 19A | Save the reduced plan and review decisions in the repository; documents only |
+| 20A | Front-load implementation permissions into one revised-R3/launch approval; delegate bounded U1-U10 checks, commit/push verified sub-checkpoints well before one hour, and return to human review after U10 (session-settled: user-directed -- chosen over repeated mid-run approvals for unattended execution) |
 
 ### Retrospective and completion summary
 
@@ -614,9 +639,11 @@ before this consolidation.
 | Failure modes | 1 critical gap identified and addressed in the design; tests/guards not yet implemented |
 
 **Unresolved review decisions that may bite later:** none; all presented
-choices were answered. **Current execution prerequisites:** reference/publication
-permissions, production-library export/appearance qualification, fresh resource
-allowances, and actual measurement on the blueprint's named target.
+choices were answered. **Current execution prerequisites:** one actual
+revised-R3/launch approval resolving required reference/publication rights,
+finite resources and tool/host access before U1. Production export, delegated
+appearance checks and named-target measurement are autonomous execution
+gates; final human appearance/release review is after U10.
 R2 established the bounded adapted export path, not production compatibility
 or fidelity. R3 specifies the target/procedures without running them.
 R1 resolved CS1 revision reconciliation by source/history inspection only.

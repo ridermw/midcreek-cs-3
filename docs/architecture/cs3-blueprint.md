@@ -15,14 +15,89 @@ execution: code
 
 **Objective:** A visitor can understand the project, browse approved references, and play one reproducible data-hall fault/repair scenario.
 **Means:** CS2's TypeScript simulation, Blender visual templates, Three.js rendering, DOM/CSS, and separate Vite showcase/game entries.
-**Authority:** The [reviewed plan](../../plan.md), its decision ledger, and the user's September 10, 2026 R1/R2 approvals govern this blueprint.
+**Authority:** The [reviewed plan](../../plan.md), its decision ledger, the user's September 10, 2026 R1/R2 approvals, and the later front-loaded unattended-workflow direction govern this blueprint.
 This is the R3 documentation deliverable, not permission to execute its implementation units.
 `approve-r3` remains **blocked** until actual user review.
-Even after blueprint approval, implementation, artwork import, new experiments and deployment require a separate explicit instruction and applicable permissions.
+Approval of this revised R3 together with the completed launch authorization below is the single execution instruction for U1-U10; no second launch instruction or per-unit human approval is required.
+Revising this document does not supply that approval, grant source rights, or fill missing resource limits. Deployment remains after U10 and separately authorized.
 
 **Execution boundary:** One integration/documentation owner completed R3 through read-only source/evidence inspection and document review.
 No application code, dependency installation, artwork import, asset generation, Blender/browser experiment, benchmark, push or deployment is part of R3.
-Future work stops on permission failure, exhausted resources, invalid source identity or a failed qualification gate; it must not replace a failure with a procedural placeholder and report success.
+During implementation, failed technical/appearance/performance checks drive bounded repair and remeasurement, not routine human approval requests.
+Permission failure, exhausted resources or invalid required source identity cannot be bypassed; preserve evidence and the last verified checkpoint under the terminal-blocker policy below.
+
+### One front-loaded human checkpoint
+
+**KTD20 - Unattended approval topology** (session-settled: user-directed -- chosen over repeated human gates between U1-U10 because the implementation/hill-climbing run must operate unattended).
+This supersedes earlier separate-launch, per-promotion human-appearance and renewed-per-unit permission wording, not the simulation, quality, source-identity or publication-safety requirements.
+The normal human checkpoints are now **before U1** and **after U10**.
+
+Before launch, assemble one authorization record at ignored `.artifacts/implementation/<run-id>/authorization.json`.
+It records the reviewed blueprint revision, the actual user's approval, applicable policy/input hashes, and every field below.
+Present missing decisions together before starting U1, not as a sequence of questions discovered during execution.
+No default silence, expired allowance, document edit or agent review counts as approval.
+All fields must be resolved and all required access must be available before the unattended goal starts; the record is not created or approved by R3.
+
+| Up-front decision | Scope granted for the whole run | Fail-closed boundary |
+| --- | --- | --- |
+| Execute and deliver | U1-U10 as one implementation-and-hill-climbing goal; locked dependencies, local tests/builds, Blender authoring, browser captures, thumbnails and qualification | No new gameplay, D1 street viewer, D3 targets, factory/recursive delegation, or unrelated sibling writes |
+| Reference use and provenance | The pinned 49 masters and complete support set for local U4 use; documented non-unique historical associations may be retained as explicit uncertainty under the approved policy | No invented provenance; missing identity, attribution or required rights blocks preflight/promotion |
+| Derived assets and appearance delegation | Owned Blender sources, permitted textures/fonts, declared adaptations and the five-asset/three-clip contract; agent comparative review may qualify and promote candidates for integration | Technical pass is not a fidelity verdict; human appearance acceptance remains pending until after U10 |
+| Repository publication | Explicitly enumerate source categories and permitted generated runtime assets that may be committed/pushed to this repository, with attribution and exclusions | Local reference permission never implicitly permits publishing masters, prompts or raw sidecars |
+| Gallery/release-staging policy | Exact approved existing input hashes, allowed derivations, public fields, credit/terms and output roles; generated output hashes may be recorded automatically when they satisfy this policy | No blanket approval of unknown sources, changed input bytes, private fields or unsupported claims; policy does not authorize live deployment |
+| Resources and run duration | An explicit maximum elapsed duration/deadline, AI-credit/spend ceiling, disk cap, minimum free-space floor, closeout reserve, owned output/temp roots and one heavy job at a time | No unspecified/unlimited budget, automatic extension, new paid service, global permission relaxation or reuse of R2/Street allowances |
+| Bounded optimization | Activate D2 only after a measured miss on the named target; profile and retain quality-preserving improvements inside U1-U10 and the same allowance | No speculative cache/worker architecture, target weakening, evidence deletion, D1/D3 expansion or new external service |
+| Tool/host readiness and communication | Required authentication, source access, browser/Blender availability, OS permissions and host/session lifetime arrangements established before launch; no routine agent progress notifications or approval prompts during U1-U10 | Do not bypass an OS/tool denial; external host/GitHub notifications are not controlled by this document |
+
+The user has described a 24-48-hour execution horizon, not supplied an unlimited budget or a guaranteed runtime.
+Exact resource values are launch inputs still awaiting approval; this revision invents none.
+The launch review must resolve rights for every required delivery member, not defer a known required permission gap to U4/U5/U9.
+Approved policies cover the declared uses for the entire run; individual job allowances are derived from the remaining envelope without another human decision.
+Record policy-derived approvals with the parent authorization, input and output hashes and evaluator evidence; never label them as a human having inspected those outputs.
+Changed pinned external input bytes or an unlisted use require a different authorization and are outside this run.
+Run-owned code, Blender sources and derived assets may evolve through the authorized implementation/optimization loop; record each revision and derivation chain rather than treating those generated revisions as new external inputs.
+
+```text
+assemble permissions + finite limits + access checks + revised R3
+  -> HUMAN: approve this complete launch envelope
+  -> U1 ... U10, with bounded repair/measurement loops
+       technical checks + delegated appearance review + policy checks
+       -> verified sub-checkpoint -> commit + push -> next work
+  -> closeout: exact artifact, receipts, limitations, clean owned processes
+  -> HUMAN: review results/appearance and decide deployment after U10
+
+recoverable failure -> fix or reject candidate -> retry within the same limits
+hard boundary/no safe remaining work -> terminal blocked closeout, never fake U10 success
+```
+
+### Unattended checkpoints, hill climbing and closeout
+
+One integration owner executes the dependency graph without an ask-user gate between units.
+Agent/code/document reviews are non-interactive; routine choices stay within the approved contracts.
+Do not send routine progress updates, approval requests or scheduled nudges during the implementation goal.
+Record progress passively in commits and local receipts; the normal user-facing report comes after U10.
+This does not suppress permission enforcement or guarantee the host itself cannot interrupt execution.
+
+Break work into small, coherent, verified sub-checkpoints from the outset.
+Commit and push every completed checkpoint and milestone, comfortably before one hour elapses between commits during active work.
+The 60-minute limit is a ceiling, never a batching target.
+If a chunk is growing too large, split it early at a meaningful verified boundary; do not manufacture an empty or unfinished/WIP commit to satisfy the clock.
+Record what the increment proves and what remains; passing an early unit does not imply end-to-end readiness.
+Keep incomplete edits local and preserve the last verified revision; a validation or push failure must not be hidden as a completed checkpoint.
+
+Start with normal rendering and the declared portable materials.
+Measure the actual failed workload, change one bounded cause, run the relevant regressions and matched comparisons, and retain an improvement only when it preserves the hard behavior/appearance/publication constraints.
+During repeated hill climbing, finish dependency-independent work where safe rather than waiting for human decisions.
+Do not lower the FPS/transfer/geometry targets, change the named target, or omit failed runs to manufacture progress.
+Complete when the applicable U1-U10 requirements and qualification gates pass, not when a timer reaches 24 or 48 hours.
+
+Each local checkpoint receipt under the run root records the committed/pushed revision, completed sub-checkpoint, validation evidence, rejected candidates, active input/policy hashes, remaining budget, owned processes and next bounded action.
+On resumption, verify that the authorization, deadline, remaining allowance and last-good identities still hold; interruption does not renew them.
+If a permission/resource/security boundary or unrecoverable blocker prevents safe progress, stop the affected jobs, preserve prior good outputs, and write a truthful terminal closeout.
+An early terminal failure may require one final exception report; it is not a mid-run approval request, and must not claim U10 completed.
+Never continue unsafe work or silently wait indefinitely solely to postpone notification.
+After successful U10, report the exact validated artifact, performance and comparison receipts, publication-policy results and outstanding final human appearance/deployment decisions.
+No live Pages deployment occurs during this unattended goal.
 
 ---
 
@@ -43,7 +118,7 @@ The implementation needs explicit boundaries so imported visuals cannot change c
 ### Requirements
 
 These blueprint-local B-IDs group the approved requirements; R1/R2/R3 continue to mean the research execution units.
-**Product Contract preservation:** The reviewed plan's scope and decisions are unchanged.
+**Product Contract preservation:** The reviewed game, asset and site requirements remain unchanged; decision 20A / KTD20 amends their execution/approval workflow and conditionally activates measured D2 work.
 
 | ID | Requirement | Governing plan decisions |
 | --- | --- | --- |
@@ -54,7 +129,7 @@ These blueprint-local B-IDs group the approved requirements; R1/R2/R3 continue t
 | B5 | Adopt all 49 original masters once with their complete shared inputs and reviewed provenance, one manifest and atomic promotion | 6A, 7A, 12A |
 | B6 | Serve isolated showcase and `/play/` entries with approved galleries, build-only thumbnails, deferred originals and rejecting publication checks | 11A, 16A, 17A |
 | B7 | Qualify the exact performance/delivery gates below on a named target; begin with normal rendering | 13A, 14A, 15A |
-| B8 | Specify ordered implementation units and T1-T9 acceptance without implementing them; retain D1-D3 and human-only approval boundaries | 0A, 18A/B/C, 19A |
+| B8 | Specify ordered implementation units and T1-T9 acceptance without implementing them; apply the front-loaded launch gate and bounded D2 activation without adding D1/D3 | 0A, 18A/B/C, 19A, 20A / KTD20 |
 
 ### Scope boundaries
 
@@ -67,7 +142,8 @@ Touch gameplay is not promised by responsive layout.
 No Rust, Cargo, Bevy, Rust asset generator or language bridge enters development, tests, CI or publication.
 Do not port CS1's gameplay breadth or repair lock, CS2's procedural hall generator/static cache, or the changing Street Scene Showcase viewer.
 The selected Street Scene sample is evidence, not game content.
-[D1-D3](../../TODOS.md) remain separate deferred work: full street viewer, measured-only optimization, and additional browser/GPU qualification.
+[D1/D3](../../TODOS.md) remain separate deferred work: the full street viewer and additional browser/GPU qualification.
+D2 is dormant until a measured miss; the launch envelope preauthorizes its bounded, quality-preserving use within this implementation goal, not speculative optimization.
 
 ---
 
@@ -103,7 +179,7 @@ Reading receipts or comparison images in R3 is not a new export, capture or meas
 
 R3 read `.artifacts/r2/20260910T192651Z/last-complete.json`, `closeout.json`, both `run-d/checks-3.json` and `run-e/checks-3.json`, and representative retained brick, carbon, wheel and FONT comparisons.
 Those ignored local receipts are available; they are not part of a portable Git-only checkout.
-If absent in a later checkout, report "retained R2 artifacts unavailable"; do not infer a rerun or regenerate them without a new allowance.
+If absent in a later checkout, record "retained R2 artifacts unavailable"; do not infer a rerun. Any regeneration must be covered by the up-front launch scope/allowance.
 Earlier `run-a` through `run-c`, `checks`/`checks-2`, and the first emission diagnostic are not the qualifying final proof.
 
 | Retained result | Required design consequence |
@@ -330,7 +406,7 @@ R2 supports transform animation, not skeletal export.
 
 `blender/build_library.py` creates/editably saves the five templates; `blender/export_library.py` exports an **owned copy**.
 `blender/asset_spec.json` describes visual IDs, material roles and clip declarations only, never hall placement or collision.
-The exporter writes staged GLBs, an export receipt and a candidate manifest under a newly approved `.artifacts/assets/<run-id>/`.
+The exporter writes staged GLBs, an export receipt and a candidate manifest under `.artifacts/assets/<run-id>/`, covered by the launch envelope and a derived job allowance.
 `tools/promote-assets.mjs` validates the complete candidate, then publishes immutable content-addressed files to `assets/library/<library-digest>/` and atomically replaces the manifest pointer.
 A failed run leaves the prior manifest and assets intact; with no prior complete set, play cannot start.
 The manifest records every influencing script/spec/source/texture hash and actual tool version, not a dirty base commit pretending to identify the candidate.
@@ -339,15 +415,16 @@ Exclude the digest field itself, generated indices, promotion receipts and absol
 Hash the completed manifest separately for receipts; do not define a digest through a self-referential manifest or digest-bearing output path.
 
 ```text
-approved source + fresh allowance
+up-front approved source/policy + remaining run allowance
   -> owned copy + input hash check
   -> Blender authoring/export -> candidate GLBs + evaluated receipt
   -> declared-content/Khronos checks
   -> real GLTFLoader + matched source/adapted/browser views
   -> fresh second run + negative cases
   -> complete technical receipt
-  -> separate appearance/publication approval
+  -> delegated comparative appearance review + publication-policy checks
   -> atomic asset-library promotion
+  -> final human appearance review after U10, not before integration
 failure/interruption -> named receipt; preserve previous complete library
 ```
 
@@ -365,7 +442,8 @@ Use opaque materials initially, except the declared coolant floor visual if need
 No Draco/KTX decoder, custom shader bridge or external material service is required.
 Required extensions are allowlisted per asset; unknown required extensions fail.
 If a procedural material is used, a documented adaptation/bake records source graph, UV recipe, dimensions, changed/omitted features and three-way comparisons.
-A structurally valid bake that visibly changes the intended material remains appearance-unapproved.
+A structurally valid bake that violates the intended material contract fails delegated appearance review and must be repaired or rejected.
+Documented intentional portable-material differences may be accepted for integration under the up-front policy, but never relabeled as human-accepted or exact source fidelity.
 Use evaluated mesh bounds for FONT; permitted font files/terms are part of provenance.
 
 **Initial production color profile:** `cs3-standard-v1`: Blender Standard/None, exposure 0, gamma 1, sRGB display; Three.js Linear-sRGB working values, sRGB output, NoToneMapping and exposure 1.
@@ -494,8 +572,9 @@ Do not "correct" old masters or invent a unique producing prompt for each: 49 ma
 schema, package digest, pinned sources, support-file records and artwork records.
 Each artwork record has stable `cel-shift/<family>/<stem>` ID, family/title, role=`master`, source repository/revision/path, destination, bytes/SHA-256/dimensions, source-sidecar path/hash, current prompt associations, historical-generation association with confidence, dependency paths, terms/attribution, reference approval and gallery approval.
 Sanitized sidecars record their own digest plus the original sidecar digest and reviewed transformation; never overwrite original provenance identity.
-Explicit `unresolved` historical association is allowed **only** with a reviewer-accepted uncertainty record; absent/invalid/unreviewed provenance rejects promotion.
-Reference approval and public approval are independent per-use decisions, bound to the actual source hash and retained review evidence.
+Explicit `unresolved` historical association is allowed **only** with an evidence-backed uncertainty record accepted under the up-front provenance policy; absent/invalid provenance rejects promotion.
+The agent may apply that policy without another human checkpoint, but cannot invent a historical association or accept missing rights.
+Reference approval and public approval are independent per-use decisions made in the launch envelope, bound to the actual source hash and retained review evidence.
 Changing bytes invalidates the associated approval.
 
 `tools/references/import.ts` accepts an explicit source revision, approved reference root and candidate manifest.
@@ -523,7 +602,8 @@ Generate the local browsing index from it into ignored `.artifacts/references/in
 Resolve its URLs against the selected immutable package, not the changing active link.
 Reference approval permits the selected private/local package use only.
 No artwork/prompts/raw sidecars enter public Git history merely because the site build excludes them.
-Any later request to commit reference bytes needs explicit repository-publication approval; the importer must not auto-stage them.
+Committing reference bytes requires that exact use in the up-front repository-publication grant; the importer must not auto-stage them.
+Unlisted reference publication stays excluded throughout the unattended run rather than prompting for permission mid-unit.
 This design retains originals once per complete active package and requires no mandatory redesign to proceed when approvals are available.
 
 Negative cases: missing/extra master, alternate-size copy, duplicate ID/hash/path, wrong PNG header/hash/bytes, missing prose/JSON/prompt, invalid sidecar association, path traversal, absolute path, symlink escape, unapproved provenance, unexpected file, failed write, concurrent importer, interrupted stage and interrupted promotion.
@@ -531,9 +611,10 @@ Each failure names file and code, rejects the candidate and preserves the last c
 With no prior package, failure leaves no active package.
 
 **Public projection is fail-closed.**
-`tools/site/publication.ts` derives a gallery projection from the canonical manifest and an explicitly reviewed per-use publication allowlist.
-The policy file is `config/publication-allowlist.json`; it starts empty and is changed only by reviewed publication decisions.
-The allowlist authorizes exact source hashes, thumbnail derivation policy, original-on-selection use, public fields, credit/terms and reviewed Blender evidence.
+`tools/site/publication.ts` derives a gallery projection from the canonical manifest and the up-front reviewed per-use publication policy.
+The policy file is `config/publication-allowlist.json`; it starts empty and is populated only from the launch grant and auditable policy-derived output records.
+The allowlist authorizes exact source hashes, thumbnail derivation policy, original-on-selection use, public fields, credit/terms and policy-qualified Blender evidence.
+New output hashes from authorized derivations and run-owned authoring revisions are recorded after validation without requiring per-image human approval; unapproved external source hashes or broader uses remain forbidden.
 It is a permission policy, not another master inventory.
 Manifest approval records retain provenance; the current allowlist must agree with them for the exact use/hash, and any denial or mismatch rejects publication.
 Allowed public fields are ID, family/title, display role, approved source repository/revision/path, hashes/dimensions, attribution/terms, caption and approved media URLs.
@@ -638,10 +719,10 @@ Qualification uses three fresh repetitions with identical seed/content/configura
 6. Apply timing/call/triangle gates to each post-warm-up workload window in every repetition; publish all results, not only the best.
    First-300 statistics remain visible separately rather than being passed off as sustained results.
 
-Hardware runs require a fresh explicit time/disk/capture allowance with closeout reserve and one heavy job at a time.
+Hardware runs require job allowances derived from the approved launch time/disk/capture envelope, with closeout reserve and one heavy job at a time; no mid-run human renewal is needed or permitted.
 Write raw/private reports under `.artifacts/qualification/<run-id>/`, including `target.json`, `startup.json`, `frames.json`, phase reports, captures and checksums.
-A sanitized, approved result projection may enter the showcase; raw paths/logs may not.
-No D2 cache/workers are introduced unless normal rendering misses a measured gate and separate follow-up is authorized.
+A sanitized result projection that passes the up-front disclosure policy may enter the showcase without a new human approval; raw paths/logs may not.
+D2 cache/workers are eligible only after a measured normal-rendering miss and only within the launch envelope's bounded optimization grant.
 No claim of universal 60 FPS follows from one named target.
 
 ---
@@ -649,13 +730,14 @@ No claim of universal 60 FPS follows from one named target.
 ## Implementation Units
 
 All units below are **future work**.
-Every unit first requires actual R3 review plus a separate execution instruction; dependencies do not grant permission.
-U4 additionally needs reference-use approvals, U5 needs asset/experiment resources and rights, and publication remains gated after U10.
+Every unit is covered by the one actual R3/launch approval; dependencies and automated reviews do not grant or widen permission.
+Resolve U4 reference rights, U5 asset/experiment permissions and U9 staging policy before U1; apply them automatically during the run. Live deployment remains after U10.
+KTD20 governs all U1-U10; include its authority and remaining-budget constraints in each unit's work context.
 No additional mandatory planning cycle is needed: unresolved items below are qualification/permission gates with defined outcomes.
 
 | Unit | Primary files | Depends on |
 | --- | --- | --- |
-| U1 Toolchain and entry build | `package.json`, `vite.config.ts`, two HTML entries | Execution authorization |
+| U1 Toolchain and entry build | `package.json`, `vite.config.ts`, two HTML entries | Complete approved launch envelope |
 | U2 Simulation and layout | `src/{core,world}/` | U1 |
 | U3 Held input and replay | `src/input/heldKeys.ts`, `src/app/session.ts` | U2 |
 | U4 Reference adoption | `tools/references/` | U1, reference permissions |
@@ -671,7 +753,7 @@ No additional mandatory planning cycle is needed: unresolved items below are qua
 **Requirements:** B1, B6, B8; decisions 0A, 16A, 19A.
 **Files:** `package.json`, `package-lock.json`, `.nvmrc`, `.gitignore`, `tsconfig.json`, `vite.config.ts`, `vitest.config.ts`, `playwright.config.ts`, `index.html`, `play/index.html`, `src/shared/urls.ts`, `tests/build-contract.test.ts`, `README.md`.
 **Approach:** Establish strict TypeScript and explicit HTML inputs/base path; root scripts use the version table below.
-Keep `probes/r2/package-lock.json` independent and unchanged unless a separately reviewed probe change requires it.
+Keep `probes/r2/package-lock.json` independent and unchanged unless a necessary scoped probe change passes non-interactive code review and preserves the R2 regression; this is not another human checkpoint.
 Place generated output/test reports under ignored paths.
 **Test scenarios:** Assert both prefixed HTML outputs exist, URL resolution stays under the base, invalid URLs reject, and the dependency/script graph contains no Rust/Cargo/Bevy step.
 **Acceptance:** A clean locked install, type-check, unit smoke and production two-entry build are reproducible; this does not yet qualify media or gameplay.
@@ -717,7 +799,7 @@ Interrupt before pointer replacement and after complete promotion; assert a read
 Capture rest/start/mid/end/loop-boundary views and explicit material adaptations.
 **Test scenarios:** Wrong source hash, exporter nonzero/missing output, empty/missing node, omitted texture/UV/clip, wrong units/root/pivot/bounds, FONT extrusion, action naming/duration, wrong track target, missing rest transform, root-motion rejection and failed promotion preserving prior output.
 Exercise direct-material R2 expected incompatibility without misclassifying it as a production pass.
-**Acceptance:** Actual Blender and browser integration agree on declared content/poses within tolerances; complete receipts retained; technical and appearance approvals reported independently.
+**Acceptance:** Actual Blender and browser integration agree on declared content/poses within tolerances; complete receipts and delegated comparative appearance checks retained; technical, delegated appearance and pending final human acceptance reported independently.
 Skinned animation is not a hidden prerequisite.
 
 ### U6. Implement guarded loading and shared resource lifetimes
@@ -750,7 +832,7 @@ Keep deterministic regression gates separate from opt-in named-target timing.
 **Test scenarios:** Required asset delayed past loadEventEnd counts; gallery request after freeze does not; embedded textures do not double-count; missing transfer data rejects; all-pass render counts include shadow/outline work; RAF callback without rendering does not count.
 Verify first-300/warm-up/workload phase boundaries, mean/p95 formulas, visibility invalidation and exact budget limits including one-byte/one-call/one-triangle failures.
 **Acceptance:** All three named-target repetitions retain startup, phase and raw-frame evidence; each gate is passed/failed/unqualified without conflation.
-A miss records a blocker, not automatic D2 implementation.
+A miss drives bounded diagnosis and repair; activate D2 only against a demonstrated bottleneck under the launch grant. An unresolved miss at resource exhaustion remains failed/unqualified, not a pass.
 
 ### U9. Build the isolated showcase and approved gallery
 
@@ -776,7 +858,7 @@ Quality CI can produce a validated artifact after implementation authorization b
 **Test scenarios:** Missing prefixed entry/GLB, root-relative request, unexpected file, private sentinel metadata, unapproved original/thumbnail, modified approved hash, source map, embedded private GLB extras, accidental Cargo prerequisite, duplicate release member and stale/incomplete prior artifact.
 Serve the production build under the real prefix and traverse both entries with no fallback route masking missing files.
 **Acceptance:** Release fails on any unexpected/private/unapproved content or missing dependency; report technical, appearance, performance and publication gates separately.
-Deployment requires a further instruction and reviewed exact artifact; no push/publish is implied by build success.
+Deployment requires the post-U10 human decision and reviewed exact artifact. Source checkpoint pushes are already authorized by the launch grant; build success never authorizes Pages publication.
 
 ---
 
@@ -808,7 +890,7 @@ Keep the independently locked probe install separate so root test-package change
 No image package is needed for the selected build-only Canvas thumbnail recipe.
 If extra lint/format tooling is added, pin and qualify it in U1 rather than turning E2's optional scripts into undeclared prerequisites.
 A fresh environment needs Node/npm, Python, installed Chrome and Blender only for the units that use them.
-Browser/Blender jobs and dependency disk use require their own authorized resources; the closed R2 allowance is not renewed.
+Browser/Blender jobs and dependency disk use draw from the explicit launch envelope; the closed R2 allowance is not renewed.
 
 ### Commands: existing versus proposed
 
@@ -844,7 +926,7 @@ U1 initially maps `build` to `tsc --noEmit && vite build`; U9 adds approved site
 Do not make U1 depend on not-yet-created U9/U10 tools or present its entry-only smoke result as the complete release.
 
 For **existing R2 export** use the [full guarded reproduction procedure](../research/initial-findings.md#reproduction-procedure).
-It requires a new approved absolute `ROOT` and `allowance.json`, verified owned scene copy, isolated dependencies, two fresh export/browser directories and final closeout.
+It requires an absolute `ROOT` inside the launch-approved output scope and a derived `allowance.json`, verified owned scene copy, isolated dependencies, two fresh export/browser directories and final closeout.
 The export command shape is `blender --background --factory-startup --disable-autoexec --python-exit-code 1 --python probes/r2/export_sample.py -- --source <owned-copy> --output <fresh-run>`.
 `--python-exit-code 1` must precede `--python`.
 All guarded commands and original-source hashes must be retained; the example variable names are not permission to reuse the dated root.
@@ -880,8 +962,9 @@ Keep structural assertions independent from screenshot tolerances.
 Every future visual comparison declares camera/viewport/DPR, pose/time, source/export/build hashes, lights/color profile, browser/backend and tolerances.
 Capture all four headings, initial/Walk/Repair/resolved, direct occlusion and orbit-to-reveal views.
 Do not import E2 Windows-only goldens as a universal GPU oracle.
-Use calibrated per-target comparisons and human review for appearance; no source-look pass follows from an RGB mean or R2's background-threshold "silhouetteIoU".
-Unchanged prompt inputs receive structural preservation checks only; model generation or prompt-behavior evaluation needs its own explicit scope/budget.
+Use calibrated per-target comparisons and delegated agent appearance review during U5-U10; retain captures for final human review after U10.
+No source-look pass follows from an RGB mean or R2's background-threshold "silhouetteIoU", and delegated acceptance must never be labeled human acceptance.
+Unchanged prompt inputs receive structural preservation checks only; model generation or prompt-behavior evaluation is outside this run unless explicitly included with its own budget in the launch envelope. Never request expansion mid-run.
 
 ### Official API references
 
@@ -901,7 +984,7 @@ The approved local source pins and receipts remain authoritative for observed ve
 ### R3 deliverable
 
 R3 is complete when this blueprint defines the approved game, asset/reference/site contracts, ordered files/interfaces, T1-T9 failure coverage, source traceability and qualification procedures without unresolved architectural choices.
-Document review must check every decision 0A-19A, nearby diagrams, ownership, commands, links and publication boundaries.
+Document review must check every decision 0A-20A, nearby diagrams, ownership, commands, links and publication boundaries.
 README and the plan/tracker must say **R3 deliverable complete; review pending**, not implementation complete.
 Commit only scoped documentation locally; preserve existing work and ignored R2 evidence.
 No workers/jobs may remain from R3; there is no queued continuation.
@@ -910,23 +993,22 @@ No workers/jobs may remain from R3; there is no queued continuation.
 
 | Gate | Required before | Acceptance / blocked outcome |
 | --- | --- | --- |
-| Actual user R3 review | Any subsequent execution request | `approve-r3` remains blocked until the user reviews this deliverable |
-| Separate implementation instruction | U1-U10 execution | Blueprint acceptance alone does not authorize build/import/deploy |
-| Reference-use and provenance review | U4 promotion | All 49/support inputs approved for selected local use; uncertainty explicitly reviewed or package rejected |
-| Public artwork/derivative rights and metadata allowlist | Any source commit/gallery/release containing that material | Exact use/hash/credit approvals; unknown stays excluded or fails requested release |
-| Fresh resource/output approval | Blender, browser experiments, thumbnails and hardware qualification | New deadlines, disk cap/reserve/free floor, owned output root, one heavy job; expired R2/Street Scene allowances are unusable |
+| Human: revised R3 and complete launch envelope | Before U1 | One explicit approval covers U1-U10, permitted publication/staging, delegated review and bounded optimization; `approve-r3` remains blocked until actual approval |
+| Human: source/reference/derivative rights and uncertainty policy | Before U1, enforced at U4/U5/U9 | Known inputs and permitted derivations approved together; missing required permissions block launch, not a planned mid-run review |
+| Human: finite resource/output limits and host permissions | Before U1, enforced throughout | Explicit deadline, credit/spend cap, disk cap/reserve/free floor, owned roots and one heavy job; expired allowances remain unusable |
 | Real production asset export/animation | U5 completion and U7 media readiness | Declared five assets and three-clip rigid hierarchy pass real two-run export/load/negative checks |
-| Cel Shift/Blender appearance acceptance | Fidelity claim or approved game imagery | Matched captures reviewed separately from technical success; R2 baking/color limits remain visible |
+| Delegated appearance and publication-policy checks | U5 promotion, U7 integration and U9/U10 staging | Agent-reviewed matched captures and exact policy-derived hashes/uses pass; human acceptance remains explicitly pending |
 | Named-machine runtime/transfer qualification | Any performance-pass claim | Complete target metadata and workload receipts satisfy B7; skipped/missing target is unqualified |
-| Exact release-content review and deployment instruction | Pages publication | Validated base-path artifact and approved public content; no deployment during this plan |
+| Human: final appearance/release review and deployment decision | After successful U10, before Pages publication | Review exact artifact and retained evidence; permit deployment or request follow-up, without falsely treating earlier delegated checks as human approval |
 
 The unresolved brick/carbon bake mechanism and Street Scene video color-encoding provenance are not first-playable architecture blockers.
 They remain limits on source-fidelity claims and on any later D1 investigation.
 The production library can use intentionally portable materials under the declared comparison/approval gates.
-D2/D3 remain deferred rather than silently expanding the initial target.
+D1/D3 remain deferred; D2 activates only through the launch-approved measured-miss condition and does not expand the initial target.
 
 Future implementation completion requires the first playable and showcase to satisfy their applicable tests, complete asset/evidence sets, honest result labels and release-content checks.
 Remove abandoned code/temporary tooling owned by that work, retain complete and failed evidence, stop owned processes and preserve the prior valid package on failure.
 Do not equate "buildable", "technically compatible", "appearance accepted", "performance qualified" and "publication authorized".
 
-**HARD STOP:** Await actual R3 review. Do not implement the game, import artwork or deploy without a separate explicit instruction.
+**HARD STOP BEFORE LAUNCH:** Await actual approval of this revised R3 and its completed launch envelope. No implementation or import has been authorized by writing this revision.
+After that approval, execute U1-U10 without planned human checkpoints; report results for human review after U10, or a truthful terminal exception if safe completion becomes impossible. Do not deploy before the post-U10 decision.

@@ -85,11 +85,27 @@ R3 used pinned source reads and retained receipts/comparisons only, with one
 documentation owner and no workers or executable experiments.
 No game, reference importer or deployment was built.
 
-**Autopilot is unit-scoped:** complete the authorized R1, R2, or R3
+**Research autopilot is unit-scoped:** complete the authorized R1, R2, or R3
 autonomously, then **hard-stop for user review**. Each next unit requires
 explicit user approval; completing a task or passing an automated review
 does not open that gate. R3 also stops before any blueprint implementation.
-The task tracker has separate human-only approval gates for all three units.
+The task tracker has separate human-only approval gates for those research units.
+
+**Implementation will be unattended:** the revised blueprint
+[collects approvals before U1](docs/architecture/cs3-blueprint.md#one-front-loaded-human-checkpoint).
+One actual R3/launch approval covers U1-U10, local asset/reference work,
+delegated appearance checks, permitted publication/staging and bounded
+measured optimization. Required rights, finite resource limits and host
+access must be resolved together before launch; they are not granted by this
+documentation change. No routine approval prompts or progress notifications
+are planned until after U10. An unrecoverable safety/resource blocker requires
+truthful terminal closeout, not fabricated completion. Final human appearance
+review and any live deployment decision remain after U10.
+
+Commit and push every small, coherent, verified sub-checkpoint and milestone,
+well before an hour passes during active work. Split oversized work early;
+no unfinished/WIP commits to satisfy the clock. The 24-48-hour horizon is not
+a guaranteed duration or an unlimited resource allowance.
 
 The approved first-playable direction reuses CS2's simulation and behavioral
 tests, adds explicit fixed-tick held-arrow walking, keeps layout/collision in
@@ -142,6 +158,7 @@ remain read-only reference sources. Raw private plans, logs, reference media,
 and large delivery files have not been copied here.
 
 R1/R2 approved; R3 deliverable complete, `approve-r3` blocked pending actual
-user review. The closed R2 resource allowance is not renewed. Even after
-blueprint approval, implementation, artwork import and deployment need a
-separate explicit instruction. No push or publication is part of R3.
+user review and the complete up-front launch envelope. The closed R2 resource
+allowance is not renewed. The combined approval will authorize unattended
+U1-U10 execution; deployment is a post-U10 decision. No implementation starts
+as a result of this documentation revision.
