@@ -16,6 +16,51 @@ artwork copying, model generation, or deployment during this review.
 then write source-backed conclusions. Executable experiments begin in R2,
 not R1.
 
+## Autopilot Within Units, Human Approval Between Units
+
+**Hard rule:** Work autonomously within the currently authorized unit, then
+stop for user review. Completing R1, R2, or R3 never authorizes the next unit.
+A general instruction to begin this plan authorizes R1 only, not an unattended
+run through all three units.
+
+```text
+Authorize R1 -> autonomous R1 -> HARD STOP: review R1
+                                      |
+                       explicit user approval to start R2
+                                      v
+                  autonomous R2 -> HARD STOP: review R2
+                                      |
+                       explicit user approval to start R3
+                                      v
+                  autonomous R3 -> HARD STOP: review R3
+                                      |
+                      separately authorize any follow-up
+```
+
+- Scope each autopilot or fleet assignment to one unit and its review handoff, not to completing R1-R3 together.
+- Within that unit, finish the authorized work without routine micro-approvals. Stop early for missing permissions, exhausted resources, material scope changes, or a decision that cannot be resolved within the agreed constraints.
+- Before the checkpoint, save the unit's outputs and finish or stop its workers and heavy jobs. Do not launch, queue, scaffold, or perform next-unit work in the background while awaiting review.
+- Present the completed work, artifact paths/commit, evidence, limitations, unresolved questions, and the exact next unit requiring authorization. In the R1 report, explicitly state that no executable checks were performed.
+- End autonomous execution with **"Awaiting user review of R1"**, **R2**, or **R3**, as appropriate. Do not continue polling, schedule a continuation, or answer the approval request automatically.
+- Only an explicit user response reviewing the completed output and authorizing progression opens the next gate. Test success, agent reviews, dependency completion, earlier blanket approval, silence, and automated affirmative responses do not count.
+- Record which output was reviewed and which next unit the user authorized. An approval applies to that boundary only; it cannot pre-approve unseen results from later units.
+- If the user requests revisions, stay in the same unit, make the authorized revisions, and stop for review again.
+- After R3, stop before implementing the blueprint, importing artwork, or deploying the site. Accepting a blueprint is not automatic authorization to build it; require an explicit follow-up execution request.
+
+### Human-only tracker gates
+
+| Gate ID | Required user action | Initial state |
+| --- | --- | --- |
+| `approve-r1` | Review completed R1 and authorize R2; R2 also needs its resource allowance | Blocked |
+| `approve-r2` | Review completed R2 and authorize R3 | Blocked |
+| `approve-r3` | Review completed R3; any subsequent execution needs explicit authorization | Blocked |
+
+These are human checkpoints, not agent work items. Keep each gate blocked
+until the user's actual response permits it to be completed. Marking the
+preceding unit done must not mark its approval gate done. Any future task
+implementing the blueprint must depend on R3 review and its own execution
+authorization.
+
 ## CS3 Toolchain Decision: No Rust
 
 CS3 uses **TypeScript, Three.js, DOM/CSS, Node.js/Vite, Vitest, Playwright,
@@ -182,11 +227,11 @@ honestly; reference images must not masquerade as game screenshots.
 
 ## Three Execution Units
 
-| ID | Task | Status | Dependency |
+| ID | Task | Status | Start requirement |
 | --- | --- | --- | --- |
-| R1 / `consolidate-evidence` | Research existing sources and write the comparative explanation; no builds | Pending | None |
-| R2 / `prove-export-boundary` | Prove the bounded Blender export/load boundary | Pending | R1 and new resource approval |
-| R3 / `write-cs3-blueprint` | Produce one implementation-ready CS3 blueprint | Pending | R1 and R2 |
+| R1 / `consolidate-evidence` | Research existing sources and write the comparative explanation; no builds | Pending | User authorizes starting R1 |
+| R2 / `prove-export-boundary` | Prove the bounded Blender export/load boundary | Pending | R1 complete, `approve-r1` satisfied, and new resource approval |
+| R3 / `write-cs3-blueprint` | Produce one implementation-ready CS3 blueprint | Pending | R1/R2 complete and `approve-r2` satisfied |
 
 The previous seven pending tasks are consolidated into these three. The
 comparison remains in the existing findings document; decisions belong in
@@ -239,6 +284,11 @@ its dependency on R1 does not require R1 to perform those experiments first.
 Documenting a provenance or permission gap does not waive a later operation's
 approval requirements.
 
+**HARD STOP AFTER R1:** Present the source-backed findings, documentation,
+and questions for later execution. End the R1 autopilot assignment and wait
+for the user to review the outputs and explicitly authorize R2. Do not create
+probe code, install dependencies, or start Blender while waiting.
+
 ### R2: Prove a bounded export/load path
 
 **Files:** Version a minimal probe procedure and its assertions in CS3; keep
@@ -258,6 +308,11 @@ the existing findings and evidence index, not a fourth historical report.
 a specific incompatibility. Source bytes remain unchanged. GLB correctness,
 appearance comparison, and user acceptance are separate outcomes.
 
+**HARD STOP AFTER R2:** Present the reproducible probe, actual results,
+limitations, and recommended implications for CS3. End the R2 autopilot
+assignment and wait for the user to review the outputs and explicitly
+authorize R3. Do not start drafting the R3 blueprint in the background.
+
 ### R3: Produce the CS3 blueprint
 
 **File:** Create `docs/architecture/cs3-blueprint.md`; update the existing plan
@@ -276,6 +331,11 @@ status, source findings if R2 changes them, and README.
 
 **Completion:** One coherent, implementation-ready blueprint covers the game,
 asset workflow, and Pages site. This review does not implement that blueprint.
+
+**HARD STOP AFTER R3:** Present the blueprint and its implementation breakdown
+for user review, then end the R3 autopilot assignment. Do not roll directly
+into application implementation, artwork import, or deployment. Further
+execution requires a new explicit user instruction.
 
 ## Required Test Map
 
