@@ -5,7 +5,9 @@
 **Execution state:** Planning/review and R1 source research complete.
 R1 was approved by the user on September 10, 2026. R2 technical proof is
 complete and user-approved September 10, 2026. R3's implementation-ready
-blueprint is complete; actual user review remains pending.
+blueprint is complete and was user-approved at `732ff39` on September 10, 2026
+at 18:26:14 EDT. Launch preflight still needs the actual finite resource values
+and explicit source/publication grant before implementation starts.
 
 **Goal:** Explain how CS1 and CS2 were built, recover the full Cel Shift art
 direction, understand Street Scene One's Blender workflow, prove a bounded
@@ -76,7 +78,8 @@ in commits and local receipts, not routine user notifications.
 | --- | --- | --- |
 | `approve-r1` | Review completed R1 and authorize R2; R2 also needs its resource allowance | Satisfied September 10, 2026 for reviewed commit `5ceac6f4d4e2f3357b27990d8badf39c4e34240c`; subsequent R2 allowance recorded below |
 | `approve-r2` | Review completed R2 and authorize R3 | Satisfied September 10, 2026 for probe `a28f58c59e2f02a4fbbe151dd84dea2203887d64` and findings `7144246e27e68b786abc121ce5fa6101a8dc0583`; R3 deliverable now complete |
-| `approve-r3` | Approve revised R3 plus the complete front-loaded launch envelope; this authorizes U1-U10 together | Blocked; missing rights/budget/access decisions must be resolved before launch |
+| `approve-r3` | Review the revised R3 blueprint and front-loaded execution policy | Satisfied by the user's `approve-r3` for `732ff39` on September 10, 2026 at 18:26:14 EDT |
+| Launch preflight | Complete the remaining budget/access/source-use fields together before U1 | Missing concrete limits and explicit source/publication grant; not another R3 review |
 
 These are human checkpoints, not agent work items. Keep each gate blocked
 until the user's actual response permits it to be completed. Marking the
@@ -257,7 +260,7 @@ honestly; reference images must not masquerade as game screenshots.
 | --- | --- | --- | --- |
 | R1 / `consolidate-evidence` | Research existing sources and write the comparative explanation; no builds | Complete; user approved September 10, 2026 | `approve-r1` satisfied for `5ceac6f4d4e2f3357b27990d8badf39c4e34240c` |
 | R2 / `prove-export-boundary` | Prove the bounded Blender export/load boundary | Complete; user approved September 10, 2026 | Fresh allowance approved September 10, 2026; output location amended to ignored in-repository artifacts |
-| R3 / `write-cs3-blueprint` | Produce one implementation-ready CS3 blueprint | Complete; awaiting actual user review | R1/R2 complete and `approve-r2` satisfied September 10, 2026; `approve-r3` remains blocked |
+| R3 / `write-cs3-blueprint` | Produce one implementation-ready CS3 blueprint | Complete; user-approved at `732ff39` | R1/R2/R3 approvals satisfied; launch preflight remains before U1 |
 
 The previous seven pending tasks are consolidated into these three. The
 comparison remains in the existing findings document; decisions belong in
@@ -420,7 +423,10 @@ No workers, application implementation, asset import/generation, dependency
 installation, Blender/browser experiment, benchmark, push or deployment occurred.
 At the original R3 closeout, actual user review and a separate execution
 instruction were required. The later workflow amendment above combines those
-into one revised-R3/launch approval; `approve-r3` remains blocked.
+into one revised-R3/launch approval. The user supplied `approve-r3` for the
+revised blueprint at `732ff39` on September 10, 2026 at 18:26:14 EDT; that gate
+is now satisfied. Missing finite limits and source/publication details remain
+launch-preflight inputs, not an additional blueprint review.
 
 **File:** Create `docs/architecture/cs3-blueprint.md`; update the existing plan
 status, source findings if R2 changes them, and README.
@@ -639,9 +645,9 @@ before this consolidation.
 | Failure modes | 1 critical gap identified and addressed in the design; tests/guards not yet implemented |
 
 **Unresolved review decisions that may bite later:** none; all presented
-choices were answered. **Current execution prerequisites:** one actual
-revised-R3/launch approval resolving required reference/publication rights,
-finite resources and tool/host access before U1. Production export, delegated
+choices were answered. **Current execution prerequisites:** R3 approval is
+recorded; complete the required reference/publication grant, finite resources
+and tool/host access in the launch record before U1. Production export, delegated
 appearance checks and named-target measurement are autonomous execution
 gates; final human appearance/release review is after U10.
 R2 established the bounded adapted export path, not production compatibility

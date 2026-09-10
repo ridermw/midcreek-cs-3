@@ -10,8 +10,9 @@ authorization to implement them or to expand the three-unit plan.
 | R1 / `approve-r1` | Complete / user-approved at `5ceac6f` |
 | R2 / `approve-r2` | Complete / user-approved for `a28f58c` and `7144246`, recorded at `806d3c5` |
 | R3 / `write-cs3-blueprint` | Documentation deliverable complete at [cs3-blueprint.md](docs/architecture/cs3-blueprint.md); ten implementation units specified, not executed |
-| `approve-r3` | **Blocked: actual approval of revised R3 and complete launch envelope required** |
-| Blueprint execution | **Not started or authorized**; the single combined approval will cover U1-U10 without mid-run human checkpoints |
+| `approve-r3` | **Satisfied:** user supplied `approve-r3` for `732ff39` on September 10, 2026 at 18:26:14 EDT |
+| Launch preflight | **Blocked on missing inputs:** record finite resource limits and explicit source/publication grant together; no additional R3 review |
+| Blueprint execution | **Not started**; proceed through U1-U10 without mid-run human checkpoints once the launch envelope is complete |
 | Post-U10 human review | Final appearance/release review and deployment decision; no live deployment in the unattended run |
 
 The closed R2 allowance is not renewed. Collect required reference/publication
@@ -20,7 +21,7 @@ permissions, finite budgets and host access before U1 using the
 Agent appearance, technical and publication-policy checks run without human
 interruptions; results are not human-approved until final review.
 D1/D3 remain deferred. D2 is dormant until a measured miss and may activate
-within the up-front approved scope/budget; nothing is currently authorized.
+within the completed launch scope/budget; no implementation or experiment has started.
 
 ## D1: Complete Street Scene interactive viewer
 

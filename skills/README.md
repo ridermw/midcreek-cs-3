@@ -11,7 +11,8 @@ tools, and missing history. The snapshot is dated September 10, 2026; versions
 below are observed versions, not claims about the latest release.
 
 The [CS3 blueprint](../docs/architecture/cs3-blueprint.md) remains the authority
-for implementation and qualification. `approve-r3` is still blocked.
+for implementation and qualification. `approve-r3` is satisfied at `732ff39`;
+the actual launch limits/source-use grant still need recording before U1.
 Documentation or tool availability does not authorize implementation,
 generation, reference import, experiments, or deployment.
 The revised [launch checkpoint](../docs/architecture/cs3-blueprint.md#one-front-loaded-human-checkpoint)

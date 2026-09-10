@@ -17,7 +17,8 @@ execution: code
 **Means:** CS2's TypeScript simulation, Blender visual templates, Three.js rendering, DOM/CSS, and separate Vite showcase/game entries.
 **Authority:** The [reviewed plan](../../plan.md), its decision ledger, the user's September 10, 2026 R1/R2 approvals, and the later front-loaded unattended-workflow direction govern this blueprint.
 This is the R3 documentation deliverable, not permission to execute its implementation units.
-`approve-r3` remains **blocked** until actual user review.
+**R3 approval:** The user supplied `approve-r3` on September 10, 2026 at 18:26:14 EDT, accepting this blueprint at `732ff3936f83a0de87547f567e93789f1f11001d`.
+The R3 review gate is satisfied. Launch preflight remains incomplete: actual finite resource values and the explicit source/publication grant must be recorded before U1.
 Approval of this revised R3 together with the completed launch authorization below is the single execution instruction for U1-U10; no second launch instruction or per-unit human approval is required.
 Revising this document does not supply that approval, grant source rights, or fill missing resource limits. Deployment remains after U10 and separately authorized.
 
@@ -36,6 +37,7 @@ Before launch, assemble one authorization record at ignored `.artifacts/implemen
 It records the reviewed blueprint revision, the actual user's approval, applicable policy/input hashes, and every field below.
 Present missing decisions together before starting U1, not as a sequence of questions discovered during execution.
 No default silence, expired allowance, document edit or agent review counts as approval.
+The actual R3 approval above supplies the reviewed-spec decision; completing missing launch fields does not require another R3 review.
 All fields must be resolved and all required access must be available before the unattended goal starts; the record is not created or approved by R3.
 
 | Up-front decision | Scope granted for the whole run | Fail-closed boundary |
@@ -985,7 +987,7 @@ The approved local source pins and receipts remain authoritative for observed ve
 
 R3 is complete when this blueprint defines the approved game, asset/reference/site contracts, ordered files/interfaces, T1-T9 failure coverage, source traceability and qualification procedures without unresolved architectural choices.
 Document review must check every decision 0A-20A, nearby diagrams, ownership, commands, links and publication boundaries.
-README and the plan/tracker must say **R3 deliverable complete; review pending**, not implementation complete.
+README and the plan/tracker must distinguish **R3 deliverable complete and user-approved; launch preflight pending** from implementation complete.
 Commit only scoped documentation locally; preserve existing work and ignored R2 evidence.
 No workers/jobs may remain from R3; there is no queued continuation.
 
@@ -993,7 +995,7 @@ No workers/jobs may remain from R3; there is no queued continuation.
 
 | Gate | Required before | Acceptance / blocked outcome |
 | --- | --- | --- |
-| Human: revised R3 and complete launch envelope | Before U1 | One explicit approval covers U1-U10, permitted publication/staging, delegated review and bounded optimization; `approve-r3` remains blocked until actual approval |
+| Human: revised R3 and complete launch envelope | Before U1 | R3 approved at `732ff39`; complete missing launch fields once, then execute U1-U10 without per-unit approval prompts |
 | Human: source/reference/derivative rights and uncertainty policy | Before U1, enforced at U4/U5/U9 | Known inputs and permitted derivations approved together; missing required permissions block launch, not a planned mid-run review |
 | Human: finite resource/output limits and host permissions | Before U1, enforced throughout | Explicit deadline, credit/spend cap, disk cap/reserve/free floor, owned roots and one heavy job; expired allowances remain unusable |
 | Real production asset export/animation | U5 completion and U7 media readiness | Declared five assets and three-clip rigid hierarchy pass real two-run export/load/negative checks |
@@ -1010,5 +1012,5 @@ Future implementation completion requires the first playable and showcase to sat
 Remove abandoned code/temporary tooling owned by that work, retain complete and failed evidence, stop owned processes and preserve the prior valid package on failure.
 Do not equate "buildable", "technically compatible", "appearance accepted", "performance qualified" and "publication authorized".
 
-**HARD STOP BEFORE LAUNCH:** Await actual approval of this revised R3 and its completed launch envelope. No implementation or import has been authorized by writing this revision.
-After that approval, execute U1-U10 without planned human checkpoints; report results for human review after U10, or a truthful terminal exception if safe completion becomes impossible. Do not deploy before the post-U10 decision.
+**HARD STOP BEFORE LAUNCH:** R3 approval is recorded; complete the missing launch-envelope fields before implementation or import. The approval does not invent numeric resource values or unspecified publication rights.
+Once preflight is complete, execute U1-U10 without planned human checkpoints; report results for human review after U10, or a truthful terminal exception if safe completion becomes impossible. Do not deploy before the post-U10 decision.

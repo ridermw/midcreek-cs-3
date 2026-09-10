@@ -24,7 +24,7 @@ reuse, deterministic simulation, measurement, and performance implications.
 | Document | Contents |
 | --- | --- |
 | [Reviewed plan](plan.md) | Three execution units, settled architecture/site decisions, T1-T9 test map, and performance gates |
-| [CS3 blueprint](docs/architecture/cs3-blueprint.md) | R3 implementation-ready contracts, ten ordered implementation units, reference/asset/site workflow and qualification gates; awaiting user review |
+| [CS3 blueprint](docs/architecture/cs3-blueprint.md) | User-approved R3 contracts and ten implementation units; remaining launch-envelope inputs precede execution |
 | [Research findings](docs/research/initial-findings.md) | R1 comparison and fresh R2 export/load results, appearance limits and reproduction procedure |
 | [R2 probe source](probes/r2/) | Bounded Blender export, real Three.js checks, resource guard and negative evidence tests; not a game |
 | [Evidence index](docs/research/evidence-index.md) | Reconciled revisions, inspected source and GitHub discussions/workflows, recorded artifact identities, and evidence limits |
@@ -45,7 +45,10 @@ and R1-only instructions are historical. Human review stops still apply.
 
 **R2 technical proof was approved September 10, 2026.** The user supplied
 `approve-r2` for probe commit `a28f58c` and findings commit `7144246`.
-**R3's documentation deliverable is complete and awaiting user review.**
+**R3 was user-approved September 10, 2026 at `732ff39`** via `approve-r3`
+at 18:26:14 EDT. The documentation deliverable and review are complete;
+the finite resource limits and explicit source/publication grant still need
+to be recorded in the single launch preflight before U1.
 The [blueprint](docs/architecture/cs3-blueprint.md) specifies ten ordered units
 covering tooling, simulation/layout, held input/replay, reference adoption,
 Blender assets, guarded loading, playable animation, qualification, showcase
@@ -80,7 +83,7 @@ This is **technical compatibility after adaptation**, not source-look or
 Cel Shift fidelity, full-game performance qualification, or
 a Street Scene viewer. R1's predecessor measurements remain historical.
 The accepted scene's hash is unchanged; sibling work was not modified.
-`approve-r1` and `approve-r2` are satisfied; `approve-r3` remains blocked.
+`approve-r1`, `approve-r2` and `approve-r3` are satisfied; launch preflight remains incomplete.
 R3 used pinned source reads and retained receipts/comparisons only, with one
 documentation owner and no workers or executable experiments.
 No game, reference importer or deployment was built.
@@ -122,7 +125,7 @@ validate that work; it is not evidence of a successful Blender-to-browser path.
 
 The comparative explanation, bounded export proof and implementation-ready
 blueprint are consolidated on `main`, with the local `docs/r1-research`
-checkpoint retained. R3 review remains pending.
+checkpoint retained. R3 review is complete; implementation has not started.
 Reference/publication permissions, production-asset and appearance qualification,
 and named-target performance measurements remain gates, not achieved results.
 
@@ -157,8 +160,8 @@ project documentation. Sibling repositories and retained Street Scene artifacts
 remain read-only reference sources. Raw private plans, logs, reference media,
 and large delivery files have not been copied here.
 
-R1/R2 approved; R3 deliverable complete, `approve-r3` blocked pending actual
-user review and the complete up-front launch envelope. The closed R2 resource
+R1/R2/R3 are approved; the remaining up-front launch fields must be completed
+before implementation. The closed R2 resource
 allowance is not renewed. The combined approval will authorize unattended
 U1-U10 execution; deployment is a post-U10 decision. No implementation starts
 as a result of this documentation revision.

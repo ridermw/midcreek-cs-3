@@ -21,8 +21,10 @@ R1 was approved by the user on September 10, 2026 at commit
 separate output/resource approval was initially missing. The later approved
 allowance enabled the completed R2 proof below. The user supplied `approve-r2`
 on September 10, 2026 for probe `a28f58c` and findings `7144246`.
-R3's [blueprint](../architecture/cs3-blueprint.md) is now complete and awaiting
-actual user review; no implementation or new experiment occurred.
+R3's [blueprint](../architecture/cs3-blueprint.md) is complete and was
+user-approved at `732ff39` on September 10, 2026 at 18:26:14 EDT.
+The remaining launch-envelope fields precede U1; no implementation or new
+experiment has occurred.
 Historical intake/closeout records below retain
 their then-current approval state.
 The immutable handoff
