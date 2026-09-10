@@ -31,6 +31,8 @@ reuse, deterministic simulation, measurement, and performance implications.
 | [Cel Shift source and size audit](docs/research/cel-shift-source-audit.md) | Existing 49-master inventory, prompt/sidecar provenance, publication blockers, and the documentation-only manifest/atomic-import contract |
 | [Deferred work](TODOS.md) | The three explicitly selected follow-ups, with rationale, context, and dependencies |
 | [R1 handoff and goal prompt](docs/handoffs/r1-research.md) | New-session orientation and a copyable research-only goal with a mandatory R1 review stop |
+| [Skills and installation sources](skills/README.md) | Observed tooling, verified source links, installation guidance and candidate skills for the blueprint units; no automatic installs |
+| [Session telemetry and chronicle](skills/telemetry.md) | Dated CS1, CS3 and Street session/skill inventory, installed-versus-used distinctions, and the explicit missing CS2 history |
 
 **Current branch:** `main` contains the completed R1-R3 research, probe source
 and blueprint. The local `docs/r1-research` branch retains the R3 review
