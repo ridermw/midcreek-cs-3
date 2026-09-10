@@ -4,7 +4,7 @@ A Blender-authored, Three.js-based Mid Creek experiment.
 
 ## Implementation checkpoint
 
-**U1 complete; U2-U10 pending.** The September 10, 2026 launch authorization
+**U1-U2 complete; U3-U10 pending.** The September 10, 2026 launch authorization
 now permits unattended implementation on `main`. The exact user-approved
 envelope, subsequent credit amendment, pinned input identities, resource
 receipts and failed/successful checks are retained locally under
@@ -34,6 +34,16 @@ Runtime asset, appearance, performance and release-content qualification are
 still pending. The original R1-R3 records below describe their historical
 research checkpoints; the implementation status above supersedes their
 pre-launch state.
+
+U2 reuses the pinned CS2 RNG, world contracts, simulation and behavioral
+tests, preserving seeded faults, hidden dispatch intent, immutable snapshots,
+five-tick movement and 120-tick repair. `LICENSE-CS2` retains the source notice.
+Only the visual technician height changes to the approved 1.73 m.
+TypeScript now creates 37 immutable visual placements and validates the
+five-template join, identity/unit scale, envelopes, rack fronts/service cells,
+grounded actor/fault visuals and outside-hall cooling units. All 55 current
+unit/contract tests pass. Real Blender geometry remains U5 work; these
+declarations are not an export or appearance pass.
 
 ## CS3 toolchain
 
