@@ -1,26 +1,82 @@
 # Evidence Index
 
-Snapshot: September 10, 2026. This records what has already been inspected,
-including limitations; it is not a completed evidence audit.
+Snapshot: September 10, 2026. R1 source research is complete, with the
+limitations below. This is an inspection record, not runtime, export,
+publication-rights, or performance qualification.
+
+**Evidence classes:** **Source** means inspected code, configuration, history,
+or a GitHub record; **Historical result** means a retained run's report;
+**Inference** means a conclusion not demonstrated by execution here. All
+previous image dimensions, byte sizes, and hashes remain attributed to the
+preparatory audit or retained manifests. No executable checks were performed
+in R1, and no asset hashes or dimensions were remeasured.
 
 ## Repository Revisions
 
-| ID | Repository / sibling directory | Local HEAD | Caveat |
+| ID | Repository / sibling directory | Inspected local revision | Caveat |
 | --- | --- | --- | --- |
-| E1 | `ridermw/midcreek-cs-1` / `../midcreek-cs-1` | `c00758396febc2961ece2a6e9556a09487a818fd` | Clean checkout, but GitHub history differed from local HEAD |
-| E2 | `ridermw/midcreek-cs-2` / `../midcreek-cs-2` | `7ce1aa3a9d11cc5198167221a11f0cc5edb214e4` | Full-history clone; clean `main` tracking `origin/main` |
+| E1 | `ridermw/midcreek-cs-1` / `../midcreek-cs-1` | `c00758396febc2961ece2a6e9556a09487a818fd` | Clean; divergent local/remote history reconciled below, without checkout changes |
+| E2 | `ridermw/midcreek-cs-2` / `../midcreek-cs-2` | `7ce1aa3a9d11cc5198167221a11f0cc5edb214e4` | Clean; matches observed GitHub default `main` |
 | E3 | `ridermw/street-scene-1` / `../street-scene-1` | `ae5a4e780ae4565294a882ffa931f41b623504d5` | Private source; clean tracked tree does not mean ignored plans are committed |
-| E4 | `ridermw/street-scene-showcase` / `../street-scene-showcase` | `1538d862d1ceec391d7f7d94993d8d5980ec30ef` | `THREEJS-SESSION-PROMPT.md` is untracked |
+| E4 | `ridermw/street-scene-showcase` / `../street-scene-showcase` | `7024553a797997c0e06689ebcc176e6e126173a2` | Advanced since preparation; tracked preconditions plus untracked exporter/viewer work, not validated here |
 | E6 | `williamsmat_microsoft/midcreek-concept` / `../midcreek-concept` | `870603632c4b6665c513d0fa692a3ee2dae2b683` | Clean checkout; primary art source; overview contains stale count/camera wording |
 | E7 | `azure-core/midcreek` / `../midcreek` | `b2e736726f7f9aea610274931b9c62555e9eeb67` | Clean checkout; master-art mirror, but all 47 copied prompts lack their referenced shared bases |
 
 CS3's repository identity is `ridermw/midcreek-cs-3`. It had no commits or
 application files when research began.
 
-The CS1 GitHub commit list observed during preparation began at abbreviated
-SHA `19716a9`, dated September 2, 2026. The local checkout instead ends at
-`c007583`, dated September 1, 2026. Local source reads and GitHub history must
-remain separately attributed until that difference is reconciled.
+GitHub default branches are `main`. E2, E3, E6, and E7 match the local pins
+above. E1 remote `main` is `19716a91e23a229700738827dfab10a72cca27ea`.
+E4 remote `main` was `90713e9b3efb0b67b60d8287b9b2a647fb30e33b` during
+inspection; its local tip above is one subsequent commit. These are dated
+observations, not promises about future remote state.
+
+### E1 local/remote reconciliation
+
+The merge base is `cb9fd3a31d213c865add836e381d92f371195831`. Local has
+one additional commit, `c00758396febc2961ece2a6e9556a09487a818fd`, adding
+`LICENSE`. Remote has three:
+
+| Remote-only commit | Meaning |
+| --- | --- |
+| `3d05ae2d3233eef6cc916714a8eec2d7f49a71c5` | Two Windows-only render-test ignores become unconditional after Linux reproduction was reported |
+| `fefb948d07e392097b54cec7910683c11e5445b3` | Record compilation/capture timing decisions |
+| `19716a91e23a229700738827dfab10a72cca27ea` | Document baseline rebinding after probe changes |
+
+The complete local-to-remote changed-path set is `LICENSE`, `README.md`,
+`TODOS.md`, and `tests/render_contract.rs`. Production `src/`, assets,
+manifests, workflows, and plans are identical. Thus local source explains
+remote runtime construction, but local render-test policy does not represent
+the later remote policy. A local-only license is not a remote deletion event.
+Existing Git objects and GitHub's merge-base-to-remote comparison establish
+this without fetching or moving either checkout. GitHub's direct divergent-tip
+comparison returned 404; it was not treated as proof of missing history.
+
+### E4 temporal boundary
+
+The preparatory pin `1538d862d1ceec391d7f7d94993d8d5980ec30ef` contained
+the video/gallery publication; the local extension brief was then untracked.
+The subsequent `90713e9b3efb0b67b60d8287b9b2a647fb30e33b` and local
+`7024553a797997c0e06689ebcc176e6e126173a2` establish a newer tracked
+checkpoint. Read `README.md:78-104`, `tools/export_contract.py:10-107`,
+`configs/gltf-export.example.json:1-22`, and `.gitignore:9-14` at the latter
+pin: source/output guards and animation-time intent exist, but that checkpoint
+explicitly does not export a GLB.
+
+At R1 intake, untracked `blender/{export_gltf,gltf_materials}.py`, `web/*`,
+`docs/interactive/index.html`, package/Vite files, and export/browser/web test
+files were present. Only enough content was read to classify the work, not
+review or validate it. It is a changing sibling workspace, not a frozen CS3
+input or evidence that R2 has passed. R1 did not create or modify those files.
+
+**Closing status observation:** while CS3 documentation was being written,
+E4 advanced independently to `d64759d731045157cbe59a9bacb6f7cb74728c3b`,
+with tracked modifications to `blender/gltf_materials.py` and
+`tests/inspect_gltf_export.py`. That later implementation was not inspected
+or qualified; the detailed source citations remain pinned to `7024553...`.
+Do not describe the whole sibling workspace as unchanged or still
+untracked-only. The other five source repositories retained their intake
+HEADs and clean statuses. R1 issued no sibling write, commit, fetch or checkout.
 
 ## Inspected Sources
 
@@ -41,13 +97,17 @@ Paths below are relative to the named source repository, not CS3.
 - Local recent commits and GitHub's returned commit list, covering initial
   scaffolding through September 2 documentation.
 
-Discovered but not yet fully read:
+R1 additions:
 
-- `README.md`: the initial full read exceeded the tool limit.
-- `docs/plans/2026-08-31-1507-feat-phase-2-hill-climb-plan.md`.
-- The original plan's referenced Pages design and implementation documents.
-- Runtime subsystems beyond the inspected entry points, complete contract
-  suites, workflows, and individual corrective commit diffs.
+- README, Pages design/implementation history, Phase 2 hill-climb plan and
+  amendments, remote `TODOS.md`, and `.github/workflows/pages.yml`.
+- `src/{assets,player,operations,design,camera,metrics,verification,sitegen}.rs`
+  and relevant app/asset/metrics/render/Pages contract bodies. Targeted ranges
+  and corrective diffs, not an exhaustive review of every implementation line.
+- `docs/reference/{fidelity,phase-1-baseline}.json` and
+  `tests/fixtures/metrics/key-art.json`: recorded calibration/baseline evidence.
+- Skinning, clip-transition, measurement, renderer-profile, Pages recovery,
+  camera/revert, and quarantine diffs; PR/issue evidence below.
 
 ### E2: CS2
 
@@ -78,9 +138,21 @@ These reads grounded the reuse decisions and exposed two adaptation risks:
 camera/size-only cache invalidation and `loadEventEnd`-based transfer accounting.
 No predecessor tests were run during this review.
 
-Remaining deeper inspection includes `docs/art-direction.md`, geometry and
-camera helpers, remaining simulation/test bodies, workflows, and individual
-evidence JSON/PNG pairs.
+R1 additions: complete simulation, layout, keyboard mapping/test, application
+loop and teardown, geometry/hall/cache source, art direction, all four browser
+test files, both workflows, manifest/lockfile, and cache commit diff. Retained
+hill-climb tables and cache JSON were read without decoding images or rerunning
+measurements. Lockfile entries resolve Three.js `0.185.1` and Vite `8.2.2`;
+these are source declarations, not installed-version observations.
+
+CS2 has five commits:
+`02f96747e6ad44dac4dd6bc8c2222d861dfc925a`,
+`e5b0e8ae5cc100bbd1bddc24752eb1aa1cb6e4d8`,
+`40976cf17a99f3f4eca422d9596ad72b4ed85137`,
+`dac694096bcda82a638bc4b659d4a26bad5ad144`, and
+`7ce1aa3a9d11cc5198167221a11f0cc5edb214e4`.
+The cache JSON's `dac6940-dirty` identity is a candidate working-tree base,
+not proof the clean predecessor commit contained the cache.
 
 ### E3: Street Scene One
 
@@ -99,21 +171,27 @@ evidence JSON/PNG pairs.
 - Targeted source searches across Blender scripts and scene inspection tests.
 - Source commit history: `db07a4a`, `d107a44`, `ae5a4e7`.
 
-Discovered but not yet fully read:
+R1 additions: `pipeline/{job,runtime}.py`, `blender/{street,hero_car,parked_cars,render_scene}.py`,
+`tools/{encode_video,label_packet}.py`, critic instructions, selected acceptance
+and delivery receipts. Full-history milestones are
+`db07a4ab3417211b97d82d89fdb81d1e5971946b`,
+`d107a44471d1973f0138901306f35bed22e079a9`, and the E3 pin above.
+The first-to-second diff explains visual corrections, frozen-scene ownership,
+and the deliberate distinction between design and independent reference acceptance.
+Unselected attempts were not exhaustively audited.
 
-- `pipeline/job.py`, `pipeline/runtime.py`, geometry builders, renderer,
-  encoder, test bodies, critic instructions, and all retained attempt records.
-- `docs/plans/original-blender-unreal.md` is obsolete; its occurrence in source
-  search is not approval to execute it.
+`docs/plans/original-blender-unreal.md` remains obsolete. Its presence does not
+authorize execution. No new hash was calculated for ignored/local plans.
 
 ### E4: Street Scene Showcase
 
 - `README.md`: public content boundary, final-video and attempt-gallery
   publication, selected scene limitations, build instructions, and provenance.
-- Local untracked `THREEJS-SESSION-PROMPT.md`: complete proposed Three.js
-  extension brief. It is not part of the pinned commit and not evidence of an
-  implemented viewer.
-- File inventory and Git history. The publication commit is `1538d86`.
+- Preparatory local untracked `THREEJS-SESSION-PROMPT.md`: complete proposed
+  extension brief, outside the original `1538d86` pin. It is historical planning
+  context, not a frozen implementation or acceptance record.
+- File inventory, history, and newer tracked precondition checkpoint described
+  above. Publication history is not export/runtime acceptance.
 
 ### E5: Retained Street Scene Delivery
 
@@ -126,6 +204,10 @@ Inspected records:
 - `attempt-23/scene.json`.
 - `delivery/manifest.json`.
 - `delivery/REPORT.md`.
+- R1 additionally read `attempt-23/approval.json`,
+  `delivery/{video-inspection,repeat-capture,editing-verification}.json`,
+  `delivery/source-review.md`, and material provenance records. Public-safe
+  conclusions only are reproduced; private paths and review transcripts are not.
 
 Artifact identities recorded by those manifests:
 
@@ -154,10 +236,13 @@ rehash-verified, opened, rendered, or exported during this research session.
 - `tests/test_site.py:300-350,549-589`: prompt dependency and prose/JSON
   consistency contracts; read, not executed.
 - The original and preview metadata for `key-art/04-diamond-bright.png`.
-- Git tree comparison against E7, actual PNG headers/byte lengths and SHA-256
-  hashes for all 98 tracked Cel Shift images.
+- Preparatory audit: Git tree comparison against E7, actual PNG headers/byte
+  lengths and SHA-256 hashes for all 98 tracked Cel Shift images; not repeated.
 - Art-source history through `8706036`, including `eedfcff` for preview
   additions and `0ed9011`/`b6b1c6a` for camera/reference/scale corrections.
+- R1 read all 47 `plan:` associations, metadata field structure and representative
+  master/preview history, character-restoration history, PRs 1/2 and their actual
+  review outcomes. The complete image audit above was not repeated.
 
 The [source audit](cel-shift-source-audit.md) records 49 full-resolution masters
 and 49 alternate-resolution previews. The 45-plate count in the root README
@@ -180,9 +265,10 @@ from its new location.
 
 ## Evidence Rules for Continuation
 
-Use source-relative paths and full commit IDs for tracked content. Hash
-untracked/ignored planning inputs separately before relying on them as frozen
-evidence. Record historical metrics as reported results unless actually rerun.
+Use source-relative paths and full commit IDs for tracked content. Local or
+ignored planning inputs without a previously recorded digest remain unfrozen
+context. Establishing new artifact identities belongs to separately authorized
+execution, not this R1. Record historical metrics as reported results.
 
 Reading CS1 and Midcreek's Rust source does not make Rust a CS3 requirement.
 CS3 uses TypeScript/Three.js and Python/Blender tooling. Historical executable
@@ -194,15 +280,61 @@ visual acceptance passed because a build, export, or video encode succeeded.
 Do not publish private source documents, machine paths, raw logs, or reference
 media merely because they were consulted.
 
-## Remaining Baseline Work
+## GitHub Discussions and Workflow Evidence
 
-1. Resolve CS1's local/GitHub revision difference without overwriting local work.
-2. Confirm remote default-branch pins and capture full IDs for historical
-   commits used in final case studies.
-3. Establish hashes and provenance for untracked/ignored planning sources.
-4. Inspect relevant pull requests, reviews, workflow runs, and commit diffs;
-   the preparation inspected commit lists, not the complete GitHub discussion.
-5. Verify selected artifact hashes and inspect the actual Blender scene before
-   an export-compatibility claim.
-6. Complete the Cel Shift metadata/rights review and document the import
-   manifest; do not copy preview variants or duplicate masters from both sources.
+Read-only GitHub API queries on September 10, 2026 inspected repository
+metadata, commit comparisons, PR bodies/reviews/inline comments, issue comments,
+Actions runs/jobs, and artifact metadata. These are historical server records,
+not jobs run by R1. Dedicated GitHub Discussions is disabled on E2-E4 and
+E6-E7; issue/PR discussions, especially E1, still supply evidence.
+
+| Source | Observed record | What it establishes or limits |
+| --- | --- | --- |
+| E1 | `ridermw/midcreek-cs-1#1`, `ridermw/midcreek-cs-1#4` | Review-driven complete-evidence, degraded-publication, timeout and retained-provenance corrections; PR bodies alone do not carry the inline findings |
+| E1 | `ridermw/midcreek-cs-1#5`; review comments `3896479943`, `3896480007`, `3896480186`, `3896480229` | Measurement asymmetry, undefined ratios, source provenance and binary coverage concerns |
+| E1 | Open `ridermw/midcreek-cs-1#7`; comments `5493421178`, `5500169531`, `5501482314` | Reported moving pixel differences and Linux reproduction; not fresh R1 reproduction or a proven shared root cause for every render failure |
+| E1 | Run `33565165791` at the merge base | Verify failed while Build web and Publish succeeded |
+| E1 | Run `33590138994` at `fefb948d07e392097b54cec7910683c11e5445b3` | Verify, Build web and Publish succeeded |
+| E1 | Run `33590215810`, attempt 2, at remote tip | Verify/Build web succeeded; Deploy Pages failed with duplicate `github-pages` artifacts; inspected artifacts are expired |
+| E2 | No returned PRs, issues or commit comments | Its documented independent reviews are local historical reports, not GitHub PR approvals |
+| E2 | Runs `33922403443` / `33922403453` at `40976cf17a99f3f4eca422d9596ad72b4ed85137` | Pages/Quality success agrees with the first-release report |
+| E2 | Runs `33924944955` / `33924945020` at the pinned tip | Pages/Quality success, including browser-command steps; not an opt-in hardware timing or Windows pixel gate pass |
+| E2 | Quality artifact `9956466988`, `browser-evidence` | Metadata says unexpired at inspection; payload not downloaded or examined in R1 |
+| E3 | No returned PRs, issues, commit comments or Actions runs | Retained source-review/delivery receipts must be attributed locally |
+| E4 | No returned PRs, issues or commit comments; Pages runs `34358977995`, `34507234128` | Successful publication at the original and observed remote pins; jobs deploy `main:/docs`, not Blender/browser qualification |
+| E6 | `williamsmat_microsoft/midcreek-concept#1` and `williamsmat_microsoft/midcreek-concept#2` | Camera/plate-index correction and character-scale/restoration decisions; local results reported by authors |
+| E6 | Reviews `5068638820`, `5069494748` | Hosted-runner-disabled notices, not substantive automated review approval; no inline review findings returned |
+| E7 | PR inventory and direct artwork commits | Artwork import/catalog history is in the direct commits; no art-specific PR thread appeared in the returned inventory |
+
+Selected additional full commit identities used in the findings:
+
+| Source | Commit | Relevant change |
+| --- | --- | --- |
+| E1 | `6f8a5cb356f3149e3d587cfea9bf09fac131d596` | Skinning correction |
+| E1 | `2aa9142d560b8fd86203f75e8e0b5944642a6c63` | Rest transforms on clip transitions |
+| E1 | `4bff384a4eb8e2e7e24db89825bc73fbd552c0f6` | Pages review corrections |
+| E1 | `b96ebdefd6f58f1a3c0efa28f2ce9458c663f6ec` | Measurement/provenance corrections |
+| E1 | `2737f8a478f0c0516cd27ec8a7bc7b7f92985f42` | Software-renderer compatibility profile |
+| E1 | `685c7ca261139479b838b060a0aecd4d2b1902a1` | Camera derivation, subsequently reverted at the merge base |
+| E1 | `2426711cfde06cb38a3d255553735d1492d384e6` | Retained Phase 1 baseline's source identity |
+| E6 | `49a25dc9e2eb8b9261736f4ef0cda283a6abc174` | Adopt diamond projection |
+| E6 | `0ed9011350f73ecb734201c5e486a04d91d38f78` | Reference, camera and index corrections |
+| E6 | `b6b1c6af408378039a64998b20383f5407cea1af` | Character scale and restored male sheet |
+| E6 | `f173f7fea3fe357a37de57fed520115547ed9f9b` | Original animation-sheet history referenced by restoration |
+| E6 | `eedfcff2425fd0ffc672dd23aeca59541c75776a` | Alternate previews |
+| E7 | `b81b083e50e3888237c46707e4645d670e9f88f8` | Hero art import; followed by catalog at E7's pin |
+
+## R1 Closure and Remaining Evidence Limits
+
+Source/revision reconciliation, relevant discussion inspection, comparative
+explanations, and the documentation-only reference-import contract are complete.
+Two bounded read-only workers covered E1 and E3/E4/E5; both returned and ended.
+The parent alone edited CS3 documentation. No sibling checkout was written by
+R1, and no executable checks were performed.
+
+Still unqualified: selected scene/video bytes, actual export/load behavior,
+untracked/local planning identities, exact candidate-to-performance-artifact
+binding, complete artwork publication permissions, and runtime visual fidelity.
+These are explicit limits, not waived requirements. The findings' question
+register records what requires later approval or execution; no R2/R3 work,
+procedure, schedule, or delegation was started here.

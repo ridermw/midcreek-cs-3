@@ -1,13 +1,24 @@
 # Initial Research Findings
 
-Saved September 10, 2026. These findings preserve the preparatory research.
+Updated September 10, 2026 for completed R1 source research. These findings
+extend and correct the preparatory research.
 The subsequent plan-exit review consolidated the original seven stages into
 the three execution units now defined in `plan.md`; this document remains the
 home for the comparative explanation.
 
 Source labels E1-E7 refer to [the evidence index](evidence-index.md). Code,
-plans, manifests, and commit histories were inspected. No predecessor tests,
-Blender jobs, export probes, or browser measurements were run in this session.
+plans, manifests, commit histories, and GitHub discussions were inspected.
+**Source observations**, **historical reported results**, and **inference**
+are distinguished below. No executable checks were performed: no tests,
+builds, benchmarks, validators, Blender jobs, export probes, or browser runs.
+Previously recorded image/hash measurements were not repeated.
+
+R1 is complete for user review, not approval of R2. The immutable handoff
+remains a planning-session snapshot. In particular, its prompt-only description
+of Street Scene Showcase is historical: newer tracked guards and untracked
+viewer/exporter work were visible at intake, and its checkout advanced again
+before closure. The evidence index pins each observation; none is qualified
+as a CS3 export result.
 
 ## Main Distinction
 
@@ -20,7 +31,7 @@ Blender jobs, export probes, or browser measurements were run in this session.
 
 Sources: E1 `docs/implementation-plan.md`, `src/assetgen.rs`, `src/lib.rs`;
 E2 README, architecture and hill-climb documents; E3 README and construction
-script; E4 local Three.js prompt.
+script. E4's newer source boundary is described below.
 
 **CS3 decision:** Rust was dropped in CS2 and is not part of the CS3 pipeline.
 The user reaffirmed this boundary on September 10, 2026. CS3's browser runtime
@@ -109,6 +120,22 @@ are compiled out of the browser build.
 
 Sources: E1 `src/lib.rs`, plan architecture/publication sections.
 
+**Source correction:** the actual Pages workflow runs Build web with
+`if: always()` after Verify, not only after successful verification as older
+prose says. Promotion is separately gated. Site assembly keeps playable and
+evidence retention independent, rejects a successful projection lacking its
+frames/gallery, and prevents degraded output from replacing either retained
+domain. It validates retained provenance before reconciliation.
+Sources: E1 `.github/workflows/pages.yml:293-304`,
+`src/sitegen.rs:2758-2939,2985-3115`,
+`tests/pages_assembly_contract.rs:681-703,2645-2744`.
+
+**Historical server records:** run `33565165791` corroborates Verify failure
+with successful web build/publication. At remote tip, run `33590215810`
+attempt 2 passed Verify/Build web but failed Deploy Pages because two artifacts
+shared the `github-pages` name. This is a delivery failure, not a game-test
+failure. The inspected CS1 Actions artifacts are now expired.
+
 ### Build sequence visible in Git history
 
 | Abbreviated commit | Milestone |
@@ -132,9 +159,74 @@ Sources: E1 `src/lib.rs`, plan architecture/publication sections.
 | `3d05ae2` | Software-rasterizer pixel-defect quarantine in remote history |
 | `19716a9` | Baseline-rebind documentation in remote history |
 
-These are observed subjects, not a substitute for reading every diff.
-CS1's local and remote tips differ; see E1 before assigning later behavior to
-the inspected local source.
+The milestone table preserves historical commit subjects; R1 additionally
+read the pivotal corrective diffs below. Full identities are in E1's evidence
+index. Reconciliation found identical production source but different test
+policy: local has one license-only commit above the common ancestor; remote
+has three commits covering test quarantine and documentation. No checkout was
+changed to obtain that conclusion.
+
+### Corrections that matter more than the milestone list
+
+**Source observations:**
+
+| Correction | What failed in the original approach | Contract worth carrying forward |
+| --- | --- | --- |
+| Skinning, `6f8a5cb` | Bind-origin displacement was applied twice, while a compensating test formula concealed the consumer-visible error | Test the actual hierarchy and joint-transform/inverse-bind calculation, not a generator's self-consistent substitute |
+| Clip transition, `2aa9142` | `Repair -> Walk` retained transforms on bones the next clip did not animate | Restore all captured rest transforms on actual clip changes; do not restart a clip already playing |
+| Asset readiness | A valid GLB and scene name alone did not prove the intended scene would spawn | Bind declared module name, scene index, and spawned handle; fail before world creation on disagreement |
+| Measurement review, `b96ebde` | Asymmetric diagonal evidence, undefined ratios represented as zero, and missing analyzer provenance could mislead acceptance | Require evidence in both line families, expose role-specific metrics, represent absent ratios explicitly, and bind analyzer inputs |
+| Pages review, `4bff384` | Partial or degraded evidence could overwrite trusted retained state | Validate complete sets and provenance before promotion; preserve distinct current-status and last-good outcomes |
+
+Sources: E1 `tests/asset_contract.rs:1040-1165`,
+`src/player.rs:907-962`, `src/assets.rs:439-562`,
+`tests/app_contract.rs:1669-1735`, `src/metrics.rs:430-697`;
+`ridermw/midcreek-cs-1#4` and `ridermw/midcreek-cs-1#5`.
+
+Operations update before movement, so repair lock precedes player movement.
+Zero-time render pumping does not advance gameplay timers, while real input
+edges can still be processed. Scheduler candidates are retained rather than
+rerolled when unavailable. These ordering principles transfer; CS1's diagonal
+movement and repair lock do not override CS3's settled CS2 behavior.
+Sources: E1 `src/lib.rs:30-75`, `src/operations.rs:509-680,1083-1300`,
+`src/player.rs:850-962`.
+
+### Fidelity, measurement, and reproducibility limits
+
+**Source observation:** the Phase 2 plan explicitly responds to automated
+success without the desired appearance. Its M0.5 amendment puts a first
+visible improvement before costly milestone hardening. Its approximately
+fifteen-hour retrospective is an author-reported duration, not a new
+measurement. Sources: E1
+`docs/plans/2026-08-31-1507-feat-phase-2-hill-climb-plan.md:30-56,196-202,555-747`.
+
+The camera derivation commit changed elevation to about 36.09849 degrees and
+coverage to 77 m, but the common-ancestor revert restored 57 degrees and the
+72 m apron. No reason was found in the revert message. Meanwhile
+`docs/reference/fidelity.json` remains explicitly unfrozen and still describes
+camera derivation, contradicting the reverted runtime. The golden reference's
+recorded mean linear luminance is about 0.3922, below the policy minimum 0.48.
+**Inference:** copying that gate would reject its own positive reference;
+calibration against approved examples must precede optimization.
+Sources: E1 `src/design.rs:17-27,99-140`,
+`docs/reference/fidelity.json:1-20`,
+`tests/fixtures/metrics/key-art.json:1-15`, camera/revert diffs.
+
+The verification application reuses production scene logic but chooses
+synchronous compilation and a downlevel software-renderer profile. Source
+provenance lists selected inputs, not every influencing file: the list omits
+`src/reference.rs`, fidelity policy/reference manifest, and `src/lib.rs`'s
+render configuration. This is an inspected list, not a mutation test.
+Sources: E1 `src/lib.rs:109-220`, `src/verification.rs:3503-3535`.
+
+**Historical result:** open `ridermw/midcreek-cs-1#7` reports moving pixel
+differences across several frames and later Linux reproduction, leading to
+two unconditional ignored contracts on remote main. Another intermittent
+animation-crop case remains active; a single-capture category-mask failure is
+not automatically the same readback defect. No universal root cause is proven.
+The retained baseline's frame hashes identify saved artifacts, not reproducible
+recapture bytes. Structural correctness, pixel stability, fidelity, and user
+acceptance must remain separate outcomes.
 
 ## CS2: How It Was Built
 
@@ -185,7 +277,64 @@ accumulation instead of fast-forwarding simulation after a hidden tab.
 WebGL context loss stops the animation loop, pauses the world, and displays a
 reload/restart error state rather than pretending play can continue.
 
-Source: E2 `src/app/game.ts`, inspected first 260 lines.
+Source: E2 `src/app/game.ts`.
+
+### Exact reuse boundary: simulation is not held-key walking
+
+**Source observations:** the 17-by-15 grid has four rows of eight racks;
+breadth-first routing uses a fixed left/up/right/down neighbor order. Movement
+advances on global ticks divisible by five, not five ticks after each command.
+Repair starts on dispatch arrival at zero progress and then takes 120 work
+ticks; the arrival tick does not also count as work. Walking to the service
+cell manually remains idle until dispatch. A valid manual move cancels repair;
+invalid/same-cell commands return messages without cancelling it. Repeated
+dispatch does not reset active work, and resolved travel stays resolved.
+Sources: E2 `src/world/layout.ts:1-124`,
+`src/world/simulation.ts:5-7,136-302`,
+`src/world/simulation.test.ts:115-269`.
+
+Snapshots are deeply frozen, with unchanged route identity retained between
+movement steps. Dispatch intent is a non-enumerable Symbol on the snapshot.
+**Inference:** JSON serialization is not a save/restore contract; round-tripping
+the visible snapshot would lose intent. Replay means reproducing seed,
+commands and ticks, not inventing a persistence layer in R1.
+Source: E2 `src/world/simulation.ts:12-82`.
+
+The keyboard helper supports arrows and WASD at all four headings, but
+`game.ts` emits a destination on each **keydown**. Movement is processed
+before the `event.repeat` guard, and there is no held-key/keyup adapter.
+Thus OS repeat still drives continued walking. The unit test samples W at
+four headings and ArrowRight once; the browser navigation case presses W,
+not a held-arrow matrix. The approved CS3 adapter is a real behavior addition,
+not an existing verified CS2 feature.
+Sources: E2 `src/input/keyboard.ts:1-23`, `src/input/keyboard.test.ts:1-11`,
+`src/app/game.ts:182-225`, `tests/e2e/evidence.spec.ts:53-74`.
+
+The accumulator caps each frame's catch-up at 0.25 seconds and clears on
+visibility changes; no hidden-tab fast-forward is intended. Camera/input,
+snapshot presentation, read-only inspection, explicit context-loss reload, and
+Set-deduplicated GPU disposal are reusable patterns. They are not yet an
+asynchronous GLB loading, shared-instance lifetime, or animation contract.
+Sources: E2 `src/app/game.ts:226-256,314-342,384-416`.
+
+### What the procedural appearance does and does not prove
+
+The hall batches boxes/panels into color-keyed `InstancedMesh` groups, combines
+outline segments, merges coolant tubes, and generates text textures in Canvas.
+Toon materials use a two-entry nearest-filter gradient. The technician is
+assembled from cylinders and a hemisphere; the app changes its cell position,
+not rigged walk/repair poses. No Blender assets or animation clips are involved.
+Sources: E2 `src/engine/geometry.ts:30-121`,
+`src/engine/hall.ts:23-205`, `src/app/game.ts:337-353`.
+
+**Inference from source comparison:** this is a selective art-direction
+interpretation, not complete reference fidelity. For example, the source
+draws floor seams although the corrected foundation calls for plain concrete;
+CS2's 1.65 m technician constant is not either corrected Concept character
+height. Preserve the gameplay core without treating every procedural shape,
+palette value, scale or layout spacing as the future Blender visual authority.
+Sources: E2 `src/engine/hall.ts:64-66`, `src/world/layout.ts:3-8`;
+E6 `themes/_shared/foundation.md:66-89`.
 
 ### Five-commit implementation history
 
@@ -243,9 +392,46 @@ away. Ordinary deterministic CI does not claim that an unrun timing gate passed.
 
 The release record identifies gameplay commit `40976cf`, Pages run
 `33922403443`, and Quality run `33922403453`, plus browser acceptance against
-the published build. The run IDs were read from the record, not re-queried.
+the published build. R1 re-queried their server metadata and the tip's later
+Pages/Quality runs `33924944955` / `33924945020`; all report success. This
+corroborates historical workflow status, not a fresh live-site acceptance run.
 
 Source: E2 `docs/hill-climb.md` and `docs/architecture.md`.
+
+### Evidence qualifications for the cache result
+
+The pinned source disables default-framebuffer antialiasing while the static
+render target uses four samples. Thus "four-sample antialiasing" describes the
+cached hall, not necessarily every dynamic edge. Restored color/depth and
+per-frame dynamic rendering are directly visible in `hallCache.ts`; invalidation
+only compares camera projection/world matrices and drawing-buffer size.
+Source: E2 `src/app/game.ts:50-54`, `src/engine/hallCache.ts:24-95`,
+cache commit `7ce1aa3`.
+
+The active-repair JSON has 300 samples and a `dac6940-dirty` build stamp, not
+an exact clean candidate revision. The timing test dispatches, waits 300
+animation callbacks, and checks actual rendered-frame growth, but does not
+record/assert repair state for every sample. Retain its historical
+**dispatch-plus-repair window** label; it does not establish 300 exclusively
+repairing frames. The first-window and warm-up results remain separate from
+navigation startup; `startupMs` starts inside `startGame` and excludes earlier document/
+module loading. Sources: E2 `docs/evidence/07-cached-active-repair.json:1-34`,
+`tests/e2e/performance.spec.ts:1-55`, `src/app/game.ts:42-43,374-382`.
+
+CI uses Node 24, a production build and expected build identity; Playwright
+uses one worker. The timing test skips without `CHECK_FRAME_TARGET`, and
+the fixed-pixel cache comparison skips outside Windows. Ubuntu workflow
+success therefore does not mean all nine Windows/timing cases ran.
+Source: E2 `.github/workflows/{quality,pages}.yml`,
+`playwright.config.ts`, `tests/e2e/render-cache.spec.ts:6-13`.
+
+CS2's transfer cutoff deliberately ignores requests after `loadEventEnd`,
+and its browser regression asserts that behavior. **CS3 adaptation required:**
+required GLBs may arrive after that event. Freeze game startup transfer only
+after required assets and the first interactive rendered state are ready;
+keep later gallery activity separate. That is the existing plan's requirement,
+not a loader or metrics change implemented here.
+Sources: E2 `src/app/game.ts:288-293`, `tests/e2e/evidence.spec.ts:44-51`.
 
 ## Street Scene One: What Actually Exists
 
@@ -265,10 +451,13 @@ The source history has three commits:
 | `d107a44` | Final selected scene and frozen capture |
 | `ae5a4e7` | Ignore local planning documents |
 
-The public showcase has publication commit `1538d86`. Its local Three.js prompt
-is untracked and describes future work. No export script, GLTFLoader runtime,
-or Three.js package manifest was found in the inspected Street Scene source
-and showcase inventories.
+The public showcase's original publication commit is `1538d86`. At preparation,
+its extension prompt was untracked and no exporter/viewer was found. R1
+observed newer tracked precondition work at local `7024553` and untracked
+exporter/material-conversion/viewer files. Those are independently evolving
+sibling work, not something R1 built or validated. The tracked checkpoint
+explicitly stops before GLB export; no compatible viewer outcome is established
+by this research. See E4's dated local/remote distinction in the evidence index.
 
 Sources: E3 plan/README/history; E4 inventory, README, and local prompt.
 
@@ -323,6 +512,57 @@ The old construction/capture allowances are expired and not reusable.
 
 Sources: E3 README, `pipeline/evidence.py`, `pipeline/capture.py`.
 
+### Ownership and acceptance guards, read in detail
+
+**Source observations:** the supervisor creates a new process session and
+records its owned PID; on interruption it terminates that process group,
+escalating from TERM to KILL after two seconds. The nonblocking file lock
+serializes cooperating jobs using the same `heavy.lock`, not every Blender
+process on the machine. Pause is cancellation that preserves checkpoints,
+not suspension/resumption of a live process. Deadline/pause are polled about
+every 0.1 seconds and storage about once per second; the CLI reserves five
+minutes for closeout. Forecasting includes representative worst-frame cost,
+retry/storage allowances and encoding time.
+Sources: E3 `pipeline/job.py:23-88`, `pipeline/runtime.py:8-33`,
+`pipeline/capture.py:24-35`.
+
+Capture checks scene identity, original versus capture ownership, actual Metal
+availability and packed dependencies. Resume rejects mismatched scene/frame
+fingerprints, changed PNG hashes and incomplete PNG/JSON pairs. Anchor captures
+are frames 1/61/120; the reduced motion sample is only frames 1-12, not the
+entire animation. Sources: E3 `blender/render_scene.py:31-99`.
+
+Review records bind image hashes, scene/reference fingerprints and critic
+instruction version. Fingerprints include resolved absolute paths, so they
+are not inherently relocation-invariant. Neutral labeling and equal image
+preparation reduce reviewer bias, but the generic delivery gate only checks
+accepted current fingerprints and capacity: it does not itself inspect images
+or authenticate an independent critic. The final-selection diff explicitly
+replaced independent-reference acceptance wording with design acceptance.
+Sources: E3 `pipeline/evidence.py:18-80`,
+`tools/label_packet.py:13-33`, `prompts/image-critic.txt:3-27`,
+`pipeline/capture.py:39-51`, `db07a4a -> d107a44` diff.
+
+The encoder checks ordered scene-bound frames, image hashes, dimensions, rate,
+and decoded count, and refuses overwrite. It requests duration but does not
+explicitly assert it. These technical gates cannot establish visual fidelity.
+There is an unresolved source/delivery discrepancy: `tools/encode_video.py:22-25`
+specifies `bt709` transfer, while E5 `delivery/video-inspection.json:8-17`
+records `iec61966-2-1` and `REPORT.md:44-46` describes sRGB transfer. Do not
+claim the checked-in helper alone reproduces every delivered encoding detail.
+
+### Concrete Blender portability questions exposed by source
+
+Street geometry batches boxes/rods by material, with optional bevels.
+Brick/asphalt use world-position-scaled BOX projection, color multiplication,
+roughness textures and displacement-driven bump; the carbon material uses a
+procedural checker. Parked-car plate lettering includes FONT curves rather
+than only mesh objects. The hero uses recalculated normals, smooth shading and
+selective bevels. Packed files remove some external dependencies, but do not
+make these node graphs or object types automatically portable.
+Sources: E3 `blender/street.py:22-108`, `blender/hero_car.py:72-121`,
+`blender/parked_cars.py:447-471`. Export treatment remains untested in R1.
+
 ### Selected result and retained limitations
 
 Attempt 23 retains the improved hero car and window design B, restores earlier
@@ -351,9 +591,27 @@ These are historical delivery claims, not new measurements.
 
 Source: E5 `scene.json`, `manifest.json`, `REPORT.md`.
 
+R1 additionally read the selected approval, decoded-video inspection,
+repeat-capture and editing-copy receipts. **Historical results:** approval
+records user selection with independent reference acceptance false; decoded
+inspection reports no detected black/freeze events; repeat captures were
+not pixel-identical; a separate editing copy reopened the intended controls.
+The retained source review recommended shipment but was a single review,
+exceeded its requested review time, and retained owner-default/test-coverage
+limitations. The capture allowance expired September 9, 2026 at 13:33:48 UTC,
+with heavy jobs stopping by 13:28:48 UTC. None of those permissions is reusable.
+Sources: E5 `attempt-23/approval.json:2-20`,
+`delivery/{video-inspection,repeat-capture,editing-verification}.json`,
+`delivery/REPORT.md:98-163`, `delivery/source-review.md`.
+
+GitHub has no returned E3/E4 PR, issue or commit-comment review threads.
+E3 has no returned Actions runs; E4's two successful Pages runs demonstrate
+publication only. Neither substitutes for the retained technical/visual
+receipts or for an actual browser conversion result.
+
 ## Proposed Blender-to-Three.js Boundary
 
-The local showcase prompt proposes:
+The preparatory local showcase prompt proposed:
 
 ```text
 selected Blender scene
@@ -371,7 +629,7 @@ must remain intact.
 It also requires matched start/middle/end comparison, provenance preservation,
 and honest reporting of WebGL-versus-Cycles material, lighting, shadow, and
 color-management differences. None of those export/runtime requirements has
-been implemented or proven in this session.
+been implemented or proven by R1. Newer sibling source is not an R1 result.
 
 The planned probe must inspect geometry/modifiers, packed textures, shader
 translation, axes/scale, camera/light export, animation duration, clip behavior,
@@ -379,11 +637,20 @@ and payload/performance. The final video has 120 frames at 24 FPS; the temporal
 mapping of first/last Blender keyframes into a runtime clip must be verified
 rather than inferred from the video's five-second duration.
 
-Source: E4 untracked `THREEJS-SESSION-PROMPT.md`; E3 construction script.
+Source: E4 preparatory untracked `THREEJS-SESSION-PROMPT.md`; E3 construction script.
 
-## Preliminary CS3 Lessons
+**Newer source observation:** E4's tracked precondition checkpoint specifies
+time as `(frame - 1) / 24` and a final-pose hold through five seconds.
+This reconciles the intended 120-frame video duration with the earlier final
+keyframe time, but remains intent, not observed exported clip behavior.
+Sources: E4 `tools/export_contract.py:22-26`, `README.md:101-104` at
+`7024553a797997c0e06689ebcc176e6e126173a2`. The untracked implementation
+must not be silently promoted to the evaluated candidate.
 
-These are candidate recommendations, not an approved final blueprint:
+## Source-Backed CS3 Conclusions
+
+These conclusions support the settled plan; they do not introduce a new
+architecture or constitute the R3 blueprint.
 
 1. Preserve CS2's separation of deterministic state, rendering, DOM UI, and
    diagnostics rather than carrying Bevy-specific machinery into a browser app.
@@ -399,6 +666,21 @@ These are candidate recommendations, not an approved final blueprint:
 6. Keep the new pipeline small: Blender-authored assets and explicit runtime
    equivalents, not simultaneous custom Rust generation, procedural Three.js
    construction, and unexamined Blender exports.
+
+The corresponding contracts and exclusions are:
+
+| Concern | Preserve or require | Do not inherit as an established CS3 result |
+| --- | --- | --- |
+| Gameplay | CS2 seed, fixed tick, ordered routing, immutable snapshots, arrival/repair/cancellation, pause/restart messages | CS1 recurring-ticket breadth, repair lock or diagonal motion; JSON snapshot persistence |
+| Input | CS2 heading mappings and command boundary, with the already-approved fixed-tick held-arrow behavior | OS-repeat-driven walking or W-only browser coverage as proof of held arrows |
+| Layout/assets | Runtime-owned IDs, collision and placement; explicit template bounds and loader bindings | A separate Blender gameplay map or structural GLB success as correct scene selection |
+| Animation/ownership | Declared clips, transition/rest-pose behavior, independent instance state and shared-resource owner | CS2's static technician as animation proof, or scene-wide teardown as safe per-instance disposal |
+| Visual direction | Corrected Concept prose and JSON, role-specific calibrated evidence, matched browser captures | CS1's reverted 57-degree view or global luminance gate; historical prompt claims as current truth |
+| Performance | Actual rendered work, peak/steady costs, named hardware, startup versus sustained windows | Universal 60 FPS, clean-revision timing from dirty stamps, or static cache validity for animated imports |
+| Delivery | Complete atomic evidence/package promotion, explicit failure, public allowlist | Successful Pages deployment as export, fidelity, permission or hardware qualification |
+
+Evidence: the E1/E2/E3 sections above; E6's dependency/provenance contract in
+the [source audit](cel-shift-source-audit.md); settled plan decisions 1A-17A.
 
 ## Cel Shift Art Sources Added to the Plan
 
@@ -423,4 +705,40 @@ be treated as different versions of evidence, not silently merged.
 See [the full source and picture-size audit](cel-shift-source-audit.md) for
 the master-by-master inventory and dependency findings.
 
-The remaining work and its acceptance criteria are in [the plan](../../plan.md).
+R1 read the correction PRs as well as source. Concept PR 2 explicitly retained
+older-scale scene plates while correcting future prompt inputs and restoring
+the male animation sheet from older history. Therefore the full catalog is a
+historical reference set, not 49 equally current acceptance oracles. Concept
+PRs 1/2 contain author-reported local checks; their Copilot review records are
+hosted-runner failure notices, not completed automated review. The audit
+documents exact shared-base associations, sidecar limitations, and publication
+blockers without copying operational metadata.
+
+## Unresolved Questions and R1 Hard Stop
+
+Questions below record evidence gaps only. They are not R2 preparation,
+an executable procedure, task delegation, a schedule, or permission to proceed.
+
+| Question | Evidence now | Boundary before an answer can be claimed |
+| --- | --- | --- |
+| Which immutable scene/exporter/viewer candidate will be evaluated? | Retained scene digest and newer E4 guards; the sibling implementation advanced during R1 | User-authorized R2 and new resource/output approval; fresh identity checks remain unperformed |
+| What geometry/material content survives export? | BOX projection, bump, procedural carbon, bevels/normals, FONT curves, Cycles sky/light-path setup in source | R2 must establish actual evaluated content, bindings, appearance differences and payload, not infer them from source |
+| Does animation/camera playback preserve matched poses and timing? | Frames 1/120 and newer final-pose-hold intent | Actual export/load comparison in authorized R2; five-second video duration alone is insufficient |
+| Which color interpretation matches the retained output? | Encoder-source BT.709 versus delivery sRGB-transfer discrepancy | Resolve provenance and compare appearance under approved execution; no silent assumption of Cycles/AgX equivalence |
+| Is a candidate technically usable and visibly accepted? | Historical user selection did not pass reference fidelity; current browser result is unqualified | Separate declared-content/load/failure evidence, visual comparison and user acceptance; no R1 claim |
+| May all artwork, prompt material and derivatives be published? | Complete reference selection, sensitive sidecar field categories, no catalog-wide grant established | Explicit reviewed provenance/publication approval; CS2's limited reference terms are not a grant for a new derivative gallery |
+| Which prompt revision produced each retained image? | Forty-nine masters, forty-seven current prompts, historical expanded sidecars and restoration history | Preserve unresolved associations honestly; a future manifest must not manufacture one-to-one prompt provenance |
+| What performance and held-input claims can CS3 make? | CS2 dirty-candidate historical timing; no full held-arrow coverage; delayed-asset accounting gap | Later authorized implementation/qualification under the existing plan, not an expansion of R2 into a game build |
+
+**R1 limitations:** this was targeted source research, not an exhaustive code
+audit or legal opinion. No large scene/video was reopened, decoded, rehashed,
+rendered or exported. No local planning-file digest was newly established.
+No browser artifact archive was downloaded; retained source records and
+GitHub job metadata are identified separately. Neither missing evidence nor
+successful historical jobs waive later gates.
+
+Both R1 research workers finished; documentation has one owner. R1 changed no
+sibling source or artwork and performed no executable checks. R2 and R3 remain
+pending and unauthorized; all human approval gates remain blocked.
+
+Awaiting user review of R1.

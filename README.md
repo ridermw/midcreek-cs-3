@@ -24,33 +24,43 @@ reuse, deterministic simulation, measurement, and performance implications.
 | Document | Contents |
 | --- | --- |
 | [Reviewed plan](plan.md) | Three execution units, settled architecture/site decisions, T1-T9 test map, and performance gates |
-| [Initial findings](docs/research/initial-findings.md) | Findings already gathered from CS1, CS2, Street Scene One, their plans, source, GitHub history, and delivery records |
-| [Evidence index](docs/research/evidence-index.md) | Source repositories, inspected files, revision pins, artifact hashes, and remaining evidence gaps |
-| [Cel Shift source and size audit](docs/research/cel-shift-source-audit.md) | Concept/game source comparison, all 49 master identities, preview sizes, and the nonduplicating reference-import plan |
+| [Research findings](docs/research/initial-findings.md) | Completed R1 comparison, corrective history, transferable contracts, historical-result limitations, and unresolved questions |
+| [Evidence index](docs/research/evidence-index.md) | Reconciled revisions, inspected source and GitHub discussions/workflows, recorded artifact identities, and evidence limits |
+| [Cel Shift source and size audit](docs/research/cel-shift-source-audit.md) | Existing 49-master inventory, prompt/sidecar provenance, publication blockers, and the documentation-only manifest/atomic-import contract |
 | [Deferred work](TODOS.md) | The three explicitly selected follow-ups, with rationale, context, and dependencies |
 | [R1 handoff and goal prompt](docs/handoffs/r1-research.md) | New-session orientation and a copyable research-only goal with a mandatory R1 review stop |
 
-**New-session branch:** Use `main`. The immutable handoff captured the earlier
-`docs/research-plan` checkout and its publication state at that time. Substitute
-`main` for that branch when using its goal prompt; the R1-only scope and human
-review stops still apply.
+**Review branch:** Completed R1 is retained locally on `docs/r1-research`;
+it has not been pushed. The earlier new-session guidance pointed at `main`,
+and the immutable handoff captured `docs/research-plan`. Use the local R1
+review branch for these conclusions rather than assuming either older branch
+contains them. The R1-only scope and human review stops still apply.
 
 ## Current status
 
-Preparatory research and the plan are saved here. CS2 has been cloned alongside
-this repository at `../midcreek-cs-2`, with full history and a clean checkout at
-`7ce1aa3a9d11cc5198167221a11f0cc5edb214e4`.
+**R1 source research is complete and awaiting user review.** The comparative
+explanation and reference-import requirements are saved in the three research
+documents above. R2 and R3 remain pending and unauthorized; all human approval
+gates remain blocked. Completion of R1 does not authorize export experiments.
 
-The plan-exit review is complete. The reduced plan has three pending units:
-finish the evidence/comparison, prove a bounded export/load path, and produce
-one implementation-ready CS3 blueprint. No runtime, export probe, or browser
-test suite has been implemented. Prior-project measurements remain historical
-evidence, not results rerun in CS3.
+R1 reconciled CS1's local/remote divergence: production source matches, but
+remote render-test policy and documentation differ. It distinguished CS2's
+repeat-driven keyboard behavior from the required held-arrow adapter and
+qualified its dirty-candidate, platform-specific performance evidence. Street
+Scene's selected delivery passed technical/user acceptance while missing the
+reference target; export compatibility remains unproven here.
 
-**R1 is research-only:** search existing code, docs, history, and retained
-reports, then write conclusions. It produces documentation, not code or tools.
-No builds, tests, scripts, dependency installs, asset processing, or prototypes
-run in R1. Questions requiring execution are recorded for R2 or later work.
+**No executable checks were performed.** R1 produced documentation only:
+no application/helper code, scripts, tests, builds, benchmarks, validators,
+installs, prototypes, Blender launches, asset processing/copying or deployment.
+Prior-project measurements, hashes and dimensions remain recorded evidence,
+not results rerun in CS3. Two bounded read-only workers finished; one owner
+made the documentation edits. No sibling source was modified by R1.
+
+No CS3 runtime, export probe or browser suite exists. The findings record
+questions about source identity, material/animation portability, encoding
+provenance, publication permission and later qualification; they do not
+prepare or start the next units.
 
 **Autopilot is unit-scoped:** complete the authorized R1, R2, or R3
 autonomously, then **hard-stop for user review**. Each next unit requires
@@ -65,12 +75,15 @@ ownership must be explicit; normal rendering comes before speculative caching.
 
 The important pipeline distinction is already established: CS1 generated GLBs
 in Rust without Blender, CS2 generated geometry directly in Three.js, and Street
-Scene One delivered a Blender-rendered video. Street Scene's Three.js conversion
-exists as a local design prompt, not an implemented export/runtime pipeline.
+Scene One delivered a Blender-rendered video. The earlier prompt-only Street
+Scene Showcase snapshot had advanced to tracked export preconditions and
+untracked exporter/viewer work at R1 intake, then advanced again during research.
+The evidence index records those distinct observations. R1 did not run or
+validate that work; it is not evidence of a successful Blender-to-browser path.
 
-The requested deliverables are both a comparative explanation of those projects
-and a CS3 implementation blueprint. The intended direction is Blender-authored
-assets consumed by Three.js; the export strategy still needs evidence.
+The comparative explanation is complete for review. The requested export proof
+and CS3 blueprint remain later gated work. The intended direction is
+Blender-authored assets consumed by Three.js; compatibility still needs evidence.
 
 ## Planned GitHub Pages experience
 
@@ -92,10 +105,15 @@ direction, including shared foundations, prompts, and provenance. The
 `../midcreek/docs/artwork` catalog provides byte-identical master copies but
 omits the shared prompt dependencies. The future reference import keeps all
 49 distinct master files at 1536 x 1024 and excludes their 49 alternate
-1280 x 720 previews and duplicate copies from Midcreek. The master PNGs total
-86,349,779 bytes (82.35 MiB); no artwork has been copied into CS3.
+1280 x 720 previews and duplicate copies from Midcreek. The preparatory audit
+records 86,349,779 bytes (82.35 MiB) of master PNGs; R1 did not repeat that measurement.
+No artwork has been copied into CS3. Public use of every master, prompt and
+gallery derivative is not yet approved; raw service metadata and private
+reference material must not enter a public package.
 
 This repository is the durable home for the plan, findings, and subsequent
 project documentation. Sibling repositories and retained Street Scene artifacts
 remain read-only reference sources. Raw private plans, logs, reference media,
 and large delivery files have not been copied here.
+
+Awaiting user review of R1.

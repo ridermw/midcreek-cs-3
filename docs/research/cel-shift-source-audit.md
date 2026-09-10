@@ -1,7 +1,10 @@
 # Cel Shift Source and Picture-Size Audit
 
-Recorded September 10, 2026. Documentation only: no source artwork, prompts,
-or metadata sidecars have been copied into CS3.
+Recorded September 10, 2026; extended during R1 source research. Documentation
+only: no source artwork, prompts, or metadata sidecars have been copied into
+CS3. The numerical inventory below is the **previously recorded preparatory
+audit**, not measurements repeated in R1. R1 read source, metadata and history
+only; no executable checks or asset processing were performed.
 
 ## Source Decision
 
@@ -66,7 +69,8 @@ inventory contains 49 masters; use the inventory rather than that stale count.
 Paths are relative to `themes/cel-shift/masters/` in the primary source.
 Every row is **1536 x 1024**. Each has a paired `-720p.png` file at
 **1280 x 720**, excluded from the planned import. Bytes and SHA-256 below were
-read from the actual master files, not inferred from metadata.
+read from the actual master files during the preparatory audit, not inferred
+from metadata or recalculated during R1.
 
 | Master path | Bytes | SHA-256 |
 | --- | ---: | --- |
@@ -147,6 +151,26 @@ This is a proposed future layout, not directories created by this audit.
 Preserving the relative structure keeps all six referenced Markdown bases
 reachable from the prompts.
 
+### Observed dependency associations
+
+The `plan:` line at line 3 of every current Cel Shift prompt identifies the
+following bases. Do not choose a base from the image's family name alone:
+the male scale and kerb-junction studies are important exceptions.
+
+| Shared prose base | Current prompt associations |
+| --- | --- |
+| `foundation.md` | Three key-art prompts, three calibration prompts, four headings, five faults, three environments, two lighting prompts, `kerb-crossing.mock.md` |
+| `character-sheet.md` | Animation sheet, paired characters, all five woman prompts, four man prompts other than scale |
+| `turnaround.md` | Six asset turnarounds, `state-matrix.mock.md`, `technician-man-scale.mock.md` |
+| `floor-sheet.md` | Two floor prompts and `kerb-junctions.mock.md` |
+| `rack-sheet.md` | Rack topology and rack types |
+| `interface-sheet.md` | HUD overlay and HUD components |
+
+Source: E6 `themes/cel-shift/prompts/*.mock.md:3` at the pinned revision.
+Retain `foundation.json` as the seventh shared input alongside these six prose
+files; JSON is not a substitute prompt base. Preserve `ART-BIBLE.md`,
+`docs/decisions/projection.md`, `theme.yaml`, and all 47 prompts together.
+
 The JSON foundation is useful for code, but cannot replace the prose:
 `tests/test_site.py:549-564` documents a scale failure caused by heights present
 only in JSON. Both prose foundations now state the same technician heights.
@@ -165,6 +189,125 @@ review provenance fields and source terms, preserve required attribution and
 source hashes, and omit private operational details from public records.
 The current task has not established publication rights for every source.
 Do not copy private source photography or unrelated themes.
+
+### Historical provenance is not a current visual specification
+
+**Source observations:** Concept's accepted projection decision reverses
+axis-aligned framing. Shared foundation prose rounds elevation to 35 degrees;
+its JSON distinguishes that chosen value from a recorded 36.1-degree key-art
+estimate and a 32.92-36.1-degree sample range. The source's claim that the image
+model ignores requested angles is a conclusion from those historical samples,
+not a universal model capability test conducted here. Likewise animation
+model sheets illustrate poses; their verdict text is not a rendered rig test.
+
+The accepted dimensions are 2.10 m racks, a 1.73 m man and 1.58 m woman.
+Concept PR 2 explicitly says the scene back catalog retains older character
+scale and explains why the rack height was retained as an artistic decision.
+Its restored male animation sheet comes from
+`f173f7fea3fe357a37de57fed520115547ed9f9b`; restoration lands in
+`b6b1c6af408378039a64998b20383f5407cea1af`. Thus current prompt prose
+must not be represented as the exact generation input for every old master.
+Sources: E6 `themes/_shared/{foundation.md,foundation.json,character-sheet.md}`,
+`docs/decisions/projection.md:1-10`, and
+`williamsmat_microsoft/midcreek-concept#2`.
+
+The current manifest lists 49 images, while current prompt inventory has 47
+files. The key-art family has two early hall-fault passes but one current
+`key-art.mock.md`; animation has two retained sheets but one current
+`animation-sheet.mock.md`. History and expanded sidecars explain why a
+one-file-per-image prompt rule would be false. Family/name associations alone
+do not prove the exact historical prompt revision or all generation settings.
+The manifest must allow shared/current prompt associations, an independently
+identified historical sidecar, and an explicit unresolved provenance state.
+
+The sampled key-art master sidecar has only `account`, `deployment`, `prompt`,
+`prompt_char_count`, `quality`, `rendered_at`, and `size`. It has no source
+revision, original-byte digest, rights approval, or explicit derivative-parent
+record. The paired 720p sidecar repeats the same timestamp and prompt length
+but declares a different size. The preview-addition commit
+`eedfcff2425fd0ffc672dd23aeca59541c75776a` records their addition, not a
+reproducible crop/resize recipe. Do not infer a fresh generation or a
+composition-preserving transform from those sidecars.
+Sources: E6 `themes/cel-shift/masters/key-art/04-diamond-bright{,-720p}.png.metadata.json:1-9`,
+the preview commit, and `theme.yaml:37-114`.
+
+**Historical review results:** Concept PR 1 reports 67 local tests and PR 2
+reports 70, alongside their site checks. The returned Copilot reviews contain
+hosted-runner-disabled notices, not substantive code approval. These numbers
+were not rerun. PR 1's earlier chapter/count description is not the authority
+for the final renamed inventory.
+
+### Publication and metadata policy remains a gate
+
+No tracked catalog-wide license grant was found in the inspected Concept
+license-file inventory; this is an evidence gap, not a legal determination.
+CS2's `references/cel-shift/ASSET-LICENSE.md:1-15` separately permits only
+specified unchanged redistribution with its notice and excludes its images
+from the code's MIT license. That notice must not be generalized into
+permission for all 49 Concept masters, cross-project reuse, or new thumbnails.
+Street Scene's recorded CC0 texture provenance does not grant rights to
+Concept art or private photographic/video references.
+
+The user's selection of all 49 masters establishes desired scope, not an
+unreviewed public redistribution grant. Before future promotion, each record
+needs reviewed provenance/attribution and a publication decision for that use.
+Unapproved raw context remains in the read-only upstream source, not copied
+into public Git history merely because a later web build might exclude it.
+Required attribution must not be removed in the name of sanitization.
+
+Public metadata should be an explicit allowlist: approved artwork identity,
+family/title, public source revision/path, appropriate hashes/dimensions,
+permitted credit/terms, and display role. Do not copy service/account values,
+deployment identifiers, private paths, raw expanded prompts or private
+reference names automatically. Retain the original sidecar's identity and
+source association in the reference manifest; if a reviewed sanitized sidecar
+is retained, distinguish its digest from the original's and record the
+transformation/approval rather than overwriting provenance.
+
+## Future Manifest and Atomic Import Contract
+
+This is a documentation contract only. No manifest, schema, index generator,
+importer, fixture, or test was created or executed in R1.
+
+| Field group | Required meaning |
+| --- | --- |
+| Identity | Stable artwork ID/family and master versus derivative role; every one of the 49 distinct masters represented once |
+| Source | Repository, full pinned revision, canonical source-relative path, and approved destination-relative path |
+| Bytes | Expected original SHA-256, byte length, width and height from the dated audit; metadata size text alone is insufficient |
+| Relationships | Source sidecar path/hash, historical versus current prompt association, dependency-base paths, and parent identity for any later derivative |
+| Provenance | Generation/history association with confidence or unresolved status, required attribution/terms, metadata-review state |
+| Approval | Separate reference-package and public-gallery approvals, their scope/evidence, permitted public fields; unknown does not mean approved |
+| Package | Complete expected inventory and shared-input identities; schema/package revision and promotion receipt belong to later implementation |
+
+Derive the future browsing index from this single manifest; do not keep a
+second mutable handwritten inventory. This document's master table stays a
+dated source audit. An index must not silently glob in previews or expose
+unapproved metadata. Support inputs need pinned identities too, not just PNGs.
+
+Future import is staged and all-or-nothing: prepare the entire allowed package
+outside its active destination, check every file/relationship, then promote
+only a complete valid package. Hash, dimensions, missing or escaping dependency
+paths, unexpected/duplicate files, invalid sidecars, or unapproved provenance
+must reject the candidate and identify the failing file and reason. An
+interrupted stage or failed promotion must retain the previous complete
+package; partial success must never become the active reference set. With no
+previous package, failure leaves no active package rather than a partial one.
+
+The destination must stay under the approved reference root, including after
+symlink/path resolution. Preserve
+`references/midcreek/themes/{cel-shift,_shared}` so each original relative
+`plan:` reference resolves. Masters remain byte-identical; later thumbnails
+are distinct approved derivatives generated into ignored build output with
+aspect ratio preserved. Exclude all `-720p` counterparts and the second
+repository's duplicate masters, but retain genuinely distinct studies and
+revisions. A failure must not be hidden by switching to an incomplete mirror
+or falling back to metadata-declared dimensions.
+
+The game must not fetch this reference catalog, and the showcase must not
+preload all masters or game assets. Public build promotion needs a separate
+allowlist check even when reference-package import succeeds. These requirements
+describe existing plan decisions 6A, 7A, 9A, 11A, 12A and 17A; their
+implementation/negative tests remain later work, not R1 deliverables.
 
 ## Future Import Acceptance
 

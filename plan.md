@@ -2,7 +2,8 @@
 
 **Reviewed:** September 10, 2026, using plan-exit-review.
 **Scope choice:** 0A, scope reduction. Preserve the product goals; consolidate the work and documents.
-**Execution state:** Planning and review complete; R1-R3 below are pending.
+**Execution state:** Planning/review and R1 source research complete.
+R1 awaits user review; R2/R3 remain pending and unauthorized.
 
 **Goal:** Explain how CS1 and CS2 were built, recover the full Cel Shift art
 direction, understand Street Scene One's Blender workflow, prove a bounded
@@ -108,8 +109,10 @@ another hand-maintained live inventory.
 
 Full revisions, local/remote caveats, and Street Scene artifact hashes remain
 authoritative in `docs/research/evidence-index.md`. The selected scene is
-attempt 23. Its Three.js extension prompt is untracked planning evidence, not
-proof of an existing viewer.
+attempt 23. The preparatory Three.js extension prompt was untracked planning
+evidence. R1 observed newer tracked export preconditions and untracked
+exporter/viewer work in the showcase sibling; none was run or qualified here.
+That temporal correction does not establish an export result or authorize R2.
 
 ## What Already Exists
 
@@ -229,7 +232,7 @@ honestly; reference images must not masquerade as game screenshots.
 
 | ID | Task | Status | Start requirement |
 | --- | --- | --- | --- |
-| R1 / `consolidate-evidence` | Research existing sources and write the comparative explanation; no builds | Pending | User authorizes starting R1 |
+| R1 / `consolidate-evidence` | Research existing sources and write the comparative explanation; no builds | Complete; awaiting user review | Authorized R1 completed September 10, 2026; `approve-r1` remains blocked |
 | R2 / `prove-export-boundary` | Prove the bounded Blender export/load boundary | Pending | R1 complete, `approve-r1` satisfied, and new resource approval |
 | R3 / `write-cs3-blueprint` | Produce one implementation-ready CS3 blueprint | Pending | R1/R2 complete and `approve-r2` satisfied |
 
@@ -238,6 +241,23 @@ comparison remains in the existing findings document; decisions belong in
 the blueprint rather than another parallel decision-matrix document.
 
 ### R1: Complete the evidence and comparison
+
+**Completion record, September 10, 2026:** Source-only R1 is complete.
+Conclusions are saved in the three existing research documents and README.
+CS1 local/remote history is reconciled; the CS2 behavior/evidence boundaries,
+Street Scene construction/capture/acceptance workflow, and complete
+nonduplicating reference-import requirements are explained with source pins.
+Two bounded read-only workers finished; one documentation owner integrated
+their findings. No executable checks were performed and no artwork was
+processed or copied. Sibling sources were not modified by R1.
+
+Unresolved source identity, export/material/animation compatibility, delivery
+encoding provenance, public-art permissions and later runtime qualification
+are recorded in `docs/research/initial-findings.md#unresolved-questions-and-r1-hard-stop`.
+Existing hashes/dimensions/results are historical evidence, not rerun checks.
+R1 approval is still blocked. R2/R3 have not been started, prepared, scheduled
+or delegated. This completion record does not change the architecture,
+resource prerequisites, or human-only approval gates below.
 
 **Files:** Update `docs/research/evidence-index.md`,
 `docs/research/initial-findings.md`, `docs/research/cel-shift-source-audit.md`,
@@ -530,6 +550,7 @@ before this consolidation.
 
 **Unresolved review decisions that may bite later:** none; all presented
 choices were answered. **Execution prerequisites are still open:** final
-source/provenance qualification, CS1 revision reconciliation, actual export
-compatibility, a new probe resource allowance, and a named performance target.
+source/provenance qualification, actual export compatibility, a new probe
+resource allowance, and a named performance target. R1 resolved CS1 revision
+reconciliation by source/history inspection only.
 Report a concrete blocker if any cannot be established; do not infer success.
