@@ -12,6 +12,10 @@ This plan produces a comparative explanation, a reproducible technical probe,
 and the blueprint. It does not authorize implementation of the full game,
 artwork copying, model generation, or deployment during this review.
 
+**R1 is source research only:** search existing code, documents, and history,
+then write source-backed conclusions. Executable experiments begin in R2,
+not R1.
+
 ## CS3 Toolchain Decision: No Rust
 
 CS3 uses **TypeScript, Three.js, DOM/CSS, Node.js/Vite, Vitest, Playwright,
@@ -180,7 +184,7 @@ honestly; reference images must not masquerade as game screenshots.
 
 | ID | Task | Status | Dependency |
 | --- | --- | --- | --- |
-| R1 / `consolidate-evidence` | Finish evidence and the comparative explanation | Pending | None |
+| R1 / `consolidate-evidence` | Research existing sources and write the comparative explanation; no builds | Pending | None |
 | R2 / `prove-export-boundary` | Prove the bounded Blender export/load boundary | Pending | R1 and new resource approval |
 | R3 / `write-cs3-blueprint` | Produce one implementation-ready CS3 blueprint | Pending | R1 and R2 |
 
@@ -194,21 +198,46 @@ the blueprint rather than another parallel decision-matrix document.
 `docs/research/initial-findings.md`, `docs/research/cel-shift-source-audit.md`,
 and the README index/status.
 
-1. Resolve CS1's local/remote revision mismatch without overwriting either source. Attribute inspected local code and later remote history separately until reconciled.
+**Method: inspection and reasoning, not execution.**
+
+- Read and search existing code, plans, documentation, manifests, retained reports, Git history, and GitHub discussions/workflow records.
+- Draw conclusions from those sources and save them in the Markdown documents listed above.
+- Do not write or run application code, helper scripts, tests, builds, benchmarks, validators, generators, or prototypes. Do not install dependencies, launch applications, export/process assets, copy artwork, or deploy anything.
+- Use already recorded measurements, hashes, and dimensions as attributed evidence. If a question requires an experiment, record it for R2 or later implementation instead of trying it in R1.
+- Leave sibling repositories and their checkouts unchanged. Any delegated R1 worker must follow the same research-only boundary and return findings for the documentation owner.
+
+Distinguish **observed in source**, **reported by an existing run**, and
+**inferred or unverified**. A source inspection is not a fresh runtime pass.
+
+1. Reconcile CS1's local/remote revision difference by reading history and documenting it, without altering either checkout. Attribute inspected local code and later remote history separately.
 2. Finish relevant plans, pivotal diffs, PR/review discussions, workflow records, and source attribution. Prioritize decisions that affect CS3 rather than narrating every commit.
 3. Explain CS1's generated GLBs, plugin scheduling, gameplay, verification, and publication, including corrections and limitations.
 4. Explain CS2's pure simulation, procedural rendering, controls, browser acceptance, rejected quality reductions, and measured cache experiment.
 5. Explain Street Scene's Blender construction, materials, ownership, evidence, guarded capture, and separate technical/visual acceptance results.
-6. Verify that every Cel Shift master has its dependency/provenance association. Preserve 49 distinct masters and all six referenced prose bases plus the JSON foundation.
-7. Specify one future machine-readable reference manifest with source revision/path, SHA-256, width, height, bytes, artwork family, master/derivative role, sidecar mapping, and approval/provenance status. Generate the browsing index from it; retain the existing audit as historical evidence.
-8. Specify a staged, all-or-nothing future import: reject hash/dimension/dependency/path/provenance failures, retain the previous complete package, and report the failed file. Do not silently skip an invalid master.
+6. Read the existing Cel Shift inventory and metadata to identify dependency/provenance associations and gaps. Document the requirement to retain 49 distinct masters and all six referenced prose bases plus the JSON foundation; do not create or process assets.
+7. Describe the fields needed by a future reference manifest: source revision/path, SHA-256, width, height, bytes, artwork family, master/derivative role, sidecar mapping, and approval/provenance status. Document that a future browsing index derives from it; do not implement the manifest, schema, or index generator in R1.
+8. Describe the requirements for a future staged, all-or-nothing import: reject hash/dimension/dependency/path/provenance failures, retain the previous complete package, and report the failed file. Do not implement or run the importer.
 9. Preserve the relative `references/midcreek/themes/{cel-shift,_shared}` layout in the import design so copied prompt references remain valid.
-10. Consolidate the comparison and remaining unknowns in the existing findings document. Distinguish historical prompt text from the accepted camera/scale direction.
+10. Consolidate source-backed conclusions and remaining unknowns in the existing findings document. Distinguish historical prompt text from the accepted camera/scale direction, and hand off questions requiring execution without claiming they have been tested.
 
 **Completion:** Both games and the Street Scene workflow are explained with
 source evidence; the complete nonduplicating reference-import contract is
 documented; provenance/publication blockers are explicit. R1 does not itself
-copy artwork or re-render prompts.
+build or run anything. Its only deliverables are documentation updates and
+explicit questions for later execution.
+
+**Effect on prior decisions:** Decisions 6A (manifest/generated index), 7A
+(staged importer), 9A (negative contract tests), and 12A (structural prompt
+checks) remain required. R1 describes them; it does not implement or run them.
+R3 assigns their implementation and validation to the later build tasks.
+Existing size/hash audits remain recorded evidence, not measurements rerun
+in R1. Source inspection does not certify runtime compatibility.
+
+R1 may finish with explicit questions that require experiments. R2 performs
+the necessary fresh source-identity and export/load checks after approval;
+its dependency on R1 does not require R1 to perform those experiments first.
+Documenting a provenance or permission gap does not waive a later operation's
+approval requirements.
 
 ### R2: Prove a bounded export/load path
 
@@ -254,6 +283,12 @@ All tests below are **planned**, not implemented or passing in CS3. Reuse the
 appropriate CS2 cases; the new boundaries require new tests. JS/TS covers
 application and data contracts; real Blender/Python integration additionally
 proves export behavior. No Rails or Rust test stack is introduced.
+
+**Phase ownership:** R1 reads existing test code and historical reports only.
+R2 implements and runs the bounded probe's checks, including T2 and relevant
+loading/failure cases. R3 specifies the remaining reference-import, game,
+and site tests for later implementation. The T1-T9 map is not a command to
+build or execute test suites during R1.
 
 ```text
 Pinned sources

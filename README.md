@@ -41,6 +41,11 @@ one implementation-ready CS3 blueprint. No runtime, export probe, or browser
 test suite has been implemented. Prior-project measurements remain historical
 evidence, not results rerun in CS3.
 
+**R1 is research-only:** search existing code, docs, history, and retained
+reports, then write conclusions. It produces documentation, not code or tools.
+No builds, tests, scripts, dependency installs, asset processing, or prototypes
+run in R1. Questions requiring execution are recorded for R2 or later work.
+
 The approved first-playable direction reuses CS2's simulation and behavioral
 tests, adds explicit fixed-tick held-arrow walking, keeps layout/collision in
 TypeScript, and uses reusable Blender visual assets. Loading and shared-resource
