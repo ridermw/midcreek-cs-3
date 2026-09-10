@@ -28,6 +28,7 @@ reuse, deterministic simulation, measurement, and performance implications.
 | [Evidence index](docs/research/evidence-index.md) | Source repositories, inspected files, revision pins, artifact hashes, and remaining evidence gaps |
 | [Cel Shift source and size audit](docs/research/cel-shift-source-audit.md) | Concept/game source comparison, all 49 master identities, preview sizes, and the nonduplicating reference-import plan |
 | [Deferred work](TODOS.md) | The three explicitly selected follow-ups, with rationale, context, and dependencies |
+| [R1 handoff and goal prompt](docs/handoffs/r1-research.md) | New-session orientation and a copyable research-only goal with a mandatory R1 review stop |
 
 ## Current status
 
