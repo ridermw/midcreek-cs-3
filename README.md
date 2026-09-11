@@ -5,7 +5,8 @@ A Blender-authored, Three.js-based data-hall simulation.
 **Continuation active.** U1-U4 and U6 are complete. The frozen C5 U5 two-run
 technical checkpoint passes. U7 supplies a local first playable using the active,
 ignored provisional development selection. U8 instrumentation and deterministic
-evidence are complete; named-target timing, U9 and U10 remain. Appearance remains
+evidence are complete. U9 adds the isolated showcase and approved local reference
+gallery staging; named-target timing and U10 remain. Appearance remains
 pending and no qualified production library is promoted.
 
 ## Start here
@@ -70,6 +71,70 @@ npm run dev -- --host 127.0.0.1
 
 Install/restore dependencies only when needed. Heavy jobs run through
 `tools/run_guard.py` with the original authorization and finite job timeouts.
+
+### U9 isolated showcase and reference gallery
+
+`npm run build` now typechecks, proves publication inputs, prepares the site and
+builds both Vite entries. `npm run gallery:build` prepares only the ignored media
+stage. Use `npm run preview` to browse the built showcase at `/midcreek-cs-3/`;
+`npm run dev` and a direct `vite build` deliberately remain in the awaiting state
+without the approved-media preparation step. No command deploys Pages or
+qualifies a release.
+
+`config/publication-allowlist.json` is a projection of the immutable launch grant:
+its exact authorization and complete 155-record inventory hashes bind the
+approved source hashes/paths without maintaining a second artwork inventory.
+Every operation resolves the canonical U4 package once, verifies the original
+launch bytes and full package file set, and checks the independent per-artwork
+gallery uses. Public records contain only the exact allowed fields, credit,
+terms and generated media URLs. Unknown fields/uses, changed bytes, denied
+approval or missing output proof reject the build. No Blender/game captures are
+approved in this policy; provisional development assets are not public media.
+
+When the reviewed local authorization/package is unavailable, the built shell
+honestly displays **Reference gallery awaiting publication approval** on opening
+the gallery. It does not guess permission or fetch images. An empty policy is
+also supported. `node --experimental-strip-types tools/site/build.ts
+--require-gallery` instead fails if populated staging cannot be proven.
+
+With the reviewed local inputs present, all 49 original references are approved
+for **local release staging only**. Each build decodes one source at a time with
+pinned Playwright and installed Chrome, producing a contain-fit 384-by-256 WebP
+at quality 0.8, rejecting outputs over 60,000 bytes. Original files are never
+rewritten. Hash-addressed media and a private recipe/browser/source/output
+receipt are written under `.artifacts/site/<build-id>/`; `current.json` points
+to the last complete stage. Only the exact public index, thumbnails and selected
+originals are emitted into ignored `dist`. Receipts, prompts and sidecars are not.
+
+The initial shell requests no gallery media/index and imports no game/Three.js
+code. Opening the gallery loads the bounded index and at most six visible
+thumbnails per page. Selecting an original opens a keyboard-accessible native
+dialog; replacement/close aborts requests and revokes blob URLs. Errors retain
+captions and credit with retry/navigation. Narrow layouts stack controls; they
+do not provide touch gameplay.
+
+`window.showcase.startup` is a frozen navigation-relative Resource Timing
+**candidate**, including readiness roles and cache/encoded/decoded/transfer
+sizes. It remains unqualified without independent network reconciliation;
+pending or failed requests cannot be assumed absent from Resource Timing.
+`window.showcase.laterBytes()` reports later gallery transfers separately.
+The guarded browser suite reconciles CDP and the actual built shell on a cold,
+uncompressed loopback server with all 49 approved production references staged.
+That local byte-cap check is not a compressed Pages or named-target timing pass.
+
+```sh
+npm test -- tests/publication-contract.test.ts tests/reference-contract.test.ts tests/build-contract.test.ts
+# Run through tools/run_guard.py with a fresh job name:
+npm run test:e2e -- tests/e2e/showcase.spec.ts tests/e2e/build.spec.ts
+```
+
+Populated-content tests require the reviewed local inputs and a completed
+`npm run build`; synthetic fixtures are never substituted for publication or
+startup qualification. The showcase preserves the exact technical result
+labels: U5 technical passed; appearance pending; U7 playable passed locally;
+U8 deterministic instrumentation passed; named-target timing unqualified;
+production/release blocked. U10 and final appearance/deployment approval remain
+outside this unit.
 
 ### U7 local first playable
 

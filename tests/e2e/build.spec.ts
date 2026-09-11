@@ -12,7 +12,7 @@ test('the built entries navigate under the project prefix without cross-loading'
   await page.goto('./')
   await expect(page.getByRole('link', { name: 'Play demo' }))
     .toHaveAttribute('href', '/midcreek-cs-3/play/')
-  await expect(page.getByRole('status')).toContainText('Entry build ready')
+  await expect(page.locator('#build-status')).toHaveText('Showcase ready.')
   expect(urls.every((url) => url.startsWith('/midcreek-cs-3/'))).toBe(true)
   await page.getByRole('link', { name: 'Play demo' }).click()
   await expect(page).toHaveURL(/\/midcreek-cs-3\/play\/$/)

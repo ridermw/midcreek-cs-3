@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "referenceGrant": {
+    "authorizationSha256": "1d6bf6ccceb960428296591f41fe0c35271ecf668c5959dd27dd9e503b593624",
+    "inventorySha256": "9cf248787d79aec5b016853c4255d54016f5c63c48b372d2ef68c441a8907ae7",
+    "uses": ["original-on-selection", "build-only-thumbnail"],
+    "thumbnail": {
+      "version": "cs3-canvas-contain-webp-v1",
+      "width": 384,
+      "height": 256,
+      "quality": 0.8,
+      "maxBytes": 60000,
+      "fit": "contain",
+      "mime": "image/webp"
+    },
+    "publicFields": ["id", "family", "title", "displayRole", "sourceRepository", "sourceRevision", "sourcePath", "sha256", "width", "height", "attribution", "terms", "caption", "mediaUrl"],
+    "attribution": "Cel Shift concept art - williamsmat_microsoft/midcreek-concept at 870603632c4b6665c513d0fa692a3ee2dae2b683",
+    "terms": "Approved for CS3 use and release staging only; no broader license inferred."
+  },
+  "captures": []
+}

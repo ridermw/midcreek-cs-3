@@ -1,18 +1,159 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-publication="awaiting-approval">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Mid Creek: a reproducible data-hall repair scenario built with Blender and Three.js.">
     <title>Mid Creek | CS3</title>
+    <link rel="icon" href="data:,">
+    <script>
+      (() => {
+        const param = new URLSearchParams(window.location.search).get("clawpilotTheme");
+        const theme =
+          param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+    <style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+    </style>
   </head>
   <body>
-    <main>
-      <h1>Mid Creek</h1>
-      <p>A data-hall repair scenario built with Blender and Three.js.</p>
-      <p id="build-status" role="status">Preparing the showcase entry.</p>
-      <a id="play-link">Play demo</a>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="masthead">
+      <a class="wordmark" href="#main">Mid Creek <span>CS3</span></a>
+      <nav aria-label="Showcase sections">
+        <a href="#architecture">Architecture</a>
+        <a href="#references">References</a>
+        <a href="#mechanics">Controls</a>
+        <a href="#results">Results</a>
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero" aria-labelledby="title">
+        <p class="eyebrow">A reproducible data-hall repair scenario</p>
+        <h1 id="title">One hall. One fault.<br>A traceable repair.</h1>
+        <p class="lede">Blender-authored visuals meet a deterministic TypeScript simulation.
+          Explore the pipeline and approved concept references, then open the separate playable entry.</p>
+        <div class="actions"><a class="primary" id="play-link">Play demo</a><a href="#architecture">Explore the architecture</a></div>
+        <p class="notice">Keyboard required for gameplay.</p>
+        <p class="muted">Local provisional demo only. The standard preview contains no qualified production game library.</p>
+        <p id="build-status" role="status">Preparing the showcase entry.</p>
+      </section>
+      <section id="architecture" aria-labelledby="architecture-title">
+        <p class="eyebrow">01 / Architecture &amp; pipeline</p>
+        <h2 id="architecture-title">Separate state, presentation and evidence.</h2>
+        <div id="architecture-list" class="text-grid"></div>
+      </section>
+      <section id="references" aria-labelledby="reference-title">
+        <p class="eyebrow">02 / Concept references</p>
+        <h2 id="reference-title">The visual specification, not a fidelity verdict.</h2>
+        <p>The original concept studies include historical revisions and both character studies.
+          Their breadth does not add playable characters or fault systems. Historical prompt associations remain unresolved.</p>
+        <p>Opening the gallery requests a small approved index and up to six visible previews per page.
+          Original masters load only when you choose an image.</p>
+        <button id="gallery-toggle" type="button" aria-expanded="false" aria-controls="gallery-panel" disabled>Open reference gallery</button>
+        <div id="gallery-panel" hidden>
+          <p id="gallery-status" role="status"></p>
+          <button id="gallery-retry" type="button" hidden>Retry gallery</button>
+          <div class="gallery-controls" aria-label="Reference pages">
+            <button id="gallery-previous" type="button" disabled>Previous page</button>
+            <span id="gallery-page" aria-live="polite"></span>
+            <button id="gallery-next" type="button" disabled>Next page</button>
+          </div>
+          <ul id="gallery-items" class="gallery-grid"></ul>
+        </div>
+      </section>
+      <section id="studies" aria-labelledby="studies-title">
+        <p class="eyebrow">03 / Blender &amp; export studies</p>
+        <h2 id="studies-title">Technical evidence is not appearance acceptance.</h2>
+        <p>Blender render, adapted export study and game capture are distinct evidence roles, not concept references.
+          No policy-qualified captures are approved in this gallery. Provisional local assets and raw comparison logs are not public media.</p>
+        <p>The historical R2 comparison is a transport and export regression, not a Cel Shift or full-game fidelity result.</p>
+      </section>
+      <section id="mechanics" aria-labelledby="mechanics-title">
+        <p class="eyebrow">04 / Mechanics &amp; controls</p>
+        <h2 id="mechanics-title">Dispatch. Travel. Repair.</h2>
+        <p>One seeded coolant leak, a fixed-tick technician and a reproducible repair.
+          Keyboard and pointer controls are required; responsive layout does not provide touch gameplay.</p>
+        <div id="controls-list" class="text-grid"></div>
+      </section>
+      <section id="results" aria-labelledby="results-title">
+        <p class="eyebrow">05 / Exact technical result labels</p>
+        <h2 id="results-title">What passed, and what remains open.</h2>
+        <div id="results-list" class="text-grid result-grid"></div>
+        <h3>Qualified named-target timing</h3>
+        <p class="measurement">Not measured yet</p>
+        <p>Targets, not results: at least 59 mean FPS and at most 18 ms p95 frame interval.
+          The showcase cold-start transfer cap is 2,000,000 bytes through its interactive shell;
+          subsequent gallery and original transfers are accounted separately.</p>
+      </section>
     </main>
+    <footer>Mid Creek CS3 / Local showcase staging. No appearance acceptance or live release approval.</footer>
+    <dialog id="image-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-caption">
+      <div class="dialog-toolbar"><h2 id="dialog-title">Concept reference</h2><button id="dialog-close" type="button" autofocus>Close image</button></div>
+      <p id="dialog-status" role="status"></p>
+      <img id="original-image" alt="" hidden>
+      <p id="dialog-caption"></p>
+      <p id="dialog-credit" class="credit"></p>
+      <div class="dialog-controls">
+        <button id="image-previous" type="button">Previous image</button>
+        <button id="dialog-retry" type="button" hidden>Retry original</button>
+        <button id="image-next" type="button">Next image</button>
+      </div>
+    </dialog>
+    <noscript>This showcase needs JavaScript for its interactive shell and deferred gallery. No reference images are preloaded.</noscript>
     <script type="module" src="/src/site/main.ts"></script>
   </body>
 </html>
