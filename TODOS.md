@@ -27,8 +27,11 @@ U2 adds the preserved deterministic core and validated visual placement
 contracts; real media and integrated gameplay are still pending.
 U3 qualifies fixed-tick input, ordered replay and the production browser
 input adapter. Full scene/HUD interaction remains U7 work.
-U5 authoring has a checked five-template source candidate; export/loader,
-comparative appearance and atomic promotion are still pending.
+U5 authoring has checked actual action-slot evaluation, linear keys and moving
+foot envelopes for the five-template source candidate. Its visuals remain
+prototypes, not a faithful Cel Shift reproduction or appearance acceptance.
+Export/loader qualification, comparative appearance and atomic promotion
+are still pending.
 U4's full approved local import and generated index are verified, including
 real filesystem rollback/interruption checks. Reference media remains ignored;
 the separate public-gallery projection and release allowlist are U9-U10 work.

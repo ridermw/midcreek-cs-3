@@ -65,16 +65,7 @@ class EvaluatedLibraryTests(unittest.TestCase):
     def setUp(self):
         self.spec = json.loads((ROOT / "blender/asset_spec.json").read_text())
         self.record = json.loads(Path(bpy.data.filepath).with_name("authoring.json").read_text())
-        for obj in bpy.context.scene.objects:
-            if obj.animation_data:
-                obj.animation_data.action = None
-                for track in obj.animation_data.nla_tracks:
-                    track.mute = True
-            if obj.name in self.record["rest"]:
-                rest = self.record["rest"][obj.name]
-                obj.location, obj.rotation_euler, obj.scale = rest["location"], rest["rotation"], rest["scale"]
-        bpy.context.scene.frame_set(1)
-        bpy.context.view_layer.update()
+        library.activate_clip(self.record, None)
 
     def bounds(self, root):
         points = []
@@ -146,10 +137,12 @@ class EvaluatedLibraryTests(unittest.TestCase):
                 self.assertEqual(len(track.strips), 1)
                 strip = track.strips[0]
                 self.assertEqual((strip.frame_start, strip.frame_end), tuple(frames))
+                for layer in strip.action.layers:
+                    for action_strip in layer.strips:
+                        for curve in action_strip.channelbag(strip.action_slot).fcurves:
+                            self.assertEqual(set(k.interpolation for k in curve.keyframe_points), {"LINEAR"})
         for name, frames in library.CLIPS:
-            for obj in nodes:
-                for track in obj.animation_data.nla_tracks:
-                    track.mute = track.name != name
+            library.activate_clip(self.record, name)
             bpy.context.scene.frame_set(frames[0])
             start = {n.name: tuple(v for row in n.matrix_world for v in row) for n in nodes}
             bpy.context.scene.frame_set(frames[1])
@@ -161,10 +154,10 @@ class EvaluatedLibraryTests(unittest.TestCase):
         actor = self.spec["assets"][3]
         root = bpy.data.objects[actor["root"]]
         for name, frames in library.CLIPS:
-            for obj in root.children_recursive:
-                if obj.animation_data:
-                    for track in obj.animation_data.nla_tracks:
-                        track.mute = track.name != name
+            library.activate_clip(self.record, name)
+            if name == "Walk":
+                bpy.context.scene.frame_set(8)
+                self.assertGreater(abs(bpy.data.objects["ThighL"].rotation_euler.x), 0.2, "walk must actually animate")
             for half in range((frames[1]-1)*2+1):
                 bpy.context.scene.frame_set(1+half//2, subframe=(half % 2)/2)
                 self.assert_envelope(self.bounds(root), actor["animatedBounds"], f"{name}/{half/2}")

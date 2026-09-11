@@ -55,10 +55,16 @@ session/input/camera modules in an isolated test fixture; the scene/HUD
 journey still belongs to U7, not a second simulation in the fixture.
 
 U5's owned Blender authoring step now creates the five editable templates and
-three rigid technician actions. A fresh source candidate passes evaluated
-geometry, unit/root, palette/UV and all-key/midpoint envelope checks.
-It is **not yet a qualified or promoted export library**;
-those gates remain in progress. No candidate media is published in Git.
+three rigid technician actions. Source evaluation now binds the actual action
+slots instead of relying on an NLA-only test that could remain stationary.
+Explicit linear keys and counterrotating ankle pivots keep the moving feet
+within the unchanged envelope. The current source passes evaluated geometry,
+unit/root, palette/UV, actual movement and all-key/midpoint checks.
+These are **visual prototypes, not appearance-accepted Cel Shift assets**.
+The artwork is the visual specification, not permission for another artistic
+interpretation. Export/loader qualification, near-reference appearance and
+atomic promotion remain in progress; passing source tests establishes none
+of those gates. No candidate media is published in Git.
 
 U4 imports the exact approved Cel Shift set into an ignored, immutable local
 package: 49 masters, 47 prompts, seven shared inputs, reviewed sanitized

@@ -38,6 +38,9 @@ def validate_spec(spec):
     if len(spec["palette"]) > 32 or any(not re.fullmatch(r"#[0-9A-Fa-f]{6}", c)
                                       for c in spec["palette"].values()):
         raise ValueError("SPEC_PALETTE")
+    if spec["texture"] != {"name": "CS3-Palette", "width": 256, "height": 8, "uv": 0,
+                           "role": "base-color", "colorSpace": "sRGB", "filter": "nearest"}:
+        raise ValueError("SPEC_TEXTURE")
 
 
 def palette_png(spec):
@@ -60,6 +63,27 @@ def write_json(file, value):
     file.write_text(json.dumps(value, sort_keys=True, indent=2, allow_nan=False) + "\n")
 
 
+def activate_clip(authoring, name):
+    import bpy
+    for node_name, rest in authoring["rest"].items():
+        obj = bpy.data.objects[node_name]
+        animation = obj.animation_data
+        animation.use_nla = False
+        animation.action = None
+        for track in animation.nla_tracks:
+            track.mute = True
+        obj.location, obj.rotation_euler, obj.scale = rest["location"], rest["rotation"], rest["scale"]
+        if name is not None:
+            tracks = [track for track in animation.nla_tracks if track.name == name]
+            if len(tracks) != 1 or len(tracks[0].strips) != 1:
+                raise ValueError(f"SOURCE_CLIP: {node_name}/{name}")
+            strip = tracks[0].strips[0]
+            animation.action = strip.action
+            animation.action_slot = strip.action_slot
+    bpy.context.scene.frame_set(1)
+    bpy.context.view_layer.update()
+
+
 def owned_output(output):
     repo = Path(__file__).resolve().parents[1]
     output = output.resolve()
@@ -79,7 +103,7 @@ class Builder:
         self.parts = {}
         self.nodes = {}
         self.palette = list(spec["palette"])
-        palette = output / "palette.png"
+        palette = output / f"{spec['texture']['name']}.png"
         palette.write_bytes(palette_png(spec))
         image = bpy.data.images.load(str(palette))
         image.name = "CS3-Palette"
@@ -88,6 +112,7 @@ class Builder:
         for name, values in spec["materials"].items():
             material = bpy.data.materials.new(name)
             material.use_nodes = True
+            material.use_backface_culling = True
             shader = material.node_tree.nodes.get("Principled BSDF")
             shader.inputs["Base Color"].default_value = (1, 1, 1, 1)
             shader.inputs["Roughness"].default_value = values["roughness"]
@@ -118,7 +143,7 @@ class Builder:
         self.parts[parent.name].append(obj)
         return obj
 
-    def shape(self, parent, position, size, color, kind="box", rotation=(0, 0, 0), bevel=0):
+    def shape(self, parent, position, size, color, kind="box", rotation=(0, 0, 0), bevel=0, segments=1):
         bpy = self.bpy
         if kind == "box":
             bpy.ops.mesh.primitive_cube_add(size=1)
@@ -133,7 +158,7 @@ class Builder:
         bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
         if bevel:
             modifier = obj.modifiers.new("Graphic bevel", "BEVEL")
-            modifier.width, modifier.segments = bevel, 1
+            modifier.width, modifier.segments = bevel, segments
             bpy.ops.object.modifier_apply(modifier=modifier.name)
         obj.rotation_euler = rotation
         bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
@@ -181,8 +206,11 @@ class Builder:
                 s((x, y, 1.05), (0.04, 0.04, 2.1), "ink", bevel=0.006)
                 s((x, y, 1.055), (0.03, 0.03, 2.03), "white", bevel=0.003)
         for z in (0.025, 2.075):
-            s((0, 0, z), (0.8, 0.8, 0.05), "ink", bevel=0.008)
-            s((0, 0, z + (0.008 if z > 1 else -0.008)), (0.775, 0.775, 0.034), "white")
+            cap = s((0, 0, z), (0.8, 0.8, 0.05), "white", bevel=0.008)
+            for polygon in cap.data.polygons:
+                if max(abs(component) for component in polygon.normal) < 0.999:
+                    for loop in polygon.loop_indices:
+                        cap.data.uv_layers.active.data[loop].uv = ((self.palette.index("ink")+0.5)/32,0.5)
         for x in (-0.388, 0.388):
             s((x, 0, 1.05), (0.017, 0.72, 1.95), "white")
             for z in (1.36, 1.40, 1.44, 1.48):
@@ -257,7 +285,7 @@ class Builder:
     def technician(self, root):
         hips = self.node("Hips", root, (0, 0, 0.87))
         torso = self.node("Torso", hips)
-        s = lambda n, p, z, c, **kw: self.shape(n, p, z, c, **kw)
+        s = lambda n, p, z, c, **kw: self.shape(n, p, z, c, segments=3, **kw)
         s(torso, (0,0,0.21), (0.385,0.24,0.43), "shirt", bevel=0.04)
         s(torso, (0,-0.008,0.205), (0.36,0.265,0.405), "orange", bevel=0.025)
         s(torso, (0,-0.012,0.213), (0.345,0.271,0.382), "lime", bevel=0.02)
@@ -278,8 +306,9 @@ class Builder:
         s(head, (0,-0.002,0.06), (0.225,0.195,0.245), "skin", bevel=0.042)
         s(head, (0,0.062,0.11), (0.224,0.075,0.16), "hair", bevel=0.025)
         s(head, (0,0,0.195), (0.29,0.26,0.19), "hat", kind="sphere")
-        s(head, (0,-0.025,0.145), (0.32,0.31,0.022), "ink", kind="cylinder")
-        s(head, (0,-0.03,0.154), (0.31,0.31,0.022), "hat", kind="cylinder")
+        s(head, (0,-0.044,0.145), (0.31,0.295,0.016), "ink", kind="cylinder")
+        s(head, (0,-0.047,0.152), (0.305,0.295,0.016), "hat", kind="cylinder")
+        s(head, (0,0,0.253), (0.027,0.19,0.066), "hat", bevel=0.012)
         for x in (-0.14, 0.14):
             s(head, (x,0.016,0.115), (0.07,0.10,0.105), "ink", kind="sphere")
             s(head, (x*1.10,0.016,0.12), (0.046,0.065,0.068), "hose", kind="sphere")
@@ -289,16 +318,17 @@ class Builder:
         s(head, (0,-0.103,-0.006), (0.052,0.008,0.005), "boots")
         for suffix, sign in [("L",-1),("R",1)]:
             arm = self.node(f"UpperArm{suffix}", torso, (sign*0.245,0,0.345))
-            s(arm, (0,0,-0.12), (0.145,0.155,0.29), "shirt", bevel=0.035)
+            s(arm, (0,0,-0.12), (0.145,0.155,0.29), "shirt", kind="cylinder", bevel=0.035)
             elbow = self.node(f"Forearm{suffix}", arm, (0,0,-0.25))
-            s(elbow, (0,0,-0.09), (0.105,0.125,0.22), "shirt", bevel=0.025)
+            s(elbow, (0,0,-0.09), (0.105,0.125,0.22), "shirt", kind="cylinder", bevel=0.025)
             s(elbow, (0,-0.005,-0.231), (0.097,0.10,0.115), "skin", bevel=0.023)
             thigh = self.node(f"Thigh{suffix}", hips, (sign*0.105,0,0))
-            s(thigh, (0,0,-0.18), (0.155,0.205,0.385), "denim", bevel=0.038)
+            s(thigh, (0,0,-0.18), (0.155,0.205,0.385), "denim", kind="cylinder", bevel=0.038)
             shin = self.node(f"Shin{suffix}", thigh, (0,0,-0.37))
-            s(shin, (0,0,-0.17), (0.135,0.175,0.355), "denim", bevel=0.032)
-            s(shin, (0,-0.047,-0.425), (0.16,0.27,0.15), "boots", bevel=0.025)
-            s(shin, (0,-0.047,-0.485), (0.165,0.28,0.03), "ink", bevel=0.007)
+            s(shin, (0,0,-0.17), (0.135,0.175,0.355), "denim", kind="cylinder", bevel=0.032)
+            foot = self.node(f"Foot{suffix}", shin, (0,0,-0.425))
+            s(foot, (0,-0.047,0), (0.16,0.27,0.15), "boots", bevel=0.025)
+            s(foot, (0,-0.047,-0.06), (0.165,0.28,0.03), "ink", bevel=0.007)
         return sorted((n for n in root.children_recursive if n.type == "EMPTY"), key=lambda n: n.name)
 
     def coolant(self, root):
@@ -329,6 +359,8 @@ class Builder:
                             obj.rotation_euler.x = wave*0.22
                         elif obj.name.startswith("Shin"):
                             obj.rotation_euler.x = max(0,wave)*0.20
+                        elif obj.name.startswith("Foot"):
+                            obj.rotation_euler.x = -wave*0.22-max(0,wave)*0.20
                         elif obj.name.startswith("UpperArm"):
                             obj.rotation_euler.x = -wave*0.32
                         elif obj.name.startswith("Forearm"):
@@ -345,6 +377,11 @@ class Builder:
                     obj.keyframe_insert(data_path="location", frame=frame)
                     obj.keyframe_insert(data_path="rotation_euler", frame=frame)
                 action, slot = obj.animation_data.action, obj.animation_data.action_slot
+                for layer in action.layers:
+                    for action_strip in layer.strips:
+                        for curve in action_strip.channelbag(slot).fcurves:
+                            for key in curve.keyframe_points:
+                                key.interpolation = "LINEAR"
                 track = obj.animation_data.nla_tracks.new()
                 track.name = mode
                 strip = track.strips.new(mode, frames[0], action)
@@ -390,7 +427,7 @@ def main(spec_file, output):
     write_json(output / "authoring.json", {
         "schema": 1, "complete": True, "sourceSha256": checksum(source),
         "inputs": {"blender/build_library.py": checksum(__file__), "blender/asset_spec.json": checksum(spec_file),
-                   "palette.png": checksum(output/"palette.png")},
+                   f"{spec['texture']['name']}.png": checksum(output/f"{spec['texture']['name']}.png")},
         "blender": bpy.app.version_string, "blenderBuild": bpy.app.build_hash.decode(),
         "roots": list(ROOTS), "animatedNodes": [n.name for n in animated],
         "rest": {n.name: {"location": list(n.location), "rotation": list(n.rotation_euler),
