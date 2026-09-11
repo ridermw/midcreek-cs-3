@@ -181,7 +181,7 @@ export function freezeStartup(input: StartupInput): StartupReceipt {
   if (input.pending.length) issues.push(`pending initial requests: ${input.pending.join(', ')}`)
   const required = new Map(input.required.map((r) => [r.url, r]))
   if (required.size !== input.required.length) issues.push('duplicate required request')
-  for (const role of ['html', 'script', 'style', 'selection', 'manifest'] as const) {
+  for (const role of ['html', 'script', 'style', 'manifest'] as const) {
     if (!input.required.some((r) => r.role === role)) issues.push(`missing required ${role}`)
   }
   const glbs = input.required.filter((r) => r.role === 'asset')
@@ -395,15 +395,25 @@ export function qualify(report: QualificationReport): QualificationResult {
   if (![identity.selectionSha256, identity.manifestSha256, identity.libraryDigest, identity.profileSha256, identity.recipeSha256].every(sha256)
     || identity.profile !== 'cs3-standard-v1' || report.target.profileSha256 !== identity.profileSha256
     || report.target.recipeSha256 !== identity.recipeSha256) issues.push('content/profile/recipe identity mismatch')
-  for (const [role, digest] of [['selection', identity.selectionSha256], ['manifest', identity.manifestSha256]] as const) {
+  const identityBindings = identity.selectionSha256 === identity.manifestSha256
+    ? [['manifest', identity.manifestSha256] as const]
+    : [['selection', identity.selectionSha256] as const, ['manifest', identity.manifestSha256] as const]
+  for (const [role, digest] of identityBindings) {
     if (startup.required.filter((r) => r.role === role && r.sha256 === digest).length !== 1) issues.push(`${role} binding mismatch`)
   }
   const assets = startup.required.filter((r) => r.role === 'asset').map((r) => ({ url: r.url, sha256: r.sha256 }))
   if (!same(assets, identity.assets)) issues.push('asset identity mismatch')
   const expectedPhases = workloadPhases(frames)
   if (!same(report.phases, expectedPhases) || expectedPhases.length !== 8) issues.push('incomplete or modified workload boundaries')
+  const validActions = report.actions.filter((action) => {
+    const valid = integer(action.beforeRender) && action.beforeRender > 0
+      && (action.type === 'dispatch' || (action.type === 'move' && action.cell !== undefined
+        && integer(action.cell.x) && integer(action.cell.z)))
+    if (!valid) issues.push('invalid workload action')
+    return valid
+  })
   let replay = createWorld(ready.seed)
-  const actionsByFrame = new Map(report.actions.map((action) => [action.beforeRender, action]))
+  const actionsByFrame = new Map(validActions.map((action) => [action.beforeRender, action]))
   let replayMismatch = false
   const mismatch = (detail: string) => {
     if (!replayMismatch) issues.push(detail)
@@ -442,10 +452,12 @@ export function qualify(report: QualificationReport): QualificationResult {
     if (f.renderCount !== i + 1 || !Number.isFinite(f.startedAt) || f.startedAt < 0
       || !Number.isFinite(f.completedAt) || f.completedAt < f.startedAt
       || (previous && (f.completedAt <= previous.completedAt || f.startedAt < previous.completedAt))
+      || (i > 0 && f.startedAt < ready.readyAt)
       || !integer(f.calls) || !integer(f.triangles) || f.calls === 0 || f.triangles === 0
       || (i === 0 ? f.trigger !== 'startup' : !['raf', 'resize'].includes(f.trigger))
       || !integer(f.tick) || !Number.isFinite(f.simulationSeconds) || f.simulationSeconds < 0
       || Math.abs(f.simulationSeconds - f.tick / 30) > 1e-8
+      || (i > 0 && f.simulationSeconds > Math.max(0, (f.completedAt - ready.readyAt) / 1000) + 1 / 30 + 1e-8)
       || (previous && f.tick < previous.tick) || !f.visible || !f.focused || f.paused
       || !['idle', 'walking', 'repairing'].includes(f.mode)
       || !['fault', 'working', 'resolved'].includes(f.fault.status)

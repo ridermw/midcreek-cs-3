@@ -209,7 +209,7 @@ export async function startGame(container: HTMLElement, options: GameOptions) {
       if (disposed || state === 'failed') return
       try {
         const rect = viewport.getBoundingClientRect()
-        view.resize(rect.width, rect.height, window.devicePixelRatio)
+        view.resize(rect.width, rect.height, Math.min(window.devicePixelRatio, 1.5))
         if (state === 'ready' && !hidden) render('resize')
       } catch (cause) { fail(cause) }
     }

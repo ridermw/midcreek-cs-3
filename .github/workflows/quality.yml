@@ -30,6 +30,10 @@ jobs:
       - run: npm run typecheck
       - name: Portable unit and rejection contracts
         run: npm run test:portable
+      - name: Portable exporter contracts
+        run: |
+          python3 -B -m unittest discover -s tests/blender -p 'test_*.py'
+          node --experimental-strip-types --test tests/exporter-receipt.node.ts
       - name: Build honest awaiting staging without private qualification inputs
         run: npm run build
       - name: Assert every unmet release prerequisite remains blocking
@@ -41,8 +45,12 @@ jobs:
           status=$?
           set -e
           test "$status" -eq 1
-      - name: Install the browser revision pinned by the Playwright lockfile
-        run: npx --no-install playwright install --with-deps chromium
+      - name: Install browser channels for portable and release contracts
+        run: |
+          npx --no-install playwright install --with-deps chromium
+          npx --no-install playwright install chrome
+      - name: U6 synthetic browser loading and ownership
+        run: npx playwright test tests/e2e/assets.spec.ts
       - name: Synthetic release file mechanics (not production qualification)
         run: npm run release:fixture
       - name: Traverse both real built routes through strict loopback

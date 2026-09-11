@@ -108,7 +108,8 @@ test('retains every actual render in idle, scripted loop, full dispatch and exac
   }
   const result = qualify(report)
   expect(result.status).toBe('unqualified')
-  expect(result.issues.filter((issue) => !/^(target\.|hardware WebGL renderer prerequisite|application commit missing|native report prerequisite|content\/profile\/recipe identity mismatch|ready comparison dimensions mismatch|camera\/viewport workload mismatch)/.test(issue))).toEqual([])
+  expect(result.failures).toEqual([])
+  expect(result.issues.filter((issue) => !/^(target\.|hardware WebGL renderer prerequisite|application commit missing|native report prerequisite|content\/profile\/recipe identity mismatch)/.test(issue))).toEqual([])
   const run = process.env.CS3_JOB_ROOT?.split('/').at(-1) ?? `manual-${Date.now()}`
   const written = await writeQualification([report], resolve(`.artifacts/qualification/${run}/deterministic`))
   expect(written.results).toHaveLength(1)

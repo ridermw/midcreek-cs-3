@@ -313,7 +313,7 @@ export function createGltfLoader(baseUrl: string): AssetLoader {
       const url = resolveAssetUrl(baseUrl, entry.file)
       let response: Response
       try {
-        response = await fetch(url, { signal })
+        response = await fetch(url, { signal, redirect: 'error' })
       } catch (cause) {
         throw new AssetLoadError('REQUEST', entry.id, cause instanceof Error ? cause.message : String(cause), entry.id)
       }

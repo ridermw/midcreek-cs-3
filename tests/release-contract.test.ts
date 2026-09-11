@@ -108,6 +108,14 @@ describe('U10 exact release mechanics, never qualification', () => {
     await expect(release.stageRelease(input)).rejects.toThrow(/URL|DEPENDENCY/)
   })
   it.each([
+    'fetch("/midcreek-cs-3/../../outside.json", { cache: "no-store" })',
+    'fetch("/midcreek-cs-3/missing.json", { signal: controller.signal })',
+  ])('rejects escaped or missing JavaScript dependency with options: %s', async (javascript) => {
+    const input = await fixture()
+    await put(input.viteRoot, 'assets/play.js', javascript)
+    await expect(release.stageRelease(input)).rejects.toThrow(/URL|DEPENDENCY/)
+  })
+  it.each([
     'PRIVATE_SENTINEL_DO_NOT_PUBLISH', '/Users/private/person/photo',
     '/home/private/source', 'file:///private/prompt.txt', 'rawPrompt',
   ])('rejects private bundled content %s', async (privateText) => {

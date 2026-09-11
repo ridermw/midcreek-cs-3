@@ -374,7 +374,8 @@ for (let heading = 0; heading < 4; heading++) {
     }
     for (const size of [{ width: 1280, height: 720 }, { width: 390, height: 844 }]) {
       await page.setViewportSize(size)
-      await expect.poll(async () => (await inspect(page)).camera!.width).toBeLessThan(size.width)
+      await expect.poll(async () => (await inspect(page)).camera!.width)
+        .toBe(size.width === 1280 ? 1280 : size.width - 32)
       await clickCell(page, 3, 7)
       expect((await inspect(page)).world.player.path).toEqual([{ x: 3, z: 7 }])
       expect((await inspect(page)).route).toHaveLength(1)

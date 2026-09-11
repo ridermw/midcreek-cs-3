@@ -183,18 +183,18 @@ function inspectUrls(files: readonly SourceFile[]): void {
       : file.path.endsWith('.css')
         ? [...content.matchAll(/url\(\s*["']?([^"')\s]+)["']?\s*\)/gi)].map((m) => m[1]!)
         : [
-          ...[...content.matchAll(/["'`]((?:\/assets\/|\/gallery\/|\/play\/)[^"'`]*|\/midcreek-cs-3\/[^"'`]+)["'`]/g)].map((m) => m[1]!),
-          ...[...content.matchAll(/\b(?:fetch|import)\(\s*["'`]([^"'`]+)["'`]\s*\)/g)].map((m) => m[1]!),
+          ...[...content.matchAll(/\b(?:fetch|import)\(\s*["'`]([^"'`]+)["'`]/g)].map((m) => m[1]!),
         ]
     for (const url of urls) {
       if (url.startsWith('#') || url === 'data:,' || (file.path.endsWith('.css') && url.startsWith('data:'))) continue
-      if (file.path.endsWith('.js') && url.endsWith('/')) continue
       const absolute = new URL(url, `https://release.invalid/${RELEASE_BASE.slice(1)}${file.path}`)
-      requireAsset(absolute.pathname.startsWith(RELEASE_BASE) && !/[\\%]/.test(url),
+      requireAsset(absolute.origin === 'https://release.invalid' && absolute.pathname.startsWith(RELEASE_BASE) && !/[\\%]/.test(url),
         'RELEASE_URL', file.path, 'resource/navigation URLs must retain the project prefix')
       const path = absolute.pathname.slice(RELEASE_BASE.length)
       // Runtime bases are not requests. Actual browser requests must still hit exact members.
-      if (file.path.endsWith('.js') && (path === '' || path.endsWith('/'))) continue
+      if (file.path.endsWith('.js') && [
+        RELEASE_BASE, `${RELEASE_BASE}play/`, `${RELEASE_BASE}assets/library/`, `${RELEASE_BASE}gallery/`,
+      ].includes(absolute.pathname)) continue
       const member = path === '' || path === 'play/' ? `${path}index.html` : path
       requireAsset(allowed.has(member), 'RELEASE_DEPENDENCY', url, 'URL names a missing/unapproved member')
     }
@@ -438,6 +438,23 @@ export async function validateRelease(artifact: ReleaseArtifact) {
   }
   inspectUrls(files)
   validateProjection(files, receipt.library === null ? null : bindingParser(receipt.library, 'library binding'))
+  if (artifact.mode === 'staging') {
+    const repository = resolve(artifact.root, '../../../..')
+    const current = record(parseJson((await read(join(repository, '.artifacts/site/current.json'))).toString()), 'site current')
+    const galleryRoot = resolve(text(current.root, 'site root'))
+    requireAsset(galleryRoot.startsWith(resolve(repository, '.artifacts/site') + '/'),
+      'RELEASE_GALLERY_APPROVAL', 'site root', 'reviewed gallery stage must remain private')
+    const galleryReceipt = await read(join(galleryRoot, 'receipt.json'))
+    const reviewed = await loadPublicationInputs(repository)
+    const authoritative = await snapshotGallery({
+      root: galleryRoot, receiptSha256: digest(galleryReceipt),
+    }, reviewed)
+    const stagedGallery = files.filter((file) => file.path.startsWith('gallery/'))
+      .map((file) => ({ path: file.path, bytes: file.bytes, sha256: file.sha256 }))
+    const approvedGallery = authoritative.files
+      .map((file) => ({ path: file.path, bytes: file.bytes, sha256: file.sha256 }))
+    equal(stagedGallery, approvedGallery, 'RELEASE_GALLERY_APPROVAL', 'staging gallery provenance')
+  }
   // The receipt is a local integrity record, not authority to change the pending gates.
   return {
     ...await releaseStatus(resolve(artifact.root, '../../../..'),

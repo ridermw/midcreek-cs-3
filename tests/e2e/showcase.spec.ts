@@ -274,9 +274,9 @@ test('play navigation requests no gallery index, originals or thumbnails', async
   page.on('request', (r) => urls.push(r.url()))
   await page.getByRole('link', { name: 'Play demo', exact: true }).click()
   await expect(page).toHaveURL(/\/play\/$/)
-  await expect(page.locator('#load-status')).toContainText('Unable to start')
+  await expect(page.locator('#load-status')).toHaveText('Unable to start (RELEASE_BLOCKED). Reload to try again.')
   expect(urls.join('\n')).not.toMatch(/gallery|reference-manifest|\.webp|\.png/)
-  expect(urls.some((url) => url.includes('assets/library/development/selection.json'))).toBe(true)
+  expect(urls.some((url) => url.includes('/assets/library/'))).toBe(false)
 })
 
 test('awaiting approval is honest and fetches neither index nor images', async ({ page }) => {
