@@ -40,6 +40,11 @@ The current atlas-backed candidate also passes source/indexed-triangle UV
 agreement; a reviewed wrong-seam-index false-positive case is now rejected.
 These surface-integrity checks and the tested browser ink study do not
 constitute appearance acceptance or asset promotion.
+The local HTML U5 Visual Monitor now exposes receipt-labeled source/browser,
+comparison, reference and experimental images with automatic discovery, a
+saved offline snapshot and explicit workstream statuses. Fresh producer
+sidecars and Chrome interactions are checked; this is visibility into U5,
+not completion of its appearance or promotion gates.
 U4's full approved local import and generated index are verified, including
 real filesystem rollback/interruption checks. Reference media remains ignored;
 the separate public-gallery projection and release allowlist are U9-U10 work.

@@ -168,6 +168,10 @@ def main(export_file, output):
                            "ortho_width": camera.data.ortho_scale, "near": 0.01, "far": 1000, "size": [640,360]},
                 "file": filename, "sha256": builder.checksum(output/filename),
             })
+            builder.write_json(output/f"{filename}.capture.json", {
+                "schema": 1, "kind": "cs3-image-capture", "renderer": "source",
+                "sourceSha256": receipt["sourceSha256"], "capture": captured[-1],
+            })
     builder.write_json(output/"captures.json", {
         "schema": 1, "complete": True, "kind": "cs3-library-source-captures",
         "exportSha256": builder.checksum(export_file), "sourceSha256": receipt["sourceSha256"],

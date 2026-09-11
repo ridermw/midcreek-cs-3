@@ -4,7 +4,7 @@ A Blender-authored, Three.js-based Mid Creek experiment.
 
 ## Implementation checkpoint
 
-**U1-U4 complete; U5-U10 pending.** The September 10, 2026 launch authorization
+**U1-U4 complete; U5 in progress; U6-U10 pending.** The September 10, 2026 launch authorization
 now permits unattended implementation on `main`. The exact user-approved
 envelope, subsequent credit amendment, pinned input identities, resource
 receipts and failed/successful checks are retained locally under
@@ -107,6 +107,33 @@ The exact CLI and real import pass alongside 145 unit/contract and 21 browser
 checks. [Reference-tool usage](tools/references/USAGE.md) documents the
 authorization boundary. This does not publish reference media or authorize
 Pages deployment.
+
+## Local U5 Visual Monitor
+
+The read-only HTML monitor discovers new images every five seconds and shows
+all U5 workstreams, five asset notes, candidate history and retained failed jobs.
+Filter by candidate, asset, image type or text; click an image for its full-size
+view, renderer/profile, pose, source identity and capture receipt. References,
+Blender source, browser baselines, side-by-side comparisons, experimental
+rendering, hall studies and texture inputs have distinct labels.
+
+```sh
+npm run u5:monitor -- --authorization .artifacts/implementation/20260910T232859Z/authorization.json
+```
+
+The command prints its loopback URL and stops at that authorization's original
+closeout deadline. Only one monitor may own a run; do not start another while
+its `u5-monitor/server.lock` is held. The saved
+`.artifacts/implementation/20260910T232859Z/u5-monitor/index.html` opens as an
+explicitly **offline snapshot** using the retained local image files.
+
+Labels come from receipts rather than filenames. Source/browser producers emit
+per-image sidecars during each batch; new files without receipts remain
+unverified, and a hash mismatch stays visible. Receipt matching does **not**
+grant appearance acceptance, performance qualification or promotion.
+Workstream notes come from the run's `u5-monitor-status.json`, with their own
+visible update time; terminal job receipts are not a live-process heartbeat.
+This tool publishes nothing and is not part of either public application entry.
 
 ## CS3 toolchain
 

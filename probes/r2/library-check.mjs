@@ -190,6 +190,15 @@ export async function checkLibrary({ receipt, run, tag, code, result, check, own
           camera: info.camera, viewport: info.renderer,
           renderer: { ...result.renderer, toneMapping: info.toneMapping, exposure: info.exposure },
           lighting: source.lighting, comparison: compared });
+        const recorded = result.captures.at(-1);
+        for (const [renderer, name, sha256] of [
+          ['browser', file, recorded.sha256], ['comparison', contact, recorded.contactSha256],
+        ]) {
+          await fs.writeFile(path.join(run, `${name}.capture.json`), JSON.stringify({
+            schema: 1, kind: 'cs3-image-capture', renderer, sourceSha256: receipt.sourceSha256,
+            capture: { ...capture, asset: asset.id, file: name, sha256, camera: info.camera },
+          }), { flag: 'wx' });
+        }
       }
       return { views: captures.length, appearanceAcceptance: 'not decided by numeric comparison' };
     });
