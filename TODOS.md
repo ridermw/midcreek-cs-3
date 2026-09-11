@@ -22,12 +22,14 @@ launched appearance work.
 - The canonical local qualification receipt and `local-playable` provisional
   development selection are active under the
   [dated amendment](docs/architecture/cs3-provisional-development-use-2026-09-11.json).
+- U7 first playable and U8 readiness/request/frame ledgers are complete. Three
+  headed 60 Hz named-target repetitions are retained but unqualified: all have
+  a one-frame resize-boundary mismatch and two narrowly miss the 18 ms p95
+  limit. Calls, triangles and startup bytes pass. No stable bottleneck is
+  established, so do not activate D2 without a bounded diagnosis.
 - Performance qualification, qualified production promotion, public
   publication and final human appearance/release approval remain
   blocked/pending. Ignored development artifacts are not release inputs.
-- U7 first playable and U8 deterministic readiness/request/frame ledgers are
-  complete. The three prescribed headed 60 Hz named-target repetitions remain
-  outstanding; no timing qualification is inferred from deterministic tests.
 - U9 reviewed gallery staging and U10 exact release/permission enforcement are
   implemented. U10 validates fresh ignored staging, private-content rejection,
   strict prefixed routes and synthetic library file mechanics. Default release

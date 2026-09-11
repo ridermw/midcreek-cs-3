@@ -7,8 +7,8 @@ technical checkpoint passes. U7 supplies a local first playable using the active
 ignored provisional development selection. U8 instrumentation and deterministic
 evidence are complete. U9 adds the isolated showcase and approved local reference
 gallery staging; U10 release enforcement is implemented. Named-target timing
-and final appearance/release decisions remain pending, and no qualified
-production library is promoted.
+was measured three times and remains unqualified. Final appearance/release
+decisions remain pending, and no qualified production library is promoted.
 
 ## Start here
 
@@ -300,13 +300,17 @@ required for an aggregate pass; individual misses remain visible. Raw logs,
 paths and host details are never copied into the sanitized projection, and
 neither projection nor raw output is automatically published.
 
-Named-target qualification remains pending orchestrator review and **three
-headed, foreground, 60 Hz CS3-M4Pro-Chrome153-DPR1 repetitions** with complete
-Mac/CPU/GPU/RAM/macOS/display/power/browser/WebGL/backend and application/content/
-profile/recipe identities. No performance, appearance or release pass is
-claimed. The normal play layout now produces the required 1280-by-600 CSS and
-drawing-buffer rectangle at a 1280-by-720 DPR1 browser viewport, with the
-remaining 120 pixels reserved for the HUD.
+Three headed, foreground, 60 Hz `CS3-M4Pro-Chrome153-DPR1` repetitions were
+captured on the Dell U3821DW against application commit `19a3185`. Each retained
+1,972 native frames, all eight prescribed phases, complete target metadata and
+an uninterrupted cold startup of 6,654,856 bytes. Peak rendering stayed at
+99 calls and 711,728 triangles, under both budgets. The result is nevertheless
+**unqualified**: every repetition recorded a one-frame asynchronous resize
+boundary mismatch, and two repetitions narrowly exceeded the 18 ms p95 timing
+limit in one or more windows. The third repetition met the timing/call/triangle
+budgets but cannot qualify the target alone. The measurements do not establish
+a stable CPU/GPU bottleneck, so D2 optimization is not activated speculatively.
+No performance, appearance or release pass is claimed.
 
 #### Opt-in native named-target runner
 
