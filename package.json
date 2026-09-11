@@ -11,7 +11,10 @@
     "test": "vitest run",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "references:prepare": "node --experimental-strip-types tools/references/prepare.ts",
+    "references:import": "node --experimental-strip-types tools/references/import.ts",
+    "references:index": "node --experimental-strip-types tools/references/index.ts"
   },
   "dependencies": {
     "three": "0.185.1"

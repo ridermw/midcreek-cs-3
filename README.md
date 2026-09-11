@@ -4,7 +4,7 @@ A Blender-authored, Three.js-based Mid Creek experiment.
 
 ## Implementation checkpoint
 
-**U1-U3 complete; U4-U10 pending.** The September 10, 2026 launch authorization
+**U1-U4 complete; U5-U10 pending.** The September 10, 2026 launch authorization
 now permits unattended implementation on `main`. The exact user-approved
 envelope, subsequent credit amendment, pinned input identities, resource
 receipts and failed/successful checks are retained locally under
@@ -57,8 +57,19 @@ journey still belongs to U7, not a second simulation in the fixture.
 U5's owned Blender authoring step now creates the five editable templates and
 three rigid technician actions. A fresh source candidate passes evaluated
 geometry, unit/root, palette/UV and all-key/midpoint envelope checks.
-It is **not yet an exported, appearance-qualified or promoted library**;
+It is **not yet a qualified or promoted export library**;
 those gates remain in progress. No candidate media is published in Git.
+
+U4 imports the exact approved Cel Shift set into an ignored, immutable local
+package: 49 masters, 47 prompts, seven shared inputs, reviewed sanitized
+provenance and three support documents. The source inventory matches the
+launch pin; all 156 package files and the generated local index are checked.
+An exclusive, flushed POSIX transaction atomically switches the managed
+reference link and preserves the previous generation on pre-swap failure.
+The exact CLI and real import pass alongside 145 unit/contract and 21 browser
+checks. [Reference-tool usage](tools/references/USAGE.md) documents the
+authorization boundary. This does not publish reference media or authorize
+Pages deployment.
 
 ## CS3 toolchain
 
