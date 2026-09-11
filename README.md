@@ -66,6 +66,76 @@ npm run dev -- --host 127.0.0.1
 Install/restore dependencies only when needed. Heavy jobs run through
 `tools/run_guard.py` with the original authorization and finite job timeouts.
 
+### U5 packaging API (not full library qualification)
+
+`tools/promote-assets.ts` exposes `createManifestFromExport`,
+`validateAssetLibrary`, `promoteAssetLibrary` and
+`selectProvisionalAssetLibrary`. It runs directly under
+`node --experimental-strip-types`; it does not run Blender, load an implicit
+local candidate, change the ordinary build, or publish anything on import.
+`validateAssetLibrary` is the read-only API for a future `assets:validate`
+script and requires independently pinned `ExportIdentity` values.
+
+The complete packaging `ExportReceipt` type is defined in
+`tools/assets/contracts.ts`. Its `cs3-library-export` schema includes the exact
+five observed assets and independently declared specification records,
+source commit/blend identity, raw influencing input identities, canonical
+specification hash, exporter exit/revision, actual tool versions and frozen
+profile/recipe hashes. Declarations cover the scene hierarchy, rigid column-major
+local/world matrices, geometry totals, bounds, named portable-PBR material and
+embedded texture/UV bindings, permissions and every clip key/midpoint pose.
+Unknown fields and incomplete legacy receipts fail closed. The existing C5
+exporter's older receipt is **not silently upgraded**: completing that producer
+contract with actual identities/evidence remains part of fresh technical
+qualification, without changing the frozen visual source.
+
+Canonical UTF-8 JSON sorts object keys and record arrays by identity; scalar
+arrays retain their semantic order, except UV-set inventories are normalized
+numerically by the receipt parser. The specification hash excludes exported
+GLB paths/byte identities. The library digest binds the canonical specification, influencing
+identities, observations and sorted candidate-relative path/hash pairs, before
+adding any output paths or digest field. Export-receipt and completed-manifest
+hashes each cover their canonical JSON plus one LF. No absolute filesystem
+prefix, promotion receipt or generated index enters the library digest.
+
+Supply a dedicated GLB-only candidate tree and a disjoint destination using
+canonical, symlink-free absolute filesystem roots. Publication verifies exact
+files and copies them into `packages/<libraryDigest>/`, then installs a separately
+hashed publication receipt and atomically replaces the small `manifest.json`
+pointer. Pointer paths and runtime asset URLs are relative to the destination
+root (not to the nested manifest file). Old generations are never overwritten
+or removed. Consumers must explicitly resolve the pointer's `manifest` and
+verify `manifestSha256`; the pointer itself is not an `AssetManifest`.
+
+Qualified publication requires an actual dated `QualifiedApproval` binding the
+parent authorization, **completed manifest hash**, source commit/blend,
+profile/recipe and library digest to both appearance acceptance and
+publication-policy approval with evidence identities. The caller supplies the
+independently trusted parent-authorization hash. An Ed25519-signed envelope is
+also supported when a separately provisioned public trust key exists, but
+signing infrastructure is not invented as a prerequisite. Candidate booleans
+and candidate-provided trust data establish no authority.
+
+Provisional selection instead requires an actual dated
+`ProvisionalAmendment`, the independently pinned parent-authorization hash and
+an explicitly allowed `local-playable`, `local-showcase` or `local-validation`
+use. It writes only `development/selection.json`, never the qualified pointer
+or a release allowlist. The manifest's `appearanceAccepted` remains false;
+qualification belongs to the separate hash-bound selection/publication record.
+
+Transactions expose `after-staging`, `before-pointer-replace` and
+`after-pointer-replace` hooks. Pre-activation failures preserve the previous
+pointer. Post-activation durability or cleanup errors report
+`ACTIVATED_WITH_ERRORS` with the active generation identity instead of implying
+rollback. Abrupt process exit can leave a lock, stage or complete unselected
+generation; locks are never automatically stolen. Inspect the recorded owner
+and retained files before explicit recovery. These are cooperative, local POSIX
+filesystem transactions, not protection against a privileged process rewriting
+the store or an unqualified network filesystem. Packaging verifies declarations
+and exact bytes; it does not replace Khronos, evaluated
+Blender/loader/decoded-texture comparisons, the two fresh repetitions,
+appearance review or release qualification.
+
 ## Local evidence and visual monitor
 
 Approved references, generated Blender/GLB candidates, images and operational
