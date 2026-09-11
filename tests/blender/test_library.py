@@ -124,6 +124,34 @@ class EvaluatedLibraryTests(unittest.TestCase):
                 self.assertEqual(image.colorspace_settings.name, "sRGB")
                 self.assertTrue(image.packed_file)
 
+    def test_strict_export_and_hash_bound_technical_evidence(self):
+        receipt_file = getattr(self, "export_receipt_file", None)
+        if receipt_file is None:
+            self.skipTest("pass --export to check a fresh guarded strict export")
+        receipt = json.loads(receipt_file.read_text())
+        self.assertEqual(receipt["kind"], "cs3-library-export")
+        self.assertTrue(receipt["complete"])
+        self.assertEqual(receipt["exporter"]["exitCode"], 0)
+        self.assertEqual(receipt["source"]["sha256"], library.checksum(Path(bpy.data.filepath)))
+        technical_input = next(i for i in receipt["inputs"] if i["path"] == "technical.json")
+        technical_file = receipt_file.with_name("technical.json")
+        self.assertEqual(library.checksum(technical_file), technical_input["sha256"])
+        self.assertEqual(technical_file.stat().st_size, technical_input["bytes"])
+        technical = json.loads(technical_file.read_text())
+        self.assertEqual(len(receipt["assets"]), 5)
+        for asset in receipt["assets"]:
+            evidence = next(a for a in technical["assets"] if a["id"] == asset["id"])
+            self.assertEqual(asset["sha256"], library.checksum(receipt_file.parent / "candidate" / asset["file"]))
+            self.assertEqual(asset["bytes"], (receipt_file.parent / "candidate" / asset["file"]).stat().st_size)
+            self.assertNotIn("vertices", asset["geometry"])
+            self.assertTrue(evidence["geometry"]["vertices"])
+            self.assertTrue(evidence["geometry"]["vertexUvs"])
+            self.assertTrue(evidence["geometry"]["triangleUvs"])
+            self.assertEqual({n["id"] for n in asset["nodes"]}, set(evidence["rest"]))
+            for clip in asset["clips"]:
+                self.assertTrue(all(isinstance(t["node"], str) for t in clip["tracks"]))
+                self.assertTrue(all(s["bounds"] and s["transforms"] for s in clip["samples"]))
+
     def test_evaluated_rest_geometry_meets_bounds_and_exact_heights(self):
         for asset in self.spec["assets"]:
             bounds = self.bounds(bpy.data.objects[asset["root"]])
@@ -220,10 +248,12 @@ if __name__ == "__main__":
         parser = argparse.ArgumentParser()
         parser.add_argument("--source", type=Path, required=True)
         parser.add_argument("--sha256", required=True)
+        parser.add_argument("--export", type=Path)
         args = parser.parse_args(sys.argv[sys.argv.index("--")+1:])
         if library.checksum(args.source) != args.sha256:
             raise ValueError("SOURCE_IDENTITY")
         bpy.ops.wm.open_mainfile(filepath=str(args.source.resolve()), use_scripts=False)
+        EvaluatedLibraryTests.export_receipt_file = args.export
         result = unittest.TextTestRunner().run(unittest.defaultTestLoader.loadTestsFromModule(sys.modules[__name__]))
         if not result.wasSuccessful():
             raise RuntimeError("BLENDER_LIBRARY_TEST_FAILURE")

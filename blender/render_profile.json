@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "profile": "cs3-standard-v1",
+  "purpose": "Frozen C5 normal-rendering development recipe; neither appearance acceptance nor publication approval.",
+  "color": {
+    "blender": {"viewTransform": "Standard", "look": "None", "exposure": 0, "gamma": 1, "display": "sRGB"},
+    "browser": {"workingColorSpace": "Linear-sRGB", "outputColorSpace": "sRGB", "toneMapping": "NoToneMapping", "exposure": 1},
+    "textures": {"base-color": "sRGB", "emissive": "sRGB", "normal": "non-color", "roughness": "non-color", "metallic": "non-color"}
+  },
+  "normalRendering": {
+    "antialias": true,
+    "lighting": {
+      "profile": "cs3-lighting-v1",
+      "key": {"position": [8, 12, 4], "target": [8, 0, 7], "color": "#FFFFFF", "intensity": 2},
+      "hemisphere": {"sky": "#9FD0F0", "ground": "#DEE6EB", "intensity": 1},
+      "environmentMap": null,
+      "background": "#E7EDF1"
+    },
+    "shadows": {"enabled": true, "type": "PCFShadowMap", "mapSize": [1024, 1024], "bias": -0.0001, "normalBias": 0.01, "coverage": "Declared hall and plant bounds", "castAndReceive": "Opaque hall equipment and technician; floor receives"},
+    "outline": {"additionalPass": false, "description": "Only frozen authored charcoal form breaks; no claim that C5 satisfies final ink or likeness requirements."},
+    "filtering": {"baseColorMag": "LinearFilter", "baseColorMin": "LinearMipmapLinearFilter", "anisotropy": 1},
+    "depthTest": true,
+    "rackFade": false,
+    "camera": {"projection": "orthographic", "elevationDegrees": 35.264, "headingsDegrees": [45, 135, 225, 315], "zoomRange": [0.65, 2.25]},
+    "capture": {"viewport": [1280, 720], "rendererRectangle": [1280, 600], "hudHeight": 120, "dpr": 1, "cameraMatrices": "Record actual local/world/projection matrices per capture; never infer framing from this profile."}
+  },
+  "comparisonOnly": {
+    "purpose": "Asset-centered source/GLB transport comparison, NOT normal hall lighting or appearance qualification.",
+    "lightingProfile": "cs3-lighting-v1/asset-centered",
+    "keyPosition": [0, 12, -3],
+    "keyTarget": [0, 0, 0],
+    "keyColor": "#FFFFFF",
+    "keyIntensity": 2,
+    "sky": "#9FD0F0",
+    "ground": "#DEE6EB",
+    "hemisphereIntensity": 1,
+    "background": "#E7EDF1",
+    "stageColor": "#DEE6EB",
+    "stageHeight": -0.002,
+    "shadowMap": [1024, 1024],
+    "viewport": [640, 360],
+    "dpr": 1,
+    "blender": {"engine": "CYCLES", "device": "CPU", "samples": 128, "denoising": true, "sunAngle": 0.025, "output": "PNG RGB"},
+    "equivalence": "Cycles directional/environment and browser directional/hemisphere illumination are approximations, not renderer equivalence."
+  },
+  "exportSettings": {
+    "export_format": "GLB",
+    "use_selection": true,
+    "export_yup": true,
+    "export_apply": true,
+    "export_cameras": false,
+    "export_lights": false,
+    "export_extras": false,
+    "export_animations": true,
+    "export_animation_mode": "ACTIONS",
+    "export_merge_animation": "NLA_TRACK",
+    "export_frame_range": false,
+    "export_frame_step": 1,
+    "export_force_sampling": true,
+    "export_anim_slide_to_zero": true,
+    "export_optimize_animation_size": false,
+    "export_optimize_animation_keep_anim_object": true,
+    "export_morph": false,
+    "export_skins": false,
+    "export_image_format": "AUTO",
+    "will_save_settings": false
+  },
+  "exportAssumptions": {
+    "coordinates": "Meters; Blender (x,y,z) -> glTF (x,z,-y) exactly once; positive rigid unit scale; identity template root.",
+    "images": "Embedded PNG; source and decoded RGBA8 top-left pixel hashes must match.",
+    "animation": "Rigid LINEAR tracks; every exported key and midpoint evaluated; duplicate end; no root motion.",
+    "implicitSettings": "Record every effective glTF operator RNA default plus explicit overrides in technical.json; recipe hash binds that receipt.",
+    "hashes": "profileSha256 is canonical profile ID, color and normalRendering; recipeSha256 binds this whole document, raw influencing inputs and effective settings, excluding generated technical/process/pending receipts. Every generated receipt is independently hash-bound in export inputs. Raw render_profile.json is also a hashed input."
+  }
+}

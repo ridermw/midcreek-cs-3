@@ -13,6 +13,9 @@ import bpy
 from mathutils import Matrix, Vector
 
 CODE = Path(__file__).resolve().parent
+sys.path.insert(0, str(CODE))
+from export_receipt import load_technical
+
 module = importlib.util.spec_from_file_location("cs3_builder", CODE / "build_library.py")
 builder = importlib.util.module_from_spec(module)
 module.loader.exec_module(builder)
@@ -95,7 +98,7 @@ def main(export_file, output):
             or not output.is_relative_to(CODE.parent/".artifacts/assets")
             or not re.fullmatch(r"[a-z0-9-]+", output.name)):
         raise ValueError("OWNED_CAPTURE_OUTPUT")
-    receipt = json.loads(export_file.read_text())
+    receipt = load_technical(export_file)
     if receipt.get("kind") != "cs3-library-export" or not receipt.get("complete"):
         raise ValueError("EXPORT_INCOMPLETE")
     source = export_file.parent/"owned.blend"
@@ -178,6 +181,7 @@ def main(export_file, output):
         "authoringReceiptSha256": builder.checksum(sidecar),
         "builderSha256": builder.checksum(CODE / "build_library.py"),
         "scriptSha256": builder.checksum(__file__), "lighting": lighting,
+        "receiptAdapterSha256": builder.checksum(CODE / "export_receipt.py"),
         "profile": "cs3-standard-v1", "renderer": {"engine": "Cycles", "device": "CPU", "samples": 128, "denoising": True,
             "blender": bpy.app.version_string, "build": bpy.app.build_hash.decode(),
             "viewTransform": "Standard", "look": "None", "exposure": 0, "gamma": 1, "display": "sRGB"},

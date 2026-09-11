@@ -84,10 +84,83 @@ specification hash, exporter exit/revision, actual tool versions and frozen
 profile/recipe hashes. Declarations cover the scene hierarchy, rigid column-major
 local/world matrices, geometry totals, bounds, named portable-PBR material and
 embedded texture/UV bindings, permissions and every clip key/midpoint pose.
-Unknown fields and incomplete legacy receipts fail closed. The existing C5
-exporter's older receipt is **not silently upgraded**: completing that producer
-contract with actual identities/evidence remains part of fresh technical
-qualification, without changing the frozen visual source.
+Unknown fields and incomplete legacy receipts fail closed. The retained C5
+legacy receipt is immutable and is **not silently upgraded**. The strict
+exporter checkpoint is implemented; fresh guarded Blender/loader qualification
+remains outstanding, without changing the frozen visual source.
+
+`blender/render_profile.json` is the canonical `cs3-standard-v1` development
+recipe: Standard/None and Linear-sRGB/sRGB/NoToneMapping color settings, normal
+`cs3-lighting-v1` hall lighting, antialiasing, shadow/outline/filtering assumptions,
+1280x720 browser / 1280x600 renderer at DPR1, and explicit exporter settings.
+Its asset-centered 640x360 comparison recipe is deliberately separate from
+normal hall lighting. This document freezes assumptions, not an appearance pass
+or a claim that the future playable already implements them.
+
+After the orchestrator verifies and commits this checkpoint, run the **Python
+supervisor**, not a direct Blender export, inside `tools/run_guard.py` with a
+fresh job name, current authorization and a bounded allowance:
+
+```text
+python3 -B blender/export_library.py --blender <approved-blender-executable>
+  --source .artifacts/assets/<frozen-source-run>/library.blend
+  --sha256 5b9870942fb42a1390aa048c6840e99ab3dafbc94ea63fe4c75e44563b8fd2da
+  --source-commit 9844435f98848be030a3347108e1129c650ed875
+  --exporter-revision <exact-40-character-commit-containing-the-exporter>
+  --output .artifacts/assets/<frozen-source-run>/<fresh-export-directory>
+  --node <approved-node-executable>
+```
+
+These are argument lines for one guarded command, not an authorization to run
+Blender. Both revisions are explicit and their applicable input bytes must
+match those Git objects; dirty branch identity is never used. The worker opens
+only `owned.blend`, validates source inputs, reads actual Blender/build/glTF
+exporter versions and records installed operator defaults. The supervisor
+observes the actual child exit with `--python-exit-code 1`; nonzero exit,
+missing pending evidence, changed inputs or missing GLBs leave no completed
+`export.json`. Logs and partial evidence are retained, never repaired into a pass.
+
+Each export directory contains `candidate/` with **only the five GLBs**,
+`technical.json` with the full evaluated vertex/triangle/UV/pose evidence,
+`export.pending.json`, `process.json`, and the Node-validated strict
+`export.json` plus candidate `manifest.json`. The technical, pending, process
+and authoring receipts are raw hash/byte-bound inputs (`script` is the existing
+contract's role for auxiliary JSON evidence). Public specification records
+exclude machine paths, raw operational provenance and large comparison arrays;
+publication approval remains false. `source/` input paths are portable identity
+aliases for the frozen source directory, not candidate files. Diagnostic logs
+do not influence the recipe or claim qualification.
+
+`profileSha256` covers canonical `{profile,color,normalRendering}`;
+`recipeSha256` covers the full recipe, raw influencing inputs and effective
+export settings, excluding generated technical/process/pending receipts.
+Those generated receipts still affect the export/library identity through
+their raw input hashes. `blender/export_receipt.py` supplies the no-bpy mapping;
+`tools/export-receipt.ts` uses the unchanged packaging API and actual Node
+runtime to validate bytes before writing the completion marker.
+`capture_library.py` and `probes/r2/library-check.mjs` resolve the hash-bound
+technical sibling for new exports and continue accepting legacy evidence.
+All original source/geometry/UV/texture/pose comparisons remain in place.
+
+Lightweight checkpoint checks:
+
+```sh
+python3 -B -m unittest discover -s tests/blender -p 'test_*.py'
+node --experimental-strip-types --test tests/exporter-receipt.node.ts
+npm run typecheck
+npm test -- tests/assets-promotion.test.ts tests/asset-contract.test.ts
+node --test probes/r2/glb.test.mjs probes/r2/png.test.mjs probes/r2/lifecycle.test.mjs
+git diff --check
+```
+
+Two fresh guarded real Blender repetitions and real checker runs are still
+required. For each repetition, the real `tests/blender/test_library.py`
+invocation accepts `--export <fresh-export-directory>/export.json` alongside
+its existing `--source` and `--sha256` arguments. Capture/check commands still
+take the export directory's `export.json`, not `technical.json` or `candidate/`.
+Retain the original eight-node R2 regression and all C5 negative checks.
+Neither these lightweight tests nor the exporter grant appearance, provisional
+use, promotion or release approval.
 
 Canonical UTF-8 JSON sorts object keys and record arrays by identity; scalar
 arrays retain their semantic order, except UV-set inventories are normalized

@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto';
 import { chromium } from 'playwright';
 import validator from 'gltf-validator';
 import { assertContent, assertVertexAgreement, assertVertexUvAgreement, assertTriangleUvAgreement, decode, encode } from './glb.mjs';
+import { loadLibraryEvidence } from './library-receipt.mjs';
 
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 function closeEnough(actual, expected, label, tolerance = 2e-4) {
@@ -27,6 +28,9 @@ function checkPose(actual, expected, label) {
 }
 
 export async function checkLibrary({ receipt, run, tag, code, result, check, ownBrowser, ownServer, captureDirectory }) {
+  const evidence = await loadLibraryEvidence(receipt, run);
+  const assetRoot = evidence.assetRoot;
+  receipt = evidence.receipt;
   const sourceViews = path.resolve(captureDirectory ?? path.join(run, 'source-views'));
   const captureBytes = await fs.readFile(path.join(sourceViews, 'captures.json'));
   const source = JSON.parse(captureBytes);
@@ -45,9 +49,13 @@ export async function checkLibrary({ receipt, run, tag, code, result, check, own
   result.versions.blender = receipt.blender;
   result.versions.blenderBuild = receipt.blenderBuild;
   result.code = {};
-  for (const file of ['check.mjs', 'library-check.mjs', 'browser.mjs', 'library-browser.mjs',
+  for (const file of ['check.mjs', 'library-check.mjs', 'library-receipt.mjs', 'browser.mjs', 'library-browser.mjs',
     'glb.mjs', 'png.mjs', 'lifecycle.mjs', 'package.json', 'package-lock.json']) {
     result.code[file] = hash(await fs.readFile(path.join(code, file)));
+  }
+  for (const file of ['tools/promote-assets.ts', 'tools/assets/contracts.ts', 'tools/assets/store.ts',
+    'src/assets/contracts.ts']) {
+    result.code[file] = hash(await fs.readFile(path.join(code, '../..', file)));
   }
   const files = new Map([
     ['/', path.join(code, 'probe.html')],
@@ -57,7 +65,7 @@ export async function checkLibrary({ receipt, run, tag, code, result, check, own
   const assets = new Map();
   for (const asset of receipt.assets) {
     assert.equal(path.basename(asset.file), asset.file, 'ASSET_PATH');
-    const bytes = await fs.readFile(path.join(run, asset.file));
+    const bytes = await fs.readFile(path.join(assetRoot, asset.file));
     assert.equal(hash(bytes), asset.sha256, `ASSET_HASH: ${asset.id}`);
     assert.equal(bytes.length, asset.bytes, `ASSET_BYTES: ${asset.id}`);
     const decoded = decode(bytes);
