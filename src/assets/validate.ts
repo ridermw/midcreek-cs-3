@@ -1,5 +1,16 @@
-import { ASSET_IDS, ContractError } from './contracts'
-import type { AssetId, AssetShape, Bounds, Placement, PlacementClass, Vector3 } from './contracts'
+import { Box3 } from 'three'
+import { ASSET_IDS, AssetLoadError, ContractError } from './contracts'
+import type {
+  AssetCandidate,
+  AssetId,
+  AssetManifest,
+  AssetManifestEntry,
+  AssetShape,
+  Bounds,
+  Placement,
+  PlacementClass,
+  Vector3,
+} from './contracts'
 import { createRacks, isWalkable } from '../world/layout'
 
 export const GEOMETRY_TOLERANCE = 2e-4
@@ -12,6 +23,7 @@ const PERMITTED: Record<AssetId, Bounds> = {
   'technician-man': { min: { x: -0.45, y: 0, z: -0.45 }, max: { x: 0.45, y: 1.8, z: 0.45 } },
   'coolant-leak': { min: { x: -0.45, y: 0, z: -0.45 }, max: { x: 0.45, y: 0.02, z: 0.45 } },
 }
+const SHA256 = /^[a-f0-9]{64}$/
 
 function fail(code: string, subject: string, message: string): never {
   throw new ContractError(code, subject, message)
@@ -23,6 +35,11 @@ function near(a: number, b: number, tolerance = GEOMETRY_TOLERANCE): boolean {
 
 function samePosition(a: Vector3, b: Vector3): boolean {
   return AXES.every((axis) => near(a[axis], b[axis]))
+}
+
+function sameBounds(a: Bounds, b: Bounds, tolerance = GEOMETRY_TOLERANCE): boolean {
+  return AXES.every((axis) => near(a.min[axis], b.min[axis], tolerance)
+    && near(a.max[axis], b.max[axis], tolerance))
 }
 
 function unitScale(scale: Vector3, subject: string): void {
@@ -73,6 +90,116 @@ export function validateShape(asset: AssetShape): void {
   if (asset.id === 'floor-slab' && (!samePosition(asset.restBounds.min, PERMITTED['floor-slab'].min)
     || !samePosition(asset.restBounds.max, PERMITTED['floor-slab'].max))) {
     fail('FLOOR_BOUNDS', asset.id, 'floor must cover the authoritative hall footprint')
+  }
+}
+
+function validateRelativeAssetPath(file: string): void {
+  if (!file || file.startsWith('/') || file.includes('\\')
+    || /^[a-z][a-z\d+.-]*:/i.test(file)) {
+    fail('PATH', file || 'asset', 'asset files must be relative same-origin paths')
+  }
+  const parts = file.split('/')
+  if (parts.some((part) => part.length === 0 || part === '.' || part === '..')) {
+    fail('PATH', file, 'asset files must be normalized relative paths')
+  }
+}
+
+export function validateManifest(manifest: AssetManifest): void {
+  if (manifest.schema !== 1 || typeof manifest.profile !== 'string' || !manifest.profile) {
+    fail('MANIFEST_SCHEMA', 'manifest', 'schema 1 and a nonempty rendering profile are required')
+  }
+  if (!SHA256.test(manifest.libraryDigest)) {
+    fail('LIBRARY_DIGEST', 'manifest', 'library digest must be a lowercase SHA-256')
+  }
+  if (manifest.assets.length !== ASSET_IDS.length) {
+    fail('ASSET_COUNT', 'manifest', `exactly ${ASSET_IDS.length} assets are required`)
+  }
+  const seen = new Set<AssetId>()
+  for (const entry of manifest.assets) {
+    if (!ASSET_IDS.includes(entry.id)) fail('UNKNOWN_ASSET', entry.id, 'not in the required library')
+    if (seen.has(entry.id)) fail('DUPLICATE_ASSET', entry.id, 'one manifest entry per visual ID required')
+    seen.add(entry.id)
+    validateRelativeAssetPath(entry.file)
+    if (!SHA256.test(entry.sha256)) fail('HASH', entry.id, 'asset hash must be a lowercase SHA-256')
+    if (!entry.rootName || !entry.requiredNodeNames.includes(entry.rootName)) {
+      fail('ROOT_NODE', entry.id, 'the declared root must be a required node')
+    }
+    if (new Set(entry.requiredNodeNames).size !== entry.requiredNodeNames.length) {
+      fail('NODE_IDENTITY', entry.id, 'required node names must be unique')
+    }
+    const clipNames = new Set<string>()
+    for (const clip of entry.clips) {
+      if (!clip.name || clipNames.has(clip.name)) {
+        fail('CLIP_IDENTITY', entry.id, 'clip names must be nonempty and unique')
+      }
+      if (!Number.isFinite(clip.duration) || clip.duration <= 0 || clip.rootMotion !== false) {
+        fail('CLIP_CONTRACT', `${entry.id}/${clip.name}`, 'finite duration and rootMotion=false are required')
+      }
+      clipNames.add(clip.name)
+    }
+    validateShape(entry.shape)
+  }
+  for (const id of ASSET_IDS) {
+    if (!seen.has(id)) fail('MISSING_ASSET', id, 'required manifest entry absent')
+  }
+}
+
+function rootMotionTrack(trackName: string, rootName: string): boolean {
+  const target = trackName.split('.')[0] ?? ''
+  return target === rootName
+}
+
+export function validateAssetCandidate(
+  candidate: AssetCandidate,
+  entry: AssetManifestEntry,
+): void {
+  if (candidate.id !== entry.id) {
+    throw new AssetLoadError('ASSET_IDENTITY', entry.id, `loader returned ${candidate.id}`, entry.id)
+  }
+  if (candidate.sha256 !== entry.sha256) {
+    throw new AssetLoadError('HASH', entry.id, 'loaded bytes do not match the manifest', entry.id)
+  }
+  if (candidate.scene.children.length !== 1 || candidate.scene.children[0]!.name !== entry.rootName) {
+    throw new AssetLoadError('SCENE_ROOT', entry.id, 'exactly one declared root child is required', entry.id)
+  }
+  const names = new Map<string, number>()
+  candidate.scene.traverse((object) => names.set(object.name, (names.get(object.name) ?? 0) + 1))
+  for (const name of entry.requiredNodeNames) {
+    if (names.get(name) !== 1) {
+      throw new AssetLoadError('DECLARED_NODE', `${entry.id}/${name}`, 'required node is missing or duplicated', entry.id)
+    }
+  }
+  const root = candidate.scene.children[0]!
+  if (root.position.length() > UNIT_TOLERANCE || root.rotation.x !== 0
+    || root.rotation.y !== 0 || root.rotation.z !== 0
+    || !AXES.every((axis) => near(root.scale[axis], 1, UNIT_TOLERANCE))) {
+    throw new AssetLoadError('ROOT_TRANSFORM', entry.id, 'asset root must have an identity transform', entry.id)
+  }
+  candidate.scene.updateMatrixWorld(true)
+  const box = new Box3().setFromObject(root)
+  const observed: Bounds = {
+    min: { x: box.min.x, y: box.min.y, z: box.min.z },
+    max: { x: box.max.x, y: box.max.y, z: box.max.z },
+  }
+  if (![box.min.x, box.min.y, box.min.z, box.max.x, box.max.y, box.max.z].every(Number.isFinite)
+    || !sameBounds(observed, entry.shape.restBounds)) {
+    throw new AssetLoadError('BOUNDS', entry.id, 'loaded geometry disagrees with the declared rest envelope', entry.id)
+  }
+  const expectedClips = new Map(entry.clips.map((clip) => [clip.name, clip]))
+  if (candidate.animations.length !== expectedClips.size) {
+    throw new AssetLoadError('CLIP_COUNT', entry.id, 'loaded clips do not match the manifest', entry.id)
+  }
+  for (const clip of candidate.animations) {
+    const expected = expectedClips.get(clip.name)
+    if (!expected || Math.abs(clip.duration - expected.duration) > GEOMETRY_TOLERANCE) {
+      throw new AssetLoadError('CLIP_CONTRACT', `${entry.id}/${clip.name}`, 'clip name or duration differs from the manifest', entry.id)
+    }
+    if (clip.tracks.some((track) => rootMotionTrack(track.name, entry.rootName))) {
+      throw new AssetLoadError('ROOT_MOTION', `${entry.id}/${clip.name}`, 'animation may not write the instance root', entry.id)
+    }
+    if (clip.tracks.some((track) => !track.values.every(Number.isFinite))) {
+      throw new AssetLoadError('TRACK_FINITE', `${entry.id}/${clip.name}`, 'animation tracks must contain finite values', entry.id)
+    }
   }
 }
 

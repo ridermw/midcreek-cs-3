@@ -1,3 +1,5 @@
+import type { AnimationClip, Object3D } from 'three'
+
 export const ASSET_IDS = [
   'floor-slab', 'rack-standard', 'cooling-unit', 'technician-man', 'coolant-leak',
 ] as const
@@ -32,6 +34,37 @@ export interface AssetShape {
   readonly animatedBounds: Bounds
 }
 
+export interface AssetClipContract {
+  readonly name: string
+  readonly duration: number
+  readonly rootMotion: false
+}
+
+export interface AssetManifestEntry {
+  readonly id: AssetId
+  readonly file: string
+  readonly sha256: string
+  readonly rootName: string
+  readonly requiredNodeNames: readonly string[]
+  readonly shape: AssetShape
+  readonly clips: readonly AssetClipContract[]
+}
+
+export interface AssetManifest {
+  readonly schema: 1
+  readonly profile: string
+  readonly libraryDigest: string
+  readonly assets: readonly AssetManifestEntry[]
+}
+
+export interface AssetCandidate {
+  readonly id: AssetId
+  readonly sha256: string
+  readonly scene: Object3D
+  readonly animations: readonly AnimationClip[]
+  readonly release?: () => void
+}
+
 export class ContractError extends Error {
   readonly code: string
   readonly subject: string
@@ -41,5 +74,20 @@ export class ContractError extends Error {
     this.name = 'ContractError'
     this.code = code
     this.subject = subject
+  }
+}
+
+export class AssetLoadError extends ContractError {
+  readonly assetId?: AssetId
+
+  constructor(
+    code: string,
+    subject: string,
+    detail: string,
+    assetId?: AssetId,
+  ) {
+    super(code, subject, detail)
+    this.name = 'AssetLoadError'
+    this.assetId = assetId
   }
 }
