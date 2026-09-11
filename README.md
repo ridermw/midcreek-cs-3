@@ -2,9 +2,10 @@
 
 A Blender-authored, Three.js-based data-hall simulation.
 
-**Continuation active.** U1-U4 and U6 are complete. C5 source is checkpointed;
-U5 final technical packaging and U7-U10 remain unfinished. No production
-library is promoted, and the application entries are not yet a playable game.
+**Continuation active.** U1-U4 and U6 are complete. The frozen C5 U5 two-run
+technical checkpoint passes; full U5 appearance qualification and U7-U10 remain
+unfinished. Provisional development selection is authorized but not activated.
+No production library is promoted, and the entries are not yet a playable game.
 
 ## Start here
 
@@ -43,9 +44,12 @@ teardown. Its focused verification currently covers 53 unit checks and 30 real
 Chrome/WebGL browser cases, including delayed and failed loading, Reload/input
 gating, time-zero posing and two-instance ownership.
 
-Provisional development use requires a recorded, hash-bound exception and
-does not relax technical, appearance or release gates. Future AR1 replacements
-require a versioned handoff and affected qualification again.
+The [September 11 development-use amendment](docs/architecture/cs3-provisional-development-use-2026-09-11.json)
+records the actual user instruction and authorizes only `local-playable`,
+`local-showcase` and `local-validation` for the frozen hash-bound baseline.
+Selection remains inactive until the orchestrator runs the qualifier below.
+This does not relax appearance, performance, publication or release gates.
+Future AR1 replacements require a versioned handoff and affected qualification again.
 
 ## Toolchain and local commands
 
@@ -68,6 +72,63 @@ Install/restore dependencies only when needed. Heavy jobs run through
 
 ### U5 packaging API (not full library qualification)
 
+The retained `strict-r1c-9213c63` and `strict-r2-9213c63` runs under
+`.artifacts/assets/u5-c5/` pass the read-only technical qualification checkpoint:
+**31 checks and 30 matched source/browser captures per run**, completed
+export/capture/check jobs, and identical strict export, manifest, technical
+evidence and five GLB bytes. The original eight-node R2
+`checks-strict-9213c63` regression passes **16 checks with 10 browser captures**.
+The source is `9844435f98848be030a3347108e1129c650ed875`, exporter revision
+`9213c63659158780f186c22e3bf6579353fb8f75`, and library digest
+`200366356f3665ac9ef45c404bd9462e29b2ae0c813b688c4df3ed2cf119a934`.
+The amendment pins the exact blend/spec/profile/recipe/export/check/job hashes.
+Appearance remains pending; performance is unqualified; qualified production
+promotion, the release allowlist and publication remain blocked.
+
+`tools/qualify-assets.ts` validates these two runs without launching Blender or
+a browser. It rejects missing, corrupt, stale, duplicate or partial evidence;
+verifies historical influencing Git bytes at the pinned exporter revision,
+local source bytes, captures/sidecars and guarded job logs; and records input
+hashes in canonical technical-only JSON. It never interprets numeric image
+comparisons as appearance acceptance. It has no import-time side effects.
+
+The worker has **not** written the persistent local receipt or selected a
+development package. From this repository, the orchestrator can run:
+
+```sh
+# Revalidate and write only the local ignored technical qualification receipt.
+node --experimental-strip-types tools/qualify-assets.ts
+
+# Revalidate, write the same receipt, and explicitly select development-only use.
+node --experimental-strip-types tools/qualify-assets.ts --select local-playable
+```
+
+The receipt is `.artifacts/assets/u5-c5/technical-qualification-2026-09-11.json`.
+Identical receipt writes are idempotent; different existing receipts are never
+overwritten. `--select` also accepts `local-showcase` or `local-validation` and
+calls the existing unsigned, parent-hash-bound packaging API. It writes
+`assets/library/development/selection.json`, **not**
+`assets/library/manifest.json` or a release allowlist. All of `assets/library/`
+is ignored by default, including packages, receipts, transaction files and
+pointers; later qualified publication may force-add only reviewed allowlisted
+files. A selection failure is reported explicitly and may leave the valid
+technical-only receipt; that receipt never claims successful selection.
+
+Qualification tests use tiny temporary synthetic runs. The opt-in retained-run
+test reads local evidence without writing a receipt or selecting anything:
+
+```sh
+npm test -- tests/assets-qualification.test.ts tests/assets-promotion.test.ts tests/asset-contract.test.ts
+CS3_U5_RETAINED=1 npm test -- tests/assets-qualification.test.ts
+npm run typecheck
+git diff --check
+```
+
+Missing local evidence or pinned Git objects blocks the opt-in test/tool; a
+clean clone does not silently skip requested qualification or reconstruct old
+receipts. Changed assets, textures, materials, animations, shaders or rendering
+settings invalidate affected claims and require the corresponding gates again.
+
 `tools/promote-assets.ts` exposes `createManifestFromExport`,
 `validateAssetLibrary`, `promoteAssetLibrary` and
 `selectProvisionalAssetLibrary`. It runs directly under
@@ -86,8 +147,8 @@ local/world matrices, geometry totals, bounds, named portable-PBR material and
 embedded texture/UV bindings, permissions and every clip key/midpoint pose.
 Unknown fields and incomplete legacy receipts fail closed. The retained C5
 legacy receipt is immutable and is **not silently upgraded**. The strict
-exporter checkpoint is implemented; fresh guarded Blender/loader qualification
-remains outstanding, without changing the frozen visual source.
+exporter checkpoint and the two retained guarded Blender/loader repetitions
+are complete, without changing the frozen visual source.
 
 `blender/render_profile.json` is the canonical `cs3-standard-v1` development
 recipe: Standard/None and Linear-sRGB/sRGB/NoToneMapping color settings, normal
@@ -97,9 +158,11 @@ Its asset-centered 640x360 comparison recipe is deliberately separate from
 normal hall lighting. This document freezes assumptions, not an appearance pass
 or a claim that the future playable already implements them.
 
-After the orchestrator verifies and commits this checkpoint, run the **Python
-supervisor**, not a direct Blender export, inside `tools/run_guard.py` with a
-fresh job name, current authorization and a bounded allowance:
+For a later authorized requalification that actually needs fresh exports, use
+the **Python supervisor**, not a direct Blender export, inside
+`tools/run_guard.py` with a fresh job name, current authorization and a bounded
+allowance. Do not repeat the already-passing frozen runs merely to create the
+local qualification receipt:
 
 ```text
 python3 -B blender/export_library.py --blender <approved-blender-executable>
@@ -153,14 +216,15 @@ node --test probes/r2/glb.test.mjs probes/r2/png.test.mjs probes/r2/lifecycle.te
 git diff --check
 ```
 
-Two fresh guarded real Blender repetitions and real checker runs are still
-required. For each repetition, the real `tests/blender/test_library.py`
+The two fresh guarded real Blender repetitions and real checker runs are
+retained and verified by the checkpoint above. For future repetitions, the real `tests/blender/test_library.py`
 invocation accepts `--export <fresh-export-directory>/export.json` alongside
 its existing `--source` and `--sha256` arguments. Capture/check commands still
 take the export directory's `export.json`, not `technical.json` or `candidate/`.
 Retain the original eight-node R2 regression and all C5 negative checks.
-Neither these lightweight tests nor the exporter grant appearance, provisional
-use, promotion or release approval.
+Neither these lightweight tests nor the exporter grant appearance, promotion
+or release approval. Provisional use comes only from the separate actual-user
+amendment, not from a technical pass.
 
 Canonical UTF-8 JSON sorts object keys and record arrays by identity; scalar
 arrays retain their semantic order, except UV-set inventories are normalized
@@ -231,7 +295,7 @@ matching a receipt is not an approval. The tool publishes nothing.
 
 ## Authorization
 
-The original launch is approved, but execution is currently paused. Heavy work
+The original launch and this bounded continuation are authorized. Heavy work
 ends **September 12, 2026 at 22:28:59.608228 UTC** and closeout ends at
 **23:28:59.608228 UTC**. A fresh session does not restart the allowance.
 No Pages deployment, new external art-generation service or unapproved source

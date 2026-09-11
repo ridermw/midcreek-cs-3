@@ -1,0 +1,210 @@
+{
+  "schema": 1,
+  "kind": "cs3-provisional-development-use-record",
+  "id": "cs3-c5-provisional-development-2026-09-11",
+  "issuedAt": "2026-09-11T20:00:41.413Z",
+  "repository": "ridermw/midcreek-cs-3",
+  "branch": "main",
+  "authority": {
+    "actor": "user",
+    "instructionReceivedAt": "2026-09-11T17:55:52.629Z",
+    "objectivePath": "docs/architecture/cs3-continuation-goal.md",
+    "parentAuthorizationPath": ".artifacts/implementation/20260910T232859Z/authorization.json",
+    "parentAuthorizationSha256": "1d6bf6ccceb960428296591f41fe0c35271ecf668c5959dd27dd9e503b593624",
+    "actualUserInstruction": "The user selected docs/architecture/cs3-continuation-goal.md as the explicit /autopilot objective and instructed this session to work autonomously toward it in clear checkpoints.",
+    "interpretation": "The selected objective expressly directs U5-U10 work against an explicitly recorded frozen provisional development baseline. This public record is a sanitized transcription; raw session evidence remains local. It is an unsigned, parent-hash-bound local-use amendment, not a signature, appearance verdict, production approval, publication permission or renewal of the original operating allowance.",
+    "governingDocuments": [
+      "docs/architecture/cs3-continuation-goal.md",
+      "plan.md section 3",
+      "docs/architecture/cs3-blueprint.md U5/T2/T4/T7"
+    ]
+  },
+  "allowedUses": [
+    "local-playable",
+    "local-showcase",
+    "local-validation"
+  ],
+  "checkpointState": {
+    "technicalQualification": "Retained strict evidence passes the read-only U5 two-run technical checkpoint. Persistent local receipt creation is reserved for the orchestrator CLI.",
+    "provisionalSelection": "Authorized, not activated by this worker; the orchestrator must run the qualifier before optional development selection.",
+    "productionLibraryPromoted": false,
+    "appearanceAccepted": false,
+    "performanceQualified": false,
+    "publicationApproved": false,
+    "releaseApproved": false,
+    "pagesAuthorized": false
+  },
+  "remainingGates": {
+    "technical": [
+      "Orchestrator writes the canonical local qualification receipt after revalidating every pinned input; missing or changed retained evidence blocks selection.",
+      "U7 real playable integration, required-ready rendering, animation, rest reset, projection and native rack-occlusion checks remain separate.",
+      "U8 measurements and U9/U10 staging/release-content controls remain required."
+    ],
+    "appearance": {
+      "status": "pending",
+      "accepted": false,
+      "requirements": [
+        "C4/C5 have no independent overall appearance acceptance; the earlier C3 needs-work verdict is not superseded by technical checks.",
+        "Delegated comparative appearance acceptance and final human appearance/release review remain separate.",
+        "Source/browser numeric comparisons and genuine captures establish transport evidence only, never appearance acceptance."
+      ]
+    },
+    "performance": {
+      "status": "pending",
+      "qualified": false,
+      "requirements": [
+        "Three prescribed named-target repetitions with actual foreground/display/browser/GPU conditions and all-pass ledgers.",
+        "Normal production rendering at the frozen recipe; asset-centered transport comparisons and private cel/ink studies are not performance qualification."
+      ]
+    },
+    "publication": {
+      "status": "blocked",
+      "approved": false,
+      "qualifiedProductionPointer": "blocked",
+      "releaseAllowlist": "blocked",
+      "requirements": [
+        "Exact member-level publication policy and appearance approval are required for qualified production promotion.",
+        "Unqualified assets/library packages, receipts and pointers remain ignored. Only later reviewed qualified release-allowlisted files may be force-added.",
+        "No public release publication or Pages deployment is authorized by this amendment."
+      ]
+    },
+    "release": {
+      "status": "blocked",
+      "approved": false,
+      "requirements": [
+        "Applicable technical, appearance, performance, provenance, permissions and U10 release-content gates must pass.",
+        "Final human appearance/release decisions remain outstanding."
+      ]
+    }
+  },
+  "invalidation": "Changed source assets, geometry, textures, materials, animation, shaders or rendering/profile/recipe settings invalidate affected technical, appearance, integration, performance and publication claims. Rerun affected gates against exact replacement identities and obtain required changed-input/use approval; a moving AR1 tip inherits no acceptance.",
+  "technicalQualification": {
+    "repository": "ridermw/midcreek-cs-3",
+    "branch": "main",
+    "parentAuthorization": {
+      "path": ".artifacts/implementation/20260910T232859Z/authorization.json",
+      "sha256": "1d6bf6ccceb960428296591f41fe0c35271ecf668c5959dd27dd9e503b593624",
+      "bytes": 5608
+    },
+    "sourceRoot": ".artifacts/assets/u5-c5",
+    "identity": {
+      "sourceCommit": "9844435f98848be030a3347108e1129c650ed875",
+      "sourceSha256": "5b9870942fb42a1390aa048c6840e99ab3dafbc94ea63fe4c75e44563b8fd2da",
+      "exporterRevision": "9213c63659158780f186c22e3bf6579353fb8f75",
+      "exporterSha256": "520e55d915907746798ba48885d835c7544d2e5808668c0c1ac7fdda44dd0a0b",
+      "specificationSha256": "2c618458e8cd7e7bd53a76749a53ca35a30399902632bf78b917b36f9c61e602",
+      "profile": "cs3-standard-v1",
+      "profileSha256": "cd34a5dd399e9e1e31ab11f3e78457b6d019f94623b6628caa0dc0302917993e",
+      "recipeSha256": "374138a11192e161dca4c21976edfc9cbd962d3510c77b5756dae9f48ff0e78c",
+      "exportReceiptSha256": "5c50a54f06c20ee9ac09347c2ae8c2dee56e5eb6ece4b1b2fc8637b6f4e723e5",
+      "manifestSha256": "7e1f95038bddae443e58250f66883bc93e8125773f71e456cbaf8db4e280793d",
+      "libraryDigest": "200366356f3665ac9ef45c404bd9462e29b2ae0c813b688c4df3ed2cf119a934",
+      "technicalSha256": "aa0a98d3c218171b470a061373be30731bff59c319a10566ba623cba6f7e538a"
+    },
+    "checkerCodeSha256": "9cfa53857ef1c8bf02c4d97bb2500170c485fea650a87777f354f4a2458f5f44",
+    "runs": [
+      {
+        "id": "strict-r1c-9213c63",
+        "root": ".artifacts/assets/u5-c5/strict-r1c-9213c63",
+        "checks": {
+          "path": "checks-r1.json",
+          "sha256": "1b3091a31afd56b2c095fe7eabcaec62abbb11a8e785ab1c35c7aa4b73760725",
+          "bytes": 91889
+        },
+        "captures": {
+          "path": "source-views/captures.json",
+          "sha256": "e081c04a5f94912145a981ac0a4f5e8af22c271adf1718ae1f087247745e67f9",
+          "bytes": 41118
+        },
+        "jobs": {
+          "export": {
+            "path": ".artifacts/implementation/20260910T232859Z/u5-strict-export-r1c.job.json",
+            "sha256": "a288c23f44515479503d834c54e5cdcabcf9b7b72b997345f861742cc8bb2c3b",
+            "bytes": 1109
+          },
+          "capture": {
+            "path": ".artifacts/implementation/20260910T232859Z/u5-strict-capture-r1c.job.json",
+            "sha256": "a8c1036a75e5437771a2b59d5ad6fcc8261168215e524f44dc62e4179924b152",
+            "bytes": 970
+          },
+          "check": {
+            "path": ".artifacts/implementation/20260910T232859Z/u5-strict-check-r1c.job.json",
+            "sha256": "2b27fd33e0694f3f8937bc154cf779437ca80aeb2a57d57f5c85fcebbfa0de69",
+            "bytes": 737
+          }
+        }
+      },
+      {
+        "id": "strict-r2-9213c63",
+        "root": ".artifacts/assets/u5-c5/strict-r2-9213c63",
+        "checks": {
+          "path": "checks-r2.json",
+          "sha256": "5e111317f4c18b7dce9c02b6975fb6df303d72043b29549ccf0c2538dd5f33a9",
+          "bytes": 91889
+        },
+        "captures": {
+          "path": "source-views/captures.json",
+          "sha256": "9bbc35d2bc03c09e0e38a73314cbf21d632ca6e8bf5fbbb93eb96e1f5b9c8251",
+          "bytes": 41118
+        },
+        "jobs": {
+          "export": {
+            "path": ".artifacts/implementation/20260910T232859Z/u5-strict-export-r2.job.json",
+            "sha256": "1a69a95c2a8854842058fdbc97589dcf5bd642224fabd89462e4cdb81106be17",
+            "bytes": 1109
+          },
+          "capture": {
+            "path": ".artifacts/implementation/20260910T232859Z/u5-strict-capture-r2.job.json",
+            "sha256": "370c75bdf523ca82623b699ef1b6bea69823688badde17cda190a220213a9898",
+            "bytes": 968
+          },
+          "check": {
+            "path": ".artifacts/implementation/20260910T232859Z/u5-strict-check-r2.job.json",
+            "sha256": "f469f228d9edf35bdb742cf8875a3cb5b8737f309e89c22da11060462eeb1a4c",
+            "bytes": 737
+          }
+        }
+      }
+    ],
+    "regression": {
+      "root": ".artifacts/assets/u5-r2-regression",
+      "sourceSha256": "0e4c90b1ab5bcfb052d2f5d2c5c4628a89b5b7145f6b6e9bf399d7f31cda4d05",
+      "export": {
+        "path": "export.json",
+        "sha256": "c260f81e0079789650a2e69539714d2778b98fde953f7c44caaad98275940f5c",
+        "bytes": 58035
+      },
+      "checks": {
+        "path": "checks-strict-9213c63.json",
+        "sha256": "a94e8c422635b3705ecb64b2041602a91bbd3554a31dcf94b11cfb03dc07a9fa",
+        "bytes": 103005
+      },
+      "job": {
+        "path": ".artifacts/implementation/20260910T232859Z/u5-strict-r2-regression.job.json",
+        "sha256": "819dc6349bee572ed3cda94683f7ca091dfbb7d2bae92698004cb24bc5f2187e",
+        "bytes": 741
+      }
+    }
+  },
+  "selectionAmendment": {
+    "kind": "cs3-provisional-amendment",
+    "id": "cs3-c5-provisional-development-2026-09-11",
+    "issuedAt": "2026-09-11T20:00:41.413Z",
+    "authority": "Actual user instruction recorded in this amendment; explicitly started autopilot on docs/architecture/cs3-continuation-goal.md for the frozen provisional development baseline only.",
+    "parentAuthorizationSha256": "1d6bf6ccceb960428296591f41fe0c35271ecf668c5959dd27dd9e503b593624",
+    "binding": {
+      "manifestSha256": "7e1f95038bddae443e58250f66883bc93e8125773f71e456cbaf8db4e280793d",
+      "libraryDigest": "200366356f3665ac9ef45c404bd9462e29b2ae0c813b688c4df3ed2cf119a934",
+      "sourceCommit": "9844435f98848be030a3347108e1129c650ed875",
+      "sourceSha256": "5b9870942fb42a1390aa048c6840e99ab3dafbc94ea63fe4c75e44563b8fd2da",
+      "profile": "cs3-standard-v1",
+      "profileSha256": "cd34a5dd399e9e1e31ab11f3e78457b6d019f94623b6628caa0dc0302917993e",
+      "recipeSha256": "374138a11192e161dca4c21976edfc9cbd962d3510c77b5756dae9f48ff0e78c"
+    },
+    "allowedUses": [
+      "local-playable",
+      "local-showcase",
+      "local-validation"
+    ]
+  }
+}

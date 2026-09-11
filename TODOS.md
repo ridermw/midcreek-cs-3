@@ -3,19 +3,31 @@
 The only execution plan is [plan.md](plan.md). Completed research and checkpoint
 history are in [the reference archive](docs/archive/README.md), not this list.
 
-## Current pause and continuation
+## Current continuation
 
-Execution is **paused by user request on September 11, 2026 at 16:36:56 UTC**.
-The next session must follow the [updated continuation plan](plan.md#september-11-pause-and-continuation-plan)
-and [committed session goal](docs/architecture/cs3-continuation-goal.md),
-verify the C5 source checkpoint `9844435` and remaining original allowance.
-Do not restart this session or duplicate AR1's separately launched appearance
-work in the concept repository.
+The user started the continuation against the
+[committed session goal](docs/architecture/cs3-continuation-goal.md), following
+the [continuation plan](plan.md#september-11-pause-and-continuation-plan).
+The earlier September 11 pause is historical; it did not renew the original
+allowance. Keep C5 source `9844435` frozen and do not duplicate AR1's separately
+launched appearance work.
 
 - U6 guarded loading/resource ownership is complete with unit and real-browser
   failure/ownership coverage.
-- Complete U5 technical packaging and any explicitly recorded provisional
-  development-library exception. Appearance remains unaccepted.
+- U5 frozen two-run technical qualification passes: strict R1c/R2 at exporter
+  `9213c63659158780f186c22e3bf6579353fb8f75`, 31 checks / 30 matched captures each,
+  identical export/manifest/technical/five-GLB bytes, plus the 16-check
+  `checks-strict-9213c63` eight-node regression. Full U5 appearance acceptance
+  remains pending; technical checks do not decide appearance.
+- Orchestrator: create the local ignored qualification receipt with
+  `node --experimental-strip-types tools/qualify-assets.ts`; optionally append
+  `--select local-playable` to activate the separately authorized provisional
+  development package. The [dated amendment](docs/architecture/cs3-provisional-development-use-2026-09-11.json)
+  records the actual user instruction and exact baseline. Neither persistent
+  receipt creation nor selection was activated by the worker.
+- Performance qualification, qualified production promotion, the release
+  allowlist, public publication and final human appearance/release approval
+  remain blocked/pending. Ignored development artifacts are not release inputs.
 - Implement U7, then U8-U10 with baseline-specific claims and unchanged gates.
 - Import any later AR1 replacement only through a pinned, reviewed handoff;
   rerun affected qualification rather than inheriting the old results.
