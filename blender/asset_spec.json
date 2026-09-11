@@ -37,8 +37,8 @@
   "provenance": {
     "sourceRepository": "williamsmat_microsoft/midcreek-concept",
     "sourceRevision": "870603632c4b6665c513d0fa692a3ee2dae2b683",
-    "referenceIds": ["character-man/01-sheet", "character-man/02-facings", "turnaround/01-rack", "turnaround/02-cooling-unit", "floor/01-grid", "key-art/04-diamond-bright"],
-    "attribution": "Cel Shift concept art - williamsmat_microsoft/midcreek-concept at 870603632c4b6665c513d0fa692a3ee2dae2b683. Owned CS3 geometry, palette texture and rigid animation.",
+    "referenceIds": ["character-man/01-sheet", "character-man/02-facings", "character-man/04-work-poses", "turnaround/01-rack", "turnaround/02-cooling-unit", "floor/01-grid", "fault/01-coolant-leak", "key-art/04-diamond-bright"],
+    "attribution": "Cel Shift concept art - williamsmat_microsoft/midcreek-concept at 870603632c4b6665c513d0fa692a3ee2dae2b683. Owned CS3 geometry, surface atlas and rigid animation.",
     "terms": "Explicit September 10, 2026 CS3 source/derived-asset/repository/gallery-staging grant; no broader reference license inferred.",
     "fonts": [],
     "sourceTextures": [],

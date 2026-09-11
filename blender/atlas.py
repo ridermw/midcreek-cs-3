@@ -9,6 +9,14 @@ CHARTS = {
     "torso": (32,48,192,384,-0.015,0.475),
     "head": (288,48,192,384,-0.068,0.163),
 }
+GRILLE = (16,472,128,32)
+
+
+def grille_uv(u, v):
+    if not 0 <= u <= 1 or not 0 <= v <= 1:
+        raise ValueError("CHART_COORDINATE")
+    x,y,width,height = GRILLE
+    return ((x+0.5+u*(width-1))/SIZE, 1-(y+0.5+(1-v)*(height-1))/SIZE)
 
 
 def chart_uv(name, u, z):
@@ -94,6 +102,21 @@ def pixels(spec, profiles):
                 source = (source_y*SIZE+source_x)*4
                 target = (y*SIZE+x)*4
                 data[target:target+4] = data[source:source+4]
+    left,top,width,height = GRILLE
+    for y in range(height):
+        for x in range(width):
+            dx = (x-4*(y//6 % 2)) % 8-4
+            dy = y % 6-2.5
+            hole = (abs(dx) < 2 and abs(dy) < 1.5) or (abs(dx) < 1 and abs(dy) < 2)
+            offset = ((top+y)*SIZE+left+x)*4
+            data[offset:offset+4] = bytes((*palette["ink" if hole else "steel"],255))
+    for y in range(top-8,top+height+8):
+        for x in range(left-8,left+width+8):
+            if left <= x < left+width and top <= y < top+height:
+                continue
+            sx,sy = min(left+width-1,max(left,x)),min(top+height-1,max(top,y))
+            source,target = (sy*SIZE+sx)*4,(y*SIZE+x)*4
+            data[target:target+4] = data[source:source+4]
     return bytes(data)
 
 

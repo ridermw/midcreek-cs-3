@@ -44,7 +44,7 @@ def validate_spec(spec):
 
 
 def authoring_module(name):
-    if name not in ("atlas", "profiles", "technician"):
+    if name not in ("atlas", "profiles", "technician", "equipment"):
         raise ValueError("AUTHORING_MODULE")
     module = importlib.util.spec_from_file_location(f"cs3_{name}", Path(__file__).with_name(f"{name}.py"))
     loaded = importlib.util.module_from_spec(module)
@@ -176,13 +176,17 @@ class Builder:
         obj.location = position
         return self.paint(obj, parent, color)
 
-    def tube(self, parent, points, radius, color):
+    def tube(self, parent, points, radius, color, closed=False, resolution=1):
         bpy = self.bpy
         curve = bpy.data.curves.new("Tube", "CURVE")
         curve.dimensions, curve.resolution_u = "3D", 1
-        curve.bevel_depth, curve.bevel_resolution = radius, 1
-        curve.use_fill_caps = True
+        curve.bevel_depth, curve.bevel_resolution = radius, resolution
+        curve.use_fill_caps = not closed
         spline = curve.splines.new("POLY")
+        if closed:
+            if all(abs(a-b) <= 1e-9 for a,b in zip(points[0],points[-1])):
+                points = points[:-1]
+            spline.use_cyclic_u = True
         spline.points.add(len(points) - 1)
         for point, coordinate in zip(spline.points, points):
             point.co = (*coordinate, 1)
@@ -211,60 +215,7 @@ class Builder:
                 raise ValueError(f"MATERIAL_SLOT_DUPLICATION: {name}")
 
     def equipment(self, root, cooling=False):
-        s = lambda p, z, c, **kw: self.shape(root, p, z, c, **kw)
-        for x in (-0.38, 0.38):
-            for y in (-0.38, 0.38):
-                s((x, y, 1.05), (0.04, 0.04, 2.1), "ink", bevel=0.006)
-                s((x, y, 1.055), (0.03, 0.03, 2.03), "white", bevel=0.003)
-        for z in (0.025, 2.075):
-            cap = s((0, 0, z), (0.8, 0.8, 0.05), "white", bevel=0.008)
-            for polygon in cap.data.polygons:
-                if max(abs(component) for component in polygon.normal) < 0.999:
-                    for loop in polygon.loop_indices:
-                        cap.data.uv_layers.active.data[loop].uv = palette_coordinate(self.palette.index("ink"),self.spec)
-        for x in (-0.388, 0.388):
-            s((x, 0, 1.05), (0.017, 0.72, 1.95), "white")
-            for z in (1.36, 1.40, 1.44, 1.48):
-                s((x * 1.023, 0, z), (0.003, 0.16, 0.015), "steel")
-            s((x * 1.023, -0.22, 0.9), (0.003, 0.035, 0.17), "ink")
-        s((0, -0.362, 1.05), (0.72, 0.025, 1.94), "ink")
-        s((0, 0.33, 1.05), (0.71, 0.025, 1.94), "rack-shadow")
-        if cooling:
-            for index in range(19):
-                z = 0.22 + index * 0.089
-                s((-0.045, -0.387, z), (0.53, 0.025, 0.03), "white", bevel=0.004)
-            s((0.30, -0.381, 1.35), (0.08, 0.025, 0.43), "steel")
-            for index in range(6):
-                s((0.30, -0.397, 1.20 + index * 0.057), (0.045, 0.003, 0.037), "green" if index > 1 else "teal")
-            for x in (-0.37, 0.37):
-                for z in (0.11, 1.99):
-                    s((x, -0.385, z), (0.055, 0.03, 0.09), "yellow")
-            for x in (-0.24, -0.08, 0.08, 0.24):
-                self.tube(root, [(x, 0.36, 1.84), (x, 0.36, 0.64)], 0.025, "teal")
-                s((x, 0.378, 0.73), (0.047, 0.035, 0.13), "yellow", bevel=0.006)
-                self.tube(root, [(x, 0.355, 0.60), (x + 0.025, 0.355, 0.35),
-                                 (0.28, 0.355, 0.19)], 0.025, "hose")
-        else:
-            for index in range(18):
-                z = 0.17 + index * 0.098
-                s((0, -0.384, z), (0.64, 0.021, 0.081), "steel", bevel=0.004)
-                s((-0.038, -0.397, z), (0.45, 0.004, 0.049), "hose")
-                for x in (-0.21, -0.15, -0.09, -0.03, 0.03, 0.09):
-                    s((x, -0.3995, z), (0.016, 0.001, 0.039), "ink")
-                s((-0.30, -0.399, z), (0.018, 0.002, 0.055), "teal")
-                s((0.246, -0.399, z + 0.015), (0.016, 0.002, 0.012), "green")
-                s((0.282, -0.399, z - 0.015), (0.021, 0.002, 0.012), "teal")
-            for x in (-0.34, 0.34):
-                s((x, -0.39, 1.03), (0.011, 0.015, 1.81), "yellow")
-            for x in (-0.17, 0.17):
-                self.tube(root, [(x, 0.36, 1.97), (x, 0.36, 1.68),
-                                 (x * 1.5, 0.36, 1.50), (x * 1.5, 0.36, 0.25)], 0.027, "hose")
-                for z in (0.29, 1.85):
-                    s((x if z > 1 else x * 1.5, 0.371, z), (0.07, 0.04, 0.06), "yellow")
-            for z in (0.61, 0.96, 1.31):
-                s((0, 0.363, z), (0.50, 0.02, 0.21), "steel")
-                self.tube(root, [(-0.2, 0.383, z), (-0.15, 0.383, z - 0.07),
-                                 (0.15, 0.383, z - 0.07), (0.2, 0.383, z)], 0.012, "teal")
+        return authoring_module("equipment").build(self, root, cooling)
 
     def floor(self, root):
         bpy = self.bpy
@@ -297,10 +248,7 @@ class Builder:
         return authoring_module("technician").build(self, root)
 
     def coolant(self, root):
-        self.shape(root, (0,0,0.005), (0.86,0.70,0.01), "teal", kind="cylinder")
-        self.shape(root, (-0.05,0.02,0.011), (0.60,0.43,0.002), "coolant-light", kind="cylinder")
-        for x, y, radius in [(0.25,0.15,0.13),(-0.27,-0.16,0.12),(0.2,-0.22,0.1)]:
-            self.shape(root, (x,y,0.005), (radius*2,radius*2,0.008), "teal", kind="cylinder")
+        return authoring_module("equipment").build_coolant(self, root)
 
     def animate(self, nodes):
         bpy = self.bpy
@@ -405,6 +353,7 @@ def main(spec_file, output):
                    "blender/technician.py": checksum(Path(__file__).with_name("technician.py")),
                    "blender/atlas.py": checksum(Path(__file__).with_name("atlas.py")),
                    "blender/profiles.py": checksum(Path(__file__).with_name("profiles.py")),
+                   "blender/equipment.py": checksum(Path(__file__).with_name("equipment.py")),
                    f"{spec['texture']['name']}.png": checksum(output/f"{spec['texture']['name']}.png")},
         "blender": bpy.app.version_string, "blenderBuild": bpy.app.build_hash.decode(),
         "roots": list(ROOTS), "animatedNodes": [n.name for n in animated],

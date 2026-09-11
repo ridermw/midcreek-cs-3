@@ -45,6 +45,10 @@ comparison, reference and experimental images with automatic discovery, a
 saved offline snapshot and explicit workstream statuses. Fresh producer
 sidecars and Chrome interactions are checked; this is visibility into U5,
 not completion of its appearance or promotion gates.
+C3's equipment, grille atlas and irregular spill have passed source review
+and native/export/browser checks. The latest independent appearance review
+still requires technician/Repair, cabinet-detail, ink/shadow, liquid and
+safety-paint corrections; the fine-filter/ink studies do not authorize promotion.
 U4's full approved local import and generated index are verified, including
 real filesystem rollback/interruption checks. Reference media remains ignored;
 the separate public-gallery projection and release allowlist are U9-U10 work.

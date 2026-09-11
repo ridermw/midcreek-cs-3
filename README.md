@@ -97,6 +97,22 @@ each capture. Its antialiased ink variant is also exercised against the
 atlas-backed candidate. It is exploratory evidence, not a selected production renderer,
 a source-material equivalence claim or appearance acceptance.
 
+The C3 equipment prototype adds perforated server bays, roof/service fittings,
+curved rear cable and hose runs, cooling fans/lifting eyes/manifold details,
+and a thin irregular coolant spill. A source-bound grille chart shares the
+owned atlas. Bevels and curve resolution were corrected at source after
+zero-area faces and a below-height lifting loop failed actual Blender checks;
+neither tolerances nor whole-model scaling were used to hide those failures.
+Source review found no correctness blocker, and the nine Blender checks plus
+the fresh 31-check/30-contact export/browser run pass.
+
+The latest private rendering study records 80 isolated images across eight
+profiles and 40 native-scale hall images across five profiles. Anisotropic
+filtering sharpens the vest, but the independent C3 appearance review still
+says **needs work**: technician construction and Repair articulation, cabinet
+detail hierarchy, ink/shadows, coolant wetness and safety-paint weight remain
+open. No final rendering recipe or asset promotion is accepted.
+
 U4 imports the exact approved Cel Shift set into an ignored, immutable local
 package: 49 masters, 47 prompts, seven shared inputs, reviewed sanitized
 provenance and three support documents. The source inventory matches the

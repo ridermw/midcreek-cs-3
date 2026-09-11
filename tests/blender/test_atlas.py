@@ -42,6 +42,19 @@ class AtlasTests(unittest.TestCase):
             x, y = int(u * width), int((1 - v) * height)
             self.assertEqual(pixels[(y*width+x)*4:(y*width+x)*4+3], bytes.fromhex(color[1:]))
 
+    def test_grille_chart_has_isolated_perforations_and_preserves_its_uv_edges(self):
+        atlas = builder.authoring_module("atlas")
+        self.assertTrue(hasattr(atlas, "grille_uv"))
+        self.assertEqual(atlas.grille_uv(0, 0), (0.0322265625, 0.0166015625))
+        self.assertEqual(atlas.grille_uv(1, 1), (0.2802734375, 0.0771484375))
+        with self.assertRaisesRegex(ValueError, "CHART_COORDINATE"):
+            atlas.grille_uv(1.1, 0)
+        spec = json.loads((ROOT / "blender/asset_spec.json").read_text())
+        pixels = builder.atlas_pixels(spec)
+        for x, y, color in [(16,472,"steel"),(20,475,"ink"),(8,472,"steel")]:
+            offset = (y*512+x)*4
+            self.assertEqual(pixels[offset:offset+3], bytes.fromhex(spec["palette"][color][1:]))
+
 
 if __name__ == "__main__":
     unittest.main()
