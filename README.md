@@ -6,8 +6,9 @@ A Blender-authored, Three.js-based data-hall simulation.
 technical checkpoint passes. U7 supplies a local first playable using the active,
 ignored provisional development selection. U8 instrumentation and deterministic
 evidence are complete. U9 adds the isolated showcase and approved local reference
-gallery staging; named-target timing and U10 remain. Appearance remains
-pending and no qualified production library is promoted.
+gallery staging; U10 release enforcement is implemented. Named-target timing
+and final appearance/release decisions remain pending, and no qualified
+production library is promoted.
 
 ## Start here
 
@@ -74,8 +75,9 @@ Install/restore dependencies only when needed. Heavy jobs run through
 
 ### U9 isolated showcase and reference gallery
 
-`npm run build` now typechecks, proves publication inputs, prepares the site and
-builds both Vite entries. `npm run gallery:build` prepares only the ignored media
+`npm run build` now typechecks, proves publication inputs, prepares the site,
+builds both Vite entries and enforces U10's staging allowlist.
+`npm run gallery:build` prepares only the ignored media
 stage. Use `npm run preview` to browse the built showcase at `/midcreek-cs-3/`;
 `npm run dev` and a direct `vite build` deliberately remain in the awaiting state
 without the approved-media preparation step. No command deploys Pages or
@@ -133,8 +135,79 @@ Populated-content tests require the reviewed local inputs and a completed
 startup qualification. The showcase preserves the exact technical result
 labels: U5 technical passed; appearance pending; U7 playable passed locally;
 U8 deterministic instrumentation passed; named-target timing unqualified;
-production/release blocked. U10 and final appearance/deployment approval remain
-outside this unit.
+production/release blocked. U10 enforcement is described below; final
+appearance/release/deployment decisions remain outstanding.
+
+### U10 release and permission enforcement
+
+**A successful build is staging, not a release.** `tools/release.ts` produces a
+fresh ignored `.artifacts/release/<build-id>/dist/`, verifies it, and replaces
+`dist/` without merging old files. A private receipt binds the exact file hashes;
+`current.json` and `build-state.json` identify the latest complete build. An
+interrupted or failed newer attempt invalidates reuse of the prior artifact.
+Concurrent builds fail rather than stealing the build lock. Old generations
+remain private; nothing is staged, published or deployed by these commands.
+
+The permitted set is derived from the two-entry Vite manifest, the reviewed U9
+gallery receipt/public projection and, only with independent approval, the
+selected qualified library. Inputs are snapshotted before Vite runs. No public
+directory, reference tree, asset glob, source map, raw prompt, sidecar or log is
+copied. Hash/path mismatches, duplicate/extra/missing members, private strings,
+GLB private extras/external dependencies and Cargo/Rust/Bevy prerequisites
+reject the artifact. Validation re-derives the file set rather than accepting
+a receipt's arbitrary list as publication authority.
+
+The qualified-library snapshot API requires an independently supplied exact
+manifest/library/source/profile/recipe binding, appearance evidence and policy
+hashes, parent authority (or a trusted signature key), and the hash-bound
+technical receipt. It validates the existing U5 qualified publication receipt
+and packaged manifest. Only the selected manifest at
+`assets/library/manifest.json` and its five GLBs are copied; GLB
+`packages/<digest>/...glb` paths (including declared subdirectories) are preserved. Neither the publication receipt
+nor a development pointer is a public runtime input. The default build has no
+such approval and copies **no library**. Its play page explicitly reports
+`RELEASE_BLOCKED`, with no provisional fallback. Local development remains
+separate under the dated amendment.
+
+```sh
+npm run build
+npm run release:validate       # exits 1: unmet real release prerequisites
+npm run release:expect-blocked # exits 0 only for intact, current, blocked staging
+npm run test:release
+npm run release:fixture        # synthetic boxes/receipts; never updates real current.json
+# Run locally through tools/run_guard.py with a fresh name and finite timeout:
+npm run test:release:e2e
+npm run typecheck
+npm run test:portable
+git diff --check
+```
+
+Integrity, missing-artifact or stale-build errors exit 2 from release validation;
+they are not the expected prerequisite-blocked result. Fixture receipts remain
+labeled `fixture`, with release blocked and deployment unauthorized. Fixture
+success tests file mechanics, not real appearance, technical qualification,
+performance or publication rights. The browser contracts traverse both actual
+Vite routes under `/midcreek-cs-3/` using a strict loopback server. Every network
+request must be prefixed and allowlisted; same-origin in-memory image decodes
+are recorded separately. Missing files/routes return plain 404, never fallback
+HTML. The contracts exercise synthetic playable loading and real staging's
+blocked/awaiting paths, including the approved gallery when locally available.
+
+`.github/workflows/quality.yml` pins action commits and Node 22.23.1, checks npm
+10.9.8, runs `npm ci`, typecheck, the full portable suite, an awaiting build,
+expected/default release rejection, synthetic file mechanics and the browser
+contracts. The browser revision comes from the pinned Playwright dependency.
+Clean CI needs no private qualification artifacts and never substitutes
+fixture success for missing qualification. Only retained-artifact checks are
+opt-in (`CS3_U5_RETAINED=1`, `CS3_U7_RETAINED=1`, `CS3_U9_RETAINED=1`);
+all portable rejection and synthetic contracts run unconditionally. CI has
+read-only repository permission, no secrets, deployment job, artifact
+publication or Pages workflow.
+
+**Real status:** U5 technical passed on the retained frozen baseline;
+appearance pending; U7 local playable; U8 named-target unqualified; U9 staging
+approved with local reviewed inputs (awaiting approval on clean CI);
+production library blocked; release blocked; deployment unauthorized.
 
 ### U7 local first playable
 

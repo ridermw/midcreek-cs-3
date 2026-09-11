@@ -79,10 +79,12 @@ function verifyDate(value: string): void {
     'APPROVAL_DATE', 'issuedAt', 'an actual nonfuture ISO UTC date required')
 }
 
-export async function promoteAssetLibrary(request: PromotionRequest): Promise<PublicationResult> {
+export function verifyQualifiedApproval(
+  request: Pick<PromotionRequest, 'approval' | 'trustedPublicKey' | 'trustedParentAuthorizationSha256'>,
+  binding: ApprovalBinding,
+) {
   requireAsset(request.approval, 'APPEARANCE_POLICY_GATE', 'approval',
     'explicit appearance and publication approval required')
-  const manifest = validatePackagedManifest(request.manifest)
   const approval = parseJson(canonicalJson(request.approval))
   const signed = approval !== null && typeof approval === 'object' && Object.hasOwn(approval, 'record')
     ? object({ record: approvalParser, signature: (value: unknown) => value })(approval, 'approval')
@@ -98,11 +100,17 @@ export async function promoteAssetLibrary(request: PromotionRequest): Promise<Pu
   verifyDate(record.issuedAt)
   requireAsset(record.appearanceAccepted && record.policyApproved,
     'APPEARANCE_POLICY_GATE', 'approval', 'both appearance acceptance and publication policy approval required')
-  requireAsset(canonicalJson(record.binding) === canonicalJson(manifestBinding(manifest)),
+  requireAsset(canonicalJson(record.binding) === canonicalJson(binding),
     'APPROVAL_BINDING', 'approval', 'approval is for a different manifest/source/profile/recipe/library')
+  return { record, approval: signed ?? record }
+}
+
+export async function promoteAssetLibrary(request: PromotionRequest): Promise<PublicationResult> {
+  const manifest = validatePackagedManifest(request.manifest)
+  const { approval } = verifyQualifiedApproval(request, manifestBinding(manifest))
   return publishGeneration({
     candidateRoot: request.candidateRoot, destinationRoot: request.destinationRoot,
-    manifest, qualification: 'qualified', approval: signed ?? record, onPhase: request.onPhase,
+    manifest, qualification: 'qualified', approval, onPhase: request.onPhase,
   })
 }
 

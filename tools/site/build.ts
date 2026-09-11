@@ -2,7 +2,6 @@ import { randomUUID } from 'node:crypto'
 import { readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { build } from 'vite'
 import {
   AWAITING, deriveGallery, loadPublicationInputs, validateThumbnail, verifySource,
 } from './publication.ts'
@@ -13,11 +12,14 @@ import type { FileIdentity } from '../references/contracts.ts'
 import { assertNoSymlink, ensureDirectory, verifyFileSet } from '../references/store.ts'
 import { verifyIgnoredOutputs } from '../references/git.ts'
 
-export async function prepareSite(repository = resolve('.'), requireGallery = false) {
-  const source = await loadPublicationInputs(repository)
+export async function prepareSite(
+  repository = resolve('.'), requireGallery = false,
+  resolvedSource?: Awaited<ReturnType<typeof loadPublicationInputs>>,
+) {
+  const source = resolvedSource === undefined ? await loadPublicationInputs(repository) : resolvedSource
   requireReference(!requireGallery || source, 'PUBLICATION_REQUIRED', 'gallery', 'explicitly requested populated gallery has no provable approval')
   const root = join(repository, '.artifacts/site', randomUUID())
-  await verifyIgnoredOutputs(repository, ['.artifacts/site', 'dist'])
+  await verifyIgnoredOutputs(repository, ['.artifacts/site/receipt.json', 'dist/index.html'])
   await ensureDirectory(root)
   const thumbnails: ThumbnailRecord[] = []
   const files: FileIdentity[] = []
@@ -73,31 +75,8 @@ export async function prepareSite(repository = resolve('.'), requireGallery = fa
 }
 
 export async function buildShowcase(repository = resolve('.'), requireGallery = false) {
-  const stage = await prepareSite(repository, requireGallery)
-  // Vite receives exact validated media only. No raw reference/support tree, receipts,
-  // development library or arbitrary public directory is copied.
-  const media: { fileName: string; bytes: Buffer }[] = []
-  for (const file of stage.files) {
-    const bytes = await readFile(join(stage.root, file.path))
-    requireReference(digest(bytes) === file.sha256 && bytes.length === file.bytes,
-      'PUBLICATION_CHANGED', file.path, 'staged input changed before Vite emission')
-    media.push({ fileName: file.path, bytes })
-  }
-  await build({
-    configFile: join(repository, 'vite.config.ts'),
-    plugins: [{
-      name: 'cs3-approved-site-staging',
-      transformIndexHtml(html, context) {
-        return context.path === '/index.html'
-          ? html.replace('data-publication="awaiting-approval"', `data-publication="${stage.status}"`)
-          : html
-      },
-      generateBundle() {
-        for (const file of media) this.emitFile({ type: 'asset', fileName: file.fileName, source: file.bytes })
-      },
-    }],
-  })
-  return stage
+  const { buildRelease } = await import('../release.ts')
+  return buildRelease(repository, undefined, requireGallery)
 }
 async function main() {
   const args = process.argv.slice(2)

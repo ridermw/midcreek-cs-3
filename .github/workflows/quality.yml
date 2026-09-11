@@ -1,0 +1,50 @@
+name: Quality contracts (no publication)
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  portable-contracts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22.23.1'
+          check-latest: false
+      - name: Restore exact dependency graph
+        run: |
+          test "$(node --version)" = "v22.23.1"
+          test "$(npm --version)" = "10.9.8"
+          npm ci
+      - run: npm run typecheck
+      - name: Portable unit and rejection contracts
+        run: npm run test:portable
+      - name: Build honest awaiting staging without private qualification inputs
+        run: npm run build
+      - name: Assert every unmet release prerequisite remains blocking
+        run: npm run release:expect-blocked
+      - name: Default release validation must reject
+        run: |
+          set +e
+          npm run release:validate
+          status=$?
+          set -e
+          test "$status" -eq 1
+      - name: Install the browser revision pinned by the Playwright lockfile
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Synthetic release file mechanics (not production qualification)
+        run: npm run release:fixture
+      - name: Traverse both real built routes through strict loopback
+        run: npm run test:release:e2e
+      - run: git diff --check

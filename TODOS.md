@@ -22,12 +22,21 @@ launched appearance work.
 - The canonical local qualification receipt and `local-playable` provisional
   development selection are active under the
   [dated amendment](docs/architecture/cs3-provisional-development-use-2026-09-11.json).
-- Performance qualification, qualified production promotion, the release
-  allowlist, public publication and final human appearance/release approval
-  remain blocked/pending. Ignored development artifacts are not release inputs.
+- Performance qualification, qualified production promotion, public
+  publication and final human appearance/release approval remain
+  blocked/pending. Ignored development artifacts are not release inputs.
 - U7 first playable and U8 deterministic readiness/request/frame ledgers are
-  complete. Run the three prescribed headed 60 Hz named-target repetitions,
-  then implement U9 and U10 with baseline-specific claims and unchanged gates.
+  complete. The three prescribed headed 60 Hz named-target repetitions remain
+  outstanding; no timing qualification is inferred from deterministic tests.
+- U9 reviewed gallery staging and U10 exact release/permission enforcement are
+  implemented. U10 validates fresh ignored staging, private-content rejection,
+  strict prefixed routes and synthetic library file mechanics. Default release
+  validation still blocks appearance, named-target performance, qualified
+  production library and final release review separately. Clean quality CI
+  exercises awaiting/blocking paths without private local artifacts.
+- Final status stays separated: U5 technical passed; appearance pending;
+  U7 local playable; U8 named-target unqualified; U9 staging approved locally;
+  production library blocked; release blocked; deployment unauthorized.
 - Import any later AR1 replacement only through a pinned, reviewed handoff;
   rerun affected qualification rather than inheriting the old results.
 

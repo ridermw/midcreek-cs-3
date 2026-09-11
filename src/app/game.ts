@@ -5,6 +5,8 @@ import { AssetLoadError, ContractError } from '../assets/contracts'
 import type { AssetManifest } from '../assets/contracts'
 import { createGltfLoader, resolveAssetUrl } from '../assets/library'
 import { validateManifest } from '../assets/validate'
+import { loadReleaseManifest } from '../assets/releaseManifest'
+import type { ReleaseManifestBinding } from '../assets/releaseManifest'
 import { cameraHeading } from '../camera/controller'
 import { ISOMETRIC_CAMERA } from '../camera/isometricCamera'
 import { createPresentation } from '../engine/presentation'
@@ -28,6 +30,7 @@ export interface GameOptions {
   readonly zoom?: number
   readonly baseUrl: string
   readonly manifestUrl?: string
+  readonly releaseBinding?: ReleaseManifestBinding | null
   readonly diagnostics?: boolean
 }
 
@@ -192,9 +195,11 @@ export async function startGame(container: HTMLElement, options: GameOptions) {
       || zoom < ISOMETRIC_CAMERA.zoom.minimum || zoom > ISOMETRIC_CAMERA.zoom.maximum) {
       throw new ContractError('CAMERA_CONFIG', 'play', 'heading 0..3 and zoom 0.65..2.25 required')
     }
-    const manifest = await loadSelectedManifest(
-      options.baseUrl, options.manifestUrl ?? 'development/selection.json', loading.signal, inspection.bind,
-    )
+    const manifest = options.releaseBinding !== undefined
+      ? await loadReleaseManifest(options.baseUrl, options.releaseBinding, loading.signal, inspection.bind)
+      : await loadSelectedManifest(
+        options.baseUrl, options.manifestUrl ?? 'development/selection.json', loading.signal, inspection.bind,
+      )
     if (loading.signal.aborted) throw new AssetLoadError('LOAD_ABORTED', 'play', 'selection no longer active')
     renderer = createRenderer(canvas)
     const view = renderer

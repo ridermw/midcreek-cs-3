@@ -302,7 +302,7 @@ export function resolveAssetDependencyUrl(
   return resolved.toString()
 }
 
-async function sha256(bytes: ArrayBuffer): Promise<string> {
+export async function sha256(bytes: ArrayBuffer): Promise<string> {
   const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes)
   return [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, '0')).join('')
 }

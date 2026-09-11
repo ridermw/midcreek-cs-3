@@ -1,13 +1,19 @@
 import { readFile } from 'node:fs/promises'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { loadSelectedManifest, normalizeGameSeed } from './game'
+import { selectionAmendment } from '../../docs/architecture/cs3-provisional-development-use-2026-09-11.json'
 
 const base = 'http://127.0.0.1/midcreek-cs-3/assets/library/'
-const pointer = JSON.parse(await readFile('assets/library/development/selection.json', 'utf8'))
-const manifest = await readFile(`assets/library/${pointer.manifest}`, 'utf8')
+const pointer = {
+  schema: 1, kind: 'cs3-asset-pointer', qualification: 'provisional-development',
+  libraryDigest: selectionAmendment.binding.libraryDigest,
+  manifestSha256: selectionAmendment.binding.manifestSha256,
+  manifest: `packages/${selectionAmendment.binding.libraryDigest}/manifest.json`,
+}
+const retainedIt = process.env.CS3_U7_RETAINED === '1' ? it : it.skip
 afterEach(() => { vi.unstubAllGlobals() })
 
-function serve(selection: unknown = pointer, content = manifest) {
+function serve(selection: unknown = pointer, content = '{}') {
   const fetch = vi.fn(async (url: string) => new Response(
     url.endsWith('selection.json') ? JSON.stringify(selection) : content,
   ))
@@ -23,8 +29,10 @@ describe('authorized local package selection', () => {
     expect(() => normalizeGameSeed(Number.MAX_SAFE_INTEGER + 1)).toThrow(/SEED/)
   })
 
-  it('loads the actual frozen manifest, retaining its immutable package paths', async () => {
-    const fetch = serve()
+  retainedIt('loads the actual frozen manifest, retaining its immutable package paths', async () => {
+    const selected = JSON.parse(await readFile('assets/library/development/selection.json', 'utf8'))
+    const manifest = await readFile(`assets/library/${selected.manifest}`, 'utf8')
+    const fetch = serve(selected, manifest)
     const result = await loadSelectedManifest(base, 'development/selection.json', new AbortController().signal)
     expect(result.libraryDigest).toBe(pointer.libraryDigest)
     expect(result.assets).toHaveLength(5)

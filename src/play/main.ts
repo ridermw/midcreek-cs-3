@@ -1,6 +1,7 @@
 import { assetUrl } from '../shared/urls'
 import { startGame } from '../app/game'
 import type { GameHandle } from '../app/game'
+import type { ReleaseManifestBinding } from '../assets/releaseManifest'
 import './style.css'
 
 const link = document.querySelector<HTMLAnchorElement>('#showcase-link')
@@ -8,9 +9,13 @@ const container = document.querySelector<HTMLElement>('#game')
 if (!link || !container) throw new Error('PLAY_DOM: missing required entry elements')
 link.href = assetUrl('')
 
-declare global { interface Window { midcreek: GameHandle } }
+declare global {
+  interface Window { midcreek: GameHandle }
+  interface ImportMetaEnv { readonly CS3_RELEASE_BINDING: ReleaseManifestBinding | null | undefined }
+}
 const game = await startGame(container, {
   baseUrl: assetUrl('assets/library/'),
+  releaseBinding: import.meta.env.CS3_RELEASE_BINDING,
   diagnostics: new URLSearchParams(window.location.search).has('qualification'),
 })
 window.midcreek = game
