@@ -54,6 +54,12 @@ Chrome checks pass. Input browser checks mount the actual production
 session/input/camera modules in an isolated test fixture; the scene/HUD
 journey still belongs to U7, not a second simulation in the fixture.
 
+U5's owned Blender authoring step now creates the five editable templates and
+three rigid technician actions. A fresh source candidate passes evaluated
+geometry, unit/root, palette/UV and all-key/midpoint envelope checks.
+It is **not yet an exported, appearance-qualified or promoted library**;
+those gates remain in progress. No candidate media is published in Git.
+
 ## CS3 toolchain
 
 **Rust is not required.** CS3 continues CS2's TypeScript/Three.js direction.

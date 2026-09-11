@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "units": "meters",
+  "up": "Z",
+  "front": "-Y",
+  "exportUp": "Y",
+  "exportFront": "+Z",
+  "profile": "cs3-standard-v1",
+  "direction": "Cel Shift: clean white equipment, charcoal form breaks, yellow safety paint, teal coolant and adult blue-hard-hat technician in lime/orange/silver PPE.",
+  "adaptation": "Owned rigid geometry with an explicit nearest-filtered sRGB palette atlas and portable rough PBR. Graphic geometry outlines replace drawn ink; PBR lighting is an intentional adaptation, not exact cel-shader fidelity. No source image is used as a texture.",
+  "palette": {
+    "ink": "#23282D", "white": "#FBFCFD", "rack-shadow": "#C6D5E0",
+    "floor": "#DEE6EB", "floor-edge": "#B2C0CB", "yellow": "#FFC93C",
+    "teal": "#2FB8A8", "hose": "#2E353B", "green": "#4ADE80",
+    "red": "#FF4B4B", "lime": "#C8D94A", "orange": "#E8763A",
+    "silver": "#D6DBE0", "shirt": "#55707F", "denim": "#4A6485",
+    "boots": "#3A3128", "hat": "#2C6FB8", "hair": "#2B2320",
+    "skin": "#C98F6A", "coolant-light": "#78D9D0", "steel": "#79919F"
+  },
+  "materials": {
+    "CS3-Matte": {"roughness": 0.85, "metallic": 0},
+    "CS3-Equipment": {"roughness": 0.68, "metallic": 0.08},
+    "CS3-Coolant": {"roughness": 0.3, "metallic": 0}
+  },
+  "texture": {"name": "CS3-Palette", "width": 256, "height": 8, "uv": 0, "role": "base-color", "colorSpace": "sRGB", "filter": "nearest"},
+  "assets": [
+    {"id": "floor-slab", "root": "FloorRoot", "material": "CS3-Matte", "restBounds": [[-8.5,-0.1,-7.5],[8.5,0,7.5]], "animatedBounds": [[-8.5,-0.1,-7.5],[8.5,0,7.5]], "clips": []},
+    {"id": "rack-standard", "root": "RackRoot", "material": "CS3-Equipment", "restBounds": [[-0.4,0,-0.4],[0.4,2.1,0.4]], "animatedBounds": [[-0.4,0,-0.4],[0.4,2.1,0.4]], "clips": []},
+    {"id": "cooling-unit", "root": "CoolingRoot", "material": "CS3-Equipment", "restBounds": [[-0.4,0,-0.4],[0.4,2.1,0.4]], "animatedBounds": [[-0.4,0,-0.4],[0.4,2.1,0.4]], "clips": []},
+    {"id": "technician-man", "root": "TechnicianRoot", "material": "CS3-Matte", "restBounds": [[-0.45,0,-0.45],[0.45,1.73,0.45]], "animatedBounds": [[-0.45,0,-0.45],[0.45,1.8,0.45]], "clips": [
+      {"name": "Idle", "frames": [1,61], "fps": 30, "fpsBase": 1, "rootMotion": false, "loop": "duplicate-end"},
+      {"name": "Walk", "frames": [1,31], "fps": 30, "fpsBase": 1, "rootMotion": false, "loop": "duplicate-end"},
+      {"name": "Repair", "frames": [1,61], "fps": 30, "fpsBase": 1, "rootMotion": false, "loop": "duplicate-end"}
+    ]},
+    {"id": "coolant-leak", "root": "CoolantRoot", "material": "CS3-Coolant", "restBounds": [[-0.45,0,-0.45],[0.45,0.02,0.45]], "animatedBounds": [[-0.45,0,-0.45],[0.45,0.02,0.45]], "clips": []}
+  ],
+  "provenance": {
+    "sourceRepository": "williamsmat_microsoft/midcreek-concept",
+    "sourceRevision": "870603632c4b6665c513d0fa692a3ee2dae2b683",
+    "referenceIds": ["character-man/02-facings", "turnaround/01-rack", "turnaround/02-cooling-unit", "floor/01-grid", "key-art/04-diamond-bright"],
+    "attribution": "Cel Shift concept art - williamsmat_microsoft/midcreek-concept at 870603632c4b6665c513d0fa692a3ee2dae2b683. Owned CS3 geometry, palette texture and rigid animation.",
+    "terms": "Explicit September 10, 2026 CS3 source/derived-asset/repository/gallery-staging grant; no broader reference license inferred.",
+    "fonts": [],
+    "sourceTextures": [],
+    "finalHumanAppearanceReview": "pending"
+  }
+}

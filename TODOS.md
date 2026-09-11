@@ -27,6 +27,8 @@ U2 adds the preserved deterministic core and validated visual placement
 contracts; real media and integrated gameplay are still pending.
 U3 qualifies fixed-tick input, ordered replay and the production browser
 input adapter. Full scene/HUD interaction remains U7 work.
+U5 authoring has a checked five-template source candidate; export/loader,
+comparative appearance and atomic promotion are still pending.
 
 ## D1: Complete Street Scene interactive viewer
 
