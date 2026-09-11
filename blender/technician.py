@@ -101,9 +101,11 @@ def build(builder, root):
     s(hips, (0,-0.137,0), (0.025,0.006,0.015), "ink")
     for sign in (-1, 1):
         pouch = sign*0.19
-        s(hips, (pouch,0.012,-0.055), (0.065,0.117,0.15), "hose", bevel=0.009)
+        s(hips, (pouch,0.012,-0.055), (0.065,0.117,0.15), "boots", bevel=0.009)
         for y in (-0.033,0.006,0.045):
-            s(hips, (pouch,y,-0.025), (0.075,0.024,0.09), "ink", bevel=0.006)
+            s(hips, (pouch,y,-0.025), (0.075,0.024,0.09), "boots", bevel=0.006)
+            s(hips, (pouch+sign*0.038,y,-0.034), (0.003,0.018,0.033), "ink")
+            s(hips, (pouch+sign*0.041,y,-0.019), (0.007,0.007,0.007), "steel", kind="sphere")
         s(hips, (pouch,-0.03,0.029), (0.013,0.016,0.065), "orange", bevel=0.004)
         s(hips, (pouch,0.005,0.033), (0.012,0.013,0.05), "yellow", bevel=0.004)
 
@@ -160,22 +162,35 @@ def build(builder, root):
             diagnostic_tablet(forearm)
 
         thigh = builder.node(f"Thigh{suffix}", hips, (sign*0.086,0,0))
-        loft(thigh, [(-0.408,0.066,0.071,-0.004),(-0.34,0.072,0.080,0),
-                    (-0.19,0.081,0.090,0.008),(-0.045,0.085,0.102,0.01),
-                    (0.018,0.078,0.095,0.005)], "denim", power=2.5)
+        thigh_rings = [(-0.408,0.066,0.071,-0.004),(-0.34,0.072,0.080,0),
+                       (-0.19,0.081,0.090,0.008),(-0.045,0.085,0.102,0.01),
+                       (0.018,0.078,0.095,0.005)]
+        loft(thigh, thigh_rings, "denim", power=2.5)
         shin = builder.node(f"Shin{suffix}", thigh, (0,0,-0.40))
-        loft(shin, [(-0.367,0.065,0.079,-0.003),(-0.30,0.064,0.070,0),
-                   (-0.17,0.064,0.071,0),(-0.065,0.066,0.076,0),
-                   (0.015,0.066,0.072,-0.003)], "denim", power=2.6)
-        for node, z in ((thigh,-0.33),(shin,-0.09),(shin,-0.30)):
-            line(node, [(-0.050,-0.054,z),(0,-0.081,z+0.012),(0.045,-0.052,z-0.007)],
-                 radius=0.0014)
-        line(shin, [(sign*0.060,0,-0.02),(sign*0.063,0,-0.18),(sign*0.065,0,-0.35)],
-             radius=0.0013)
+        shin_rings = [(-0.367,0.060,0.072,-0.006),(-0.332,0.055,0.063,0.002),
+                      (-0.255,0.056,0.064,0.010),(-0.145,0.068,0.079,0.014),
+                      (-0.050,0.064,0.071,0),(0.015,0.066,0.072,-0.003)]
+        loft(shin, shin_rings, "denim", power=2.6)
+        for node,rings,power,z in ((thigh,thigh_rings,2.5,-0.33),
+                                   (shin,shin_rings,2.6,-0.09),(shin,shin_rings,2.6,-0.30)):
+            points = []
+            for x,height in ((-0.045,z),(0,z+0.012),(0.040,z-0.007)):
+                rx,ry,cy = builder.profiles.sample(rings,height)
+                points.append((x,cy-ry*(1-(abs(x)/rx)**power)**(1/power)-0.0007,height))
+            line(node, points, radius=0.0014)
+        line(shin, [(sign*(builder.profiles.sample(shin_rings,z)[0]+0.001),
+                     builder.profiles.sample(shin_rings,z)[2],z)
+                    for z in (-0.02,-0.10,-0.18,-0.26,-0.35)], radius=0.0013)
         foot = builder.node(f"Foot{suffix}", shin, (0,0,-0.425))
-        s(foot, (0,-0.044,-0.0615), (0.145,0.251,0.027), "ink", bevel=0.008)
-        s(foot, (0,-0.051,-0.029), (0.136,0.24,0.064), "boots", bevel=0.020)
-        s(foot, (0,0.012,0.018), (0.115,0.134,0.112), "boots", bevel=0.014)
-        for y,z in ((-0.061,0.005),(-0.035,0.030),(-0.012,0.052)):
-            line(foot, [(-0.036,y,z),(0.036,y,z)], "ink", 0.002)
+        loft(foot, [(-0.075,0.064,0.119,-0.044),(-0.069,0.071,0.125,-0.044),
+                    (-0.050,0.071,0.125,-0.044),(-0.043,0.066,0.121,-0.043)],
+             "ink", sides=24, power=3.4)
+        boot_rings = [(-0.052,0.066,0.117,-0.044),(-0.020,0.065,0.114,-0.045),
+                      (0.004,0.060,0.093,-0.031),(0.020,0.052,0.068,0.007),
+                      (0.064,0.050,0.060,0.010),(0.074,0.048,0.055,0.010)]
+        loft(foot, boot_rings, "boots", sides=24, power=3)
+        for z in (0.025,0.041,0.059):
+            rx,ry,cy = builder.profiles.sample(boot_rings,z)
+            line(foot, [(x,cy-ry*(1-(abs(x)/rx)**3)**(1/3)-0.001,z)
+                        for x in (-0.027,0,0.027)], "ink", 0.0016)
     return sorted((node for node in root.children_recursive if node.type == "EMPTY"), key=lambda n: n.name)

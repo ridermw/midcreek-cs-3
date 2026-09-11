@@ -38,12 +38,14 @@ def torso_color(x, z, theta):
         return "shirt"
     if abs(z-0.022) < 0.002 or (not strap and abs(z-top) < 0.0015):
         return "ink"
-    if z < 0.030 or (not strap and z > top-0.007) or (front and abs(x) < 0.005 and z < 0.275):
+    piping = strap and min(abs(abs(x)-0.068),abs(abs(x)-0.138)) < 0.008
+    if piping or z < 0.038 or (not strap and z > top-0.013) or (front and abs(x) < 0.007 and z < 0.275):
         return "orange"
-    band = 0.11 < z < 0.157
+    bands = ((0.11,0.157),(0.225,0.267))
+    band = any(low < z < high for low,high in bands)
     vertical = abs(abs(x)-0.103) < 0.024 and z > 0.11
     if band or vertical:
-        if min(abs(z-0.11),abs(z-0.157)) < 0.001 or (
+        if min(abs(z-edge) for limits in bands for edge in limits) < 0.001 or (
                 not band and abs(abs(abs(x)-0.103)-0.024) < 0.001):
             return "ink"
         return "silver"

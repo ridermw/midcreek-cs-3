@@ -22,6 +22,7 @@ class AtlasTests(unittest.TestCase):
         for chart, u, z, color in [
             ("torso", 0.25, 0.20, "lime"),
             ("torso", 0.25, 0.13, "silver"),
+            ("torso", 0.25, 0.245, "silver"),
             ("torso", 0.75, 0.32, "shirt"),
             ("head", 0.25, 0.10, "hair"),
             ("head", 0.75, -0.04, "skin"),
@@ -32,6 +33,15 @@ class AtlasTests(unittest.TestCase):
                 y = int((1 - uv[1]) * height)
                 offset = (y * width + x) * 4
                 self.assertEqual(pixels[offset:offset+3], bytes.fromhex(spec["palette"][color][1:]))
+
+    def test_vest_has_readable_orange_piping_on_both_shoulder_straps(self):
+        atlas = builder.authoring_module("atlas")
+        for theta in (-1.2, 1.2):
+            for x in (-0.134, -0.072, 0.072, 0.134):
+                with self.subTest(theta=theta, x=x):
+                    self.assertEqual(atlas.torso_color(x, 0.36, theta), "orange")
+            self.assertEqual(atlas.torso_color(0.103, 0.36, theta), "silver")
+        self.assertEqual(atlas.torso_color(0.055, 0.034, -1.2), "orange")
 
     def test_palette_slots_are_separate_from_the_surface_charts(self):
         spec = json.loads((ROOT / "blender/asset_spec.json").read_text())
