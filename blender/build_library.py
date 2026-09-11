@@ -15,6 +15,7 @@ import zlib
 IDS = ("floor-slab", "rack-standard", "cooling-unit", "technician-man", "coolant-leak")
 ROOTS = ("FloorRoot", "RackRoot", "CoolingRoot", "TechnicianRoot", "CoolantRoot")
 CLIPS = (("Idle", [1, 61]), ("Walk", [1, 31]), ("Repair", [1, 61]))
+WALK_SWING = 0.34
 
 
 def validate_spec(spec):
@@ -313,13 +314,23 @@ class Builder:
                         sign = -1 if obj.name.endswith("L") else 1
                         wave = math.sin(phase)*sign
                         if obj.name == "Hips":
-                            obj.location.z += 0.009*(1-math.cos(phase*2))
+                            support_offsets = []
+                            for suffix, side in (("L",-1),("R",1)):
+                                step = math.sin(phase)*side
+                                thigh = step*WALK_SWING
+                                knee = max(0,step)*0.20
+                                upper = -rest[f"Shin{suffix}"][0][2]
+                                lower = -rest[f"Foot{suffix}"][0][2]
+                                support_offsets.append(upper*(math.cos(thigh)-1)
+                                                       + lower*(math.cos(thigh+knee)-1))
+                            # One millimeter clears the between-key chord error of linear tracks.
+                            obj.location.z += max(support_offsets)+0.001
                         elif obj.name.startswith("Thigh"):
-                            obj.rotation_euler.x = wave*0.22
+                            obj.rotation_euler.x = wave*WALK_SWING
                         elif obj.name.startswith("Shin"):
                             obj.rotation_euler.x = max(0,wave)*0.20
                         elif obj.name.startswith("Foot"):
-                            obj.rotation_euler.x = -wave*0.22-max(0,wave)*0.20
+                            obj.rotation_euler.x = -wave*WALK_SWING-max(0,wave)*0.20
                         elif obj.name.startswith("UpperArm"):
                             obj.rotation_euler.x = -wave*0.32
                         elif obj.name.startswith("Forearm"):

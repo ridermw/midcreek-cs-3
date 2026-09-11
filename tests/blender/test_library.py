@@ -174,6 +174,14 @@ class EvaluatedLibraryTests(unittest.TestCase):
                 bpy.context.scene.frame_set(1+half//2, subframe=(half % 2)/2)
                 self.assert_envelope(self.bounds(root), actor["animatedBounds"], f"{name}/{half/2}")
 
+    def test_walk_keeps_a_supporting_foot_at_floor_level_between_keys(self):
+        library.activate_clip(self.record, "Walk")
+        for half in range(61):
+            bpy.context.scene.frame_set(1+half//2, subframe=(half % 2)/2)
+            support = min(self.bounds(bpy.data.objects[name])[0][1] for name in ("FootL", "FootR"))
+            self.assertGreaterEqual(support, -2e-4, f"penetration at {half/2}")
+            self.assertLessEqual(support, 0.002, f"both feet airborne at {half/2}")
+
 
 if __name__ == "__main__":
     if "--" in sys.argv:
