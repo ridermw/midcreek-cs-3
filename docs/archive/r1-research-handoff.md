@@ -1,22 +1,28 @@
 ---
-artifact_contract: "ce-handoff/v1"
+artifact_contract: "reference-archive/v1"
+archived: true
 created_at: "2026-09-10T17:27:45Z"
-title: "R1-only source research handoff"
-summary: "Resume the reviewed CS3 plan with research-only R1, no builds or asset work, and a mandatory human review stop."
+title: "ARCHIVED - completed R1 research handoff"
+summary: "Historical R1 instructions. R1-R3 and U1-U4 are complete; do not resume this goal."
 keywords: ["midcreek-cs3", "r1", "research-only", "hard-stop"]
-resume_focus: "Complete R1 by inspecting existing code, documents, and history; save conclusions and stop for user review."
+historical_focus: "Research-only R1, subsequently completed and approved."
 repository: "ridermw/midcreek-cs-3"
 branch: "docs/research-plan"
 head: "bcdd00903ee73b0c257ba15c6fd283d279320b39"
 ---
 
-# R1 Research Handoff
+# ARCHIVED - R1 Research Handoff
+
+> **REFERENCE ONLY - DO NOT RESUME.** This goal is completed and superseded.
+> Its branch, approval gates and instructions describe September 10 intake,
+> not the current project. The only active plan is the repository-root
+> `plan.md`; the current goal is `docs/architecture/cs3-continuation-goal.md`.
 
 This is an immutable snapshot of the planning session, not a replacement for
 `plan.md`. The user requested a goal prompt for a fresh session and explicitly
 required research-only R1 with a hard review stop before R2.
 
-## Current State
+## Historical State at R1 Intake
 
 - The existing local `midcreek-cs-3` checkout is on `docs/research-plan`.
 - Planning, plan-exit review, and the Cel Shift source/size audit are complete.
@@ -64,11 +70,10 @@ The earlier R1 instruction to generate a browsing index was removed. R1 only
 describes the future manifest/import/index requirements. Implementing those
 tools and their tests remains later work specified by R3, not an R1 task.
 
-## Goal Prompt for the New Session
+## Superseded R1 Goal - Historical Quotation Only
 
-The following is the user-requested goal prompt. Pasting it as a new user
-instruction authorizes R1 only; merely loading this handoff for orientation
-does not authorize execution.
+The following records the old R1 goal. It is not a current authorization,
+not a new-session recommendation, and must not be executed again.
 
 ```text
 Work in the existing local ridermw/midcreek-cs-3 checkout on

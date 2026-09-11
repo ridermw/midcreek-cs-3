@@ -1,61 +1,27 @@
-# Deferred Work
+# Remaining and Deferred Work
 
-Selected during the September 10, 2026 plan-exit review. These items are not
-authorization to implement them or to expand the three-unit plan.
+The only execution plan is [plan.md](plan.md). Completed research and checkpoint
+history are in [the reference archive](docs/archive/README.md), not this list.
 
-## Research checkpoint
+## Current pause and continuation
 
-| Unit / gate | State on September 10, 2026 |
-| --- | --- |
-| R1 / `approve-r1` | Complete / user-approved at `5ceac6f` |
-| R2 / `approve-r2` | Complete / user-approved for `a28f58c` and `7144246`, recorded at `806d3c5` |
-| R3 / `write-cs3-blueprint` | Documentation deliverable complete at [cs3-blueprint.md](docs/architecture/cs3-blueprint.md); ten implementation units specified, not executed |
-| `approve-r3` | **Satisfied:** user supplied `approve-r3` for `732ff39` on September 10, 2026 at 18:26:14 EDT |
-| Launch preflight | **Satisfied:** user approved the launch envelope and source/publication uses September 10, 2026; subsequent credit amendment and exact limits remain in the ignored authorization receipt |
-| Blueprint execution | **U1-U4 complete; U5 in progress; U6-U10 pending**; proceed without mid-run human checkpoints under `.artifacts/implementation/20260910T232859Z/authorization.json` |
-| Post-U10 human review | Final appearance/release review and deployment decision; no live deployment in the unattended run |
+Execution is **paused by user request on September 11, 2026 at 16:36:56 UTC**.
+The next session must follow the [updated continuation plan](plan.md#september-11-pause-and-continuation-plan)
+and [committed session goal](docs/architecture/cs3-continuation-goal.md),
+verify the C5 source checkpoint `9844435` and remaining original allowance.
+Do not restart this session or duplicate AR1's separately launched appearance
+work in the concept repository.
 
-The closed R2 allowance is not renewed. The new implementation
-[launch envelope](docs/architecture/cs3-blueprint.md#one-front-loaded-human-checkpoint)
-is authorized; interruption does not renew its clock or limits.
-Agent appearance, technical and publication-policy checks run without human
-interruptions; results are not human-approved until final review.
-D1/D3 remain deferred. D2 is dormant until a measured miss and may activate
-within the completed launch scope/budget. U1 establishes only the toolchain,
-guarded job execution and isolated entry builds, not gameplay qualification.
-U2 adds the preserved deterministic core and validated visual placement
-contracts; real media and integrated gameplay are still pending.
-U3 qualifies fixed-tick input, ordered replay and the production browser
-input adapter. Full scene/HUD interaction remains U7 work.
-U5 authoring has checked actual action-slot evaluation, linear keys and moving
-foot envelopes for the five-template source candidate. Its visuals remain
-prototypes, not a faithful Cel Shift reproduction or appearance acceptance.
-Export/loader qualification, comparative appearance and atomic promotion
-are still pending. The prototype export/comparison procedure passes its first
-complete, pixel-identity-checked five-asset run (31 checks, 30 contacts), and
-the original eight-node R2 regression remains intact. Final-recipe repetition,
-remaining negative/promotion cases and near-reference appearance are not
-substituted by that technical pass.
-The current atlas-backed candidate also passes source/indexed-triangle UV
-agreement; a reviewed wrong-seam-index false-positive case is now rejected.
-These surface-integrity checks and the tested browser ink study do not
-constitute appearance acceptance or asset promotion.
-The local HTML U5 Visual Monitor now exposes receipt-labeled source/browser,
-comparison, reference and experimental images with automatic discovery, a
-saved offline snapshot and explicit workstream statuses. Fresh producer
-sidecars and Chrome interactions are checked; this is visibility into U5,
-not completion of its appearance or promotion gates.
-C3's equipment, grille atlas and irregular spill have passed source review
-and native/export/browser checks. The latest independent appearance review
-still requires technician/Repair, cabinet-detail, ink/shadow, liquid and
-safety-paint corrections; the fine-filter/ink studies do not authorize promotion.
-C4 specifically addresses the empty Repair reach with a carried diagnostic
-tablet and articulated working pose on the same rig. Its source/transport
-checks and source review pass; overall character likeness and delegated
-appearance acceptance remain open.
-U4's full approved local import and generated index are verified, including
-real filesystem rollback/interruption checks. Reference media remains ignored;
-the separate public-gallery projection and release allowlist are U9-U10 work.
+- Implement U6 guarded loading/resource ownership; U1/U2 already permit this.
+- Complete U5 technical packaging and any explicitly recorded provisional
+  development-library exception. Appearance remains unaccepted.
+- Implement U7, then U8-U10 with baseline-specific claims and unchanged gates.
+- Import any later AR1 replacement only through a pinned, reviewed handoff;
+  rerun affected qualification rather than inheriting the old results.
+
+AR1's separate session owns appearance research. Its outputs are not
+automatically accepted by CS3. Final appearance/release approval remains
+outstanding, and a pause never renews the original allowance.
 
 ## D1: Complete Street Scene interactive viewer
 

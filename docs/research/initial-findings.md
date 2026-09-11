@@ -1,12 +1,16 @@
 # Initial Research Findings
 
+> **REFERENCE ONLY - completed R1/R2 research.** This is dated evidence, not
+> current implementation status or an active goal. R1-R3 and U1-U4 are complete.
+> Use [the active plan](../../plan.md) for the remaining work.
+
 Updated September 10, 2026 for completed R1 research and R2 technical proof.
 These findings extend and correct the preparatory research. The comparative
 sections retain R1's dated observations; the
 [R2 result](#r2-result-reproducible-bounded-exportload-proof) records fresh
 execution, appearance limits and reproduction instructions.
 The subsequent plan-exit review consolidated the original seven stages into
-the three execution units now defined in `plan.md`; this document remains the
+the three research units retained in the [archived plan](../archive/cs3-research-plan.md); this document remains the
 home for the comparative explanation.
 
 Source labels E1-E7 refer to [the evidence index](evidence-index.md). Code,
@@ -23,8 +27,9 @@ allowance enabled the completed R2 proof below. The user supplied `approve-r2`
 on September 10, 2026 for probe `a28f58c` and findings `7144246`.
 R3's [blueprint](../architecture/cs3-blueprint.md) is complete and was
 user-approved at `732ff39` on September 10, 2026 at 18:26:14 EDT.
-The remaining launch-envelope fields precede U1; no implementation or new
-experiment has occurred.
+At that R3 checkpoint, launch-envelope fields still preceded U1 and
+implementation had not started. Those are historical statements, superseded
+by the current active plan and README.
 Historical intake/closeout records below retain
 their then-current approval state.
 The immutable handoff
@@ -53,7 +58,7 @@ The user reaffirmed this boundary on September 10, 2026. CS3's browser runtime
 and simulation use TypeScript; asset authoring/export uses Python and Blender.
 The Rust/Bevy details below describe predecessors only. Their algorithms,
 contracts, and measurements can inform CS3 without importing their crates,
-Cargo commands, or Rust-to-WASM build. The [toolchain decision](../../plan.md#cs3-toolchain-decision-no-rust)
+Cargo commands, or Rust-to-WASM build. The [original toolchain decision](../archive/cs3-research-plan.md#cs3-toolchain-decision-no-rust)
 records the deterministic-state, testing, reuse, and performance implications.
 
 ## CS1: How It Was Built

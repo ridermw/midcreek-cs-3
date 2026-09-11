@@ -1,5 +1,5 @@
 ---
-title: Mid Creek CS3 Blueprint - Plan
+title: Mid Creek CS3 Implementation and Verification Contract
 type: docs
 date: 2026-09-10
 origin: plan.md
@@ -9,16 +9,28 @@ product_contract_source: reviewed-r1-r2-plan
 execution: code
 ---
 
-# Mid Creek CS3 Blueprint - Plan
+# Mid Creek CS3 Implementation and Verification Contract
+
+> **Contract, not a competing work plan.** Follow the repository-root
+> [active plan](../../plan.md) and [current goal](cs3-continuation-goal.md).
+> R1-R3 and U1-U4 are completed; their retained sections describe constraints
+> and regression coverage, not work to restart.
 
 ## Goal Capsule
 
 **Objective:** A visitor can understand the project, browse approved references, and play one reproducible data-hall fault/repair scenario.
 **Means:** CS2's TypeScript simulation, Blender visual templates, Three.js rendering, DOM/CSS, and separate Vite showcase/game entries.
-**Authority:** The [reviewed plan](../../plan.md), its decision ledger, the user's September 10, 2026 R1/R2 approvals, and the later front-loaded unattended-workflow direction govern this blueprint.
+**Authority:** The [active plan](../../plan.md), the approved decisions in the
+[archived research plan](../archive/cs3-research-plan.md), the user's September
+10, 2026 R1/R2 approvals, and the later front-loaded unattended-workflow
+direction govern this contract.
 This is the R3 documentation deliverable, not permission to execute its implementation units.
 **R3 approval:** The user supplied `approve-r3` on September 10, 2026 at 18:26:14 EDT, accepting this blueprint at `732ff3936f83a0de87547f567e93789f1f11001d`.
-The R3 review gate is satisfied. Launch preflight remains incomplete: actual finite resource values and the explicit source/publication grant must be recorded before U1.
+The R3 review gate and subsequent launch preflight are satisfied. The actual
+September 10, 2026 approval, source/publication uses, limits and credit amendment
+are recorded in `.artifacts/implementation/20260910T232859Z/authorization.json`.
+Execution is paused by the user's September 11 handoff request; it has already
+completed U1-U4, not remained blocked before U1.
 Approval of this revised R3 together with the completed launch authorization below is the single execution instruction for U1-U10; no second launch instruction or per-unit human approval is required.
 Revising this document does not supply that approval, grant source rights, or fill missing resource limits. Deployment remains after U10 and separately authorized.
 
@@ -26,6 +38,44 @@ Revising this document does not supply that approval, grant source rights, or fi
 No application code, dependency installation, artwork import, asset generation, Blender/browser experiment, benchmark, push or deployment is part of R3.
 During implementation, failed technical/appearance/performance checks drive bounded repair and remeasurement, not routine human approval requests.
 Permission failure, exhausted resources or invalid required source identity cannot be bypassed; preserve evidence and the last verified checkpoint under the terminal-blocker policy below.
+
+### September 11 continuation: provisional assets and AR1
+
+The user proposed moving visual-authoring research to a new concept-repository
+milestone and tentatively using the existing CS3 assets, then reported that
+AR1 had started separately. The selected continuation plan is to stop CS3
+appearance sweeps and advance integration against a frozen development baseline.
+The user subsequently paused this session and required a committed/pushed
+handoff before resuming in a fresh session.
+
+This section records the continuation plan, **not a retrospective appearance
+pass or an already-issued promotion exception**. C5 source is committed at
+`9844435`; source review and transport checks do not complete U5. Final-recipe
+repetitions, remaining negative/promotion cases and production manifest work
+remain.
+
+U6 implementation may proceed from U1/U2. Before using an appearance-unaccepted
+library for real U6/U7 development integration, record the actual provisional-use
+authorization, exact candidate/input/profile hashes, allowed uses and remaining
+gates in a separate dated amendment; never rewrite the immutable launch receipt.
+Retain all technical validation, readiness, ownership and failure-path rules.
+Keep any development-library selection distinct from the qualified production
+pointer and public-release allowlist. Default qualification/promotion must
+continue to reject an unmet appearance or policy gate.
+
+U7-U10 implementation may advance against that explicitly recorded development
+baseline without claiming full production qualification. U8 measurements identify
+the actual baseline and configuration; a changed library/material/shader recipe
+requires affected checks and measurements again. Release remains blocked where
+its technical, appearance or publication prerequisites are unmet.
+
+AR1 owns prompt/reference improvements and the authoring/rendering investigation
+in `williamsmat_microsoft/midcreek-concept`; this session keeps that repository
+read-only. Consume only a versioned, provenance-checked handoff with any required
+new-input/use approval, not its moving tip. Preserve the original artwork as the
+visual specification and keep final human appearance/release review separate.
+Neither the split nor the pause renews deadlines, grants external generation
+services, permits Pages, or changes simulation/layout/asset contracts.
 
 ### One front-loaded human checkpoint
 
@@ -47,12 +97,13 @@ All fields must be resolved and all required access must be available before the
 | Derived assets and appearance delegation | Owned Blender sources, permitted textures/fonts, declared adaptations and the five-asset/three-clip contract; agent comparative review may qualify and promote candidates for integration | Technical pass is not a fidelity verdict; human appearance acceptance remains pending until after U10 |
 | Repository publication | Explicitly enumerate source categories and permitted generated runtime assets that may be committed/pushed to this repository, with attribution and exclusions | Local reference permission never implicitly permits publishing masters, prompts or raw sidecars |
 | Gallery/release-staging policy | Exact approved existing input hashes, allowed derivations, public fields, credit/terms and output roles; generated output hashes may be recorded automatically when they satisfy this policy | No blanket approval of unknown sources, changed input bytes, private fields or unsupported claims; policy does not authorize live deployment |
-| Resources and run duration | An explicit maximum elapsed duration/deadline, AI-credit/spend ceiling, disk cap, minimum free-space floor, closeout reserve, owned output/temp roots and one heavy job at a time | No unspecified/unlimited budget, automatic extension, new paid service, global permission relaxation or reuse of R2/Street allowances |
+| Resources and run duration | An explicit maximum elapsed duration/deadline, AI-credit/spend ceiling or recorded waiver, disk cap, minimum free-space floor, closeout reserve, owned output/temp roots and one heavy job at a time | No unspecified resource allowance, automatic extension, new paid service, global permission relaxation or reuse of R2/Street allowances |
 | Bounded optimization | Activate D2 only after a measured miss on the named target; profile and retain quality-preserving improvements inside U1-U10 and the same allowance | No speculative cache/worker architecture, target weakening, evidence deletion, D1/D3 expansion or new external service |
 | Tool/host readiness and communication | Required authentication, source access, browser/Blender availability, OS permissions and host/session lifetime arrangements established before launch; no routine agent progress notifications or approval prompts during U1-U10 | Do not bypass an OS/tool denial; external host/GitHub notifications are not controlled by this document |
 
-The user has described a 24-48-hour execution horizon, not supplied an unlimited budget or a guaranteed runtime.
-Exact resource values are launch inputs still awaiting approval; this revision invents none.
+The original 24-48-hour horizon was not itself an allowance. The subsequent
+authorization records the actual approved deadlines/disk limits and the user's
+AI-credit-ceiling waiver; it does not grant unlimited runtime or new services.
 The launch review must resolve rights for every required delivery member, not defer a known required permission gap to U4/U5/U9.
 Approved policies cover the declared uses for the entire run; individual job allowances are derived from the remaining envelope without another human decision.
 Record policy-derived approvals with the parent authorization, input and output hashes and evaluator evidence; never label them as a human having inspected those outputs.
@@ -736,6 +787,10 @@ Every unit is covered by the one actual R3/launch approval; dependencies and aut
 Resolve U4 reference rights, U5 asset/experiment permissions and U9 staging policy before U1; apply them automatically during the run. Live deployment remains after U10.
 KTD20 governs all U1-U10; include its authority and remaining-budget constraints in each unit's work context.
 No additional mandatory planning cycle is needed: unresolved items below are qualification/permission gates with defined outcomes.
+The September 11 continuation exception described above concerns development
+integration only. These dependencies remain the production-qualification
+requirements; implementing a unit with provisional assets does not satisfy an
+unmet appearance or release gate.
 
 | Unit | Primary files | Depends on |
 | --- | --- | --- |
@@ -752,6 +807,8 @@ No additional mandatory planning cycle is needed: unresolved items below are qua
 
 ### U1. Pin tooling and the two-entry build
 
+**Completed - reference/regression contract only. Do not reimplement.**
+
 **Requirements:** B1, B6, B8; decisions 0A, 16A, 19A.
 **Files:** `package.json`, `package-lock.json`, `.nvmrc`, `.gitignore`, `tsconfig.json`, `vite.config.ts`, `vitest.config.ts`, `playwright.config.ts`, `index.html`, `play/index.html`, `src/shared/urls.ts`, `tests/build-contract.test.ts`, `README.md`.
 **Approach:** Establish strict TypeScript and explicit HTML inputs/base path; root scripts use the version table below.
@@ -761,6 +818,8 @@ Place generated output/test reports under ignored paths.
 **Acceptance:** A clean locked install, type-check, unit smoke and production two-entry build are reproducible; this does not yet qualify media or gameplay.
 
 ### U2. Characterize and reuse the deterministic core and layout
+
+**Completed - reference/regression contract only. Do not reimplement.**
 
 **Requirements:** B1, B2; decisions 1A, 2A.
 **Files:** `src/core/random.ts`, `src/core/random.test.ts`, `src/world/contracts.ts`, `src/world/simulation.ts`, `src/world/simulation.test.ts`, `src/world/layout.ts`, `src/world/layout.test.ts`, `tests/asset-contract.test.ts`.
@@ -773,6 +832,8 @@ Add exact rack IDs, transforms/front/service alignment, all placement classes, u
 
 ### U3. Add held input and ordered replay
 
+**Completed - reference/regression contract only. Do not reimplement.**
+
 **Requirements:** B3; decisions 5A, 10A and T5/T6.
 **Files:** `src/input/keyboard.ts`, `src/input/keyboard.test.ts`, `src/input/heldKeys.ts`, `src/input/heldKeys.test.ts`, `src/app/session.ts`, `src/app/session.test.ts`, `src/camera/controller.ts`, `src/camera/controller.test.ts`, `src/camera/isometricCamera.ts`, `src/camera/isometricCamera.test.ts`, `tests/e2e/input.spec.ts`.
 **Approach:** Keep mapping pure and adapter tick-driven; session owns command ordering/replay.
@@ -784,6 +845,8 @@ Replay command/tick/epoch logs including pause/resume at one tick and restart.
 
 ### U4. Adopt references atomically with one manifest
 
+**Completed - reference/regression contract only. Do not reimplement.**
+
 **Requirements:** B5; decisions 6A, 7A, 9A, 12A and T1.
 **Files:** `tools/references/contracts.ts`, `tools/references/import.ts`, `tools/references/index.ts`, `tests/reference-contract.test.ts`, `tests/fixtures/references/`, `.gitignore`, `README.md`; generated active package/index at the paths above.
 **Approach:** Create the canonical manifest from the pinned audit and reviewed support/provenance inputs; do not hand-copy a second live inventory.
@@ -794,6 +857,10 @@ Interrupt before pointer replacement and after complete promotion; assert a read
 **Acceptance:** One complete approved package is active, originals unchanged, previous package survives failures, no artwork is staged/committed/published automatically.
 
 ### U5. Author and qualify the reusable Blender library
+
+**Partially complete:** C5 source authoring is committed. Only the technical
+packaging/qualification and explicitly recorded development-use boundary remain
+in this continuation; AR1 separately owns visual-authoring improvements.
 
 **Requirements:** B2, B4; decisions 2A, 3A, 9A, 12A and T2/T4/T7.
 **Files:** `blender/asset_spec.json`, `blender/build_library.py`, `blender/export_library.py`, `tests/blender/test_library.py`, `tools/promote-assets.mjs`, `assets/library/manifest.json`, `tests/asset-contract.test.ts`; extend `probes/r2/{glb.mjs,glb.test.mjs,check.mjs,browser.mjs}` only where needed.

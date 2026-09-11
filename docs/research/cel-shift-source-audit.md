@@ -1,8 +1,12 @@
 # Cel Shift Source and Picture-Size Audit
 
+> **REFERENCE ONLY - source inventory and historical audit.** U4's reference
+> import is already implemented. Use this inventory as evidence when cited,
+> not as a new import/research assignment; follow [the active plan](../../plan.md).
+
 Recorded September 10, 2026; extended during R1 source research. Documentation
-only: no source artwork, prompts, or metadata sidecars have been copied into
-CS3. The numerical inventory below is the **previously recorded preparatory
+only at that checkpoint: no source artwork, prompts, or metadata sidecars had
+yet been copied into CS3. The numerical inventory below is the **previously recorded preparatory
 audit**, not measurements repeated in R1. R1 read source, metadata and history
 only; no executable checks or asset processing were performed.
 

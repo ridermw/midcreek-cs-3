@@ -1,5 +1,9 @@
 # Evidence Index
 
+> **REFERENCE ONLY - pinned sources and dated research evidence.** This is
+> not a work plan. Historical approval/blocker statements do not override
+> [the current plan](../../plan.md) or reopen completed research.
+
 Updated September 10, 2026. R1 source research and R2 technical proof are
 complete. The R1 sections retain their inspection-only scope; the
 [fresh R2 evidence](#fresh-r2-execution-evidence-september-10-2026) records the
@@ -11,7 +15,8 @@ the R2 handoff at probe commit `a28f58c59e2f02a4fbbe151dd84dea2203887d64`
 and findings commit `7144246e27e68b786abc121ce5fa6101a8dc0583`, with its recorded
 limitations. R3's [blueprint](../architecture/cs3-blueprint.md) is complete and
 was user-approved at `732ff39` on September 10, 2026 at 18:26:14 EDT.
-Missing launch-envelope fields still precede U1. R3 re-read pinned E2/E6 source, approved commit
+At that R3 checkpoint, launch-envelope fields were still missing; the later
+launch was approved and U1-U4 are now complete. R3 re-read pinned E2/E6 source, approved commit
 history and retained final R2 receipts/comparisons without a new experiment.
 Historical receipts and intake/
 closeout approval states are unchanged; the R2 resource allowance is not renewed.
