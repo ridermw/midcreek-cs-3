@@ -1,7 +1,16 @@
 import { assetUrl } from '../shared/urls'
+import { startGame } from '../app/game'
+import type { GameHandle } from '../app/game'
+import './style.css'
 
 const link = document.querySelector<HTMLAnchorElement>('#showcase-link')
-const status = document.querySelector<HTMLElement>('#build-status')
-if (!link || !status) throw new Error('PLAY_DOM: missing required entry elements')
+const container = document.querySelector<HTMLElement>('#game')
+if (!link || !container) throw new Error('PLAY_DOM: missing required entry elements')
 link.href = assetUrl('')
-status.textContent = 'Entry build ready. Gameplay remains unavailable until its required assets are qualified.'
+
+declare global { interface Window { midcreek: GameHandle } }
+const game = await startGame(container, { baseUrl: assetUrl('assets/library/') })
+window.midcreek = game
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) window.location.reload()
+})

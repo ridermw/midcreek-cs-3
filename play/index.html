@@ -7,9 +7,15 @@
   </head>
   <body>
     <main>
-      <h1>Mid Creek / Play</h1>
-      <p id="build-status" role="status">Preparing the play entry.</p>
-      <a id="showcase-link">Back to showcase</a>
+      <header>
+        <h1>Mid Creek / Data hall</h1>
+        <a id="showcase-link">Back to showcase</a>
+      </header>
+      <p class="intro">One hall. One coolant leak. Dispatch the technician and restore the rack.</p>
+      <div id="game" aria-label="Data hall repair game"></div>
+      <p class="help">Click the floor to walk, or the amber fault marker to dispatch. Arrow keys / WASD move.
+        F dispatches; Space pauses. Q / E orbit, Home resets the view, + / - zoom.
+        Racks can hide the technician: orbit to reveal. Moving during a repair cancels its progress.</p>
     </main>
     <script type="module" src="/src/play/main.ts"></script>
   </body>

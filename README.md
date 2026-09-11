@@ -3,9 +3,9 @@
 A Blender-authored, Three.js-based data-hall simulation.
 
 **Continuation active.** U1-U4 and U6 are complete. The frozen C5 U5 two-run
-technical checkpoint passes; full U5 appearance qualification and U7-U10 remain
-unfinished. Provisional development selection is authorized but not activated.
-No production library is promoted, and the entries are not yet a playable game.
+technical checkpoint passes. U7 supplies a local first playable using the active,
+ignored provisional development selection. Appearance remains pending and U8-U10
+remain unfinished. No qualified production library is promoted.
 
 ## Start here
 
@@ -33,8 +33,8 @@ the earlier C3 candidate and needs work; C4/C5 have not received overall
 appearance acceptance.
 
 The user reports AR1 is running separately in the concept repository to solve
-authoring/rendering fidelity. This CS3 continuation completed U6 loading/lifetimes and now owns remaining U5
-technical packaging and U7's actual playable, followed by U8-U10. No more broad
+authoring/rendering fidelity. This CS3 continuation keeps the frozen local
+baseline separate from U8-U10 and final appearance qualification. No more broad
 aesthetic sweeps belong here.
 
 U6 now enforces the full required-ready deadline, stale-generation and context
@@ -47,7 +47,7 @@ gating, time-zero posing and two-instance ownership.
 The [September 11 development-use amendment](docs/architecture/cs3-provisional-development-use-2026-09-11.json)
 records the actual user instruction and authorizes only `local-playable`,
 `local-showcase` and `local-validation` for the frozen hash-bound baseline.
-Selection remains inactive until the orchestrator runs the qualifier below.
+The local selection is active at `assets/library/development/selection.json`.
 This does not relax appearance, performance, publication or release gates.
 Future AR1 replacements require a versioned handoff and affected qualification again.
 
@@ -69,6 +69,42 @@ npm run dev -- --host 127.0.0.1
 
 Install/restore dependencies only when needed. Heavy jobs run through
 `tools/run_guard.py` with the original authorization and finite job timeouts.
+
+### U7 local first playable
+
+With the authorized ignored selection/package present, run `npm run dev -- --host
+127.0.0.1` and open `/midcreek-cs-3/play/`. The loader accepts only the amendment's
+hash-bound manifest/package on a loopback host. Missing, changed or failed assets
+disable gameplay and expose Reload; there are no replacement models or clips.
+The ordinary build does not copy this unqualified library into `dist`, so
+`npm run preview` without an explicitly served local package remains disabled.
+
+The playable uses the existing seed-417 simulation/session at 30 Hz, its 37
+authoritative placements, U6 loading/lifetimes, and one native-depth orthographic
+renderer at `cs3-standard-v1`. Click floor cells to walk or the amber marker to
+dispatch. Arrow/WASD movement, F dispatch, Space pause, Q/E orbit, Home view reset
+and +/- zoom share the existing input path. Moving during repair cancels work;
+manual service-cell arrival waits for dispatch. Restart resets seeded time and
+pose without reloading assets or resetting the current view. Hidden time is
+discarded, and animation advances only on completed simulation ticks.
+
+`window.midcreek.inspect()` returns frozen, read-only scene/session observations;
+it cannot set world state or advance ticks. U7 browser tests compile the real play
+entry, serve only the selected local package, and use real Chrome/WebGL, including
+one unmodified RAF journey. Exact tick tests control only the browser frame
+boundary. They retain desktop/narrow and four-heading visibility/occlusion
+captures under each guarded job, not appearance or performance verdicts.
+
+Focused checks (use unique guarded job names and one heavy job at a time):
+
+```sh
+npm test -- src/app/game.test.ts src/engine/presentation.test.ts src/ui/hud.test.ts
+npm run test:e2e -- tests/e2e/game.spec.ts tests/e2e/assets.spec.ts tests/e2e/input.spec.ts
+```
+
+The selection tests and game browser tests require the authorized local package;
+they fail explicitly if it is absent. These checks do not qualify U8 performance,
+appearance, publication or release.
 
 ### U5 packaging API (not full library qualification)
 
@@ -92,8 +128,8 @@ local source bytes, captures/sidecars and guarded job logs; and records input
 hashes in canonical technical-only JSON. It never interprets numeric image
 comparisons as appearance acceptance. It has no import-time side effects.
 
-The worker has **not** written the persistent local receipt or selected a
-development package. From this repository, the orchestrator can run:
+The canonical local receipt and `local-playable` development selection are
+active on this machine. Revalidate or deliberately reselect them with:
 
 ```sh
 # Revalidate and write only the local ignored technical qualification receipt.

@@ -1,0 +1,43 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+  color: #e6edf1;
+  background: #101e26;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1440px; margin: auto; padding: 20px 24px; }
+header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+h1 { font-size: 1.4rem; margin: 0; }
+a { color: #92daed; }
+.intro, .help { color: #afc2cd; font-size: .9rem; line-height: 1.6; }
+#game { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 20px; }
+.viewport { min-width: 0; height: clamp(360px, 68vh, 780px); background: #182932; border-radius: 8px; overflow: hidden; }
+canvas { display: block; width: 100%; height: 100%; }
+.hud { padding: 20px; border: 1px solid #364952; border-radius: 8px; background: #172932; min-width: 0; }
+#load-status { font-size: .85rem; line-height: 1.5; margin-top: 0; color: #b6d7df; }
+.readouts { display: grid; gap: 16px; }
+.readouts span { display: block; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: #afc2cd; }
+.readouts strong { display: block; margin-top: 4px; font-size: 1.2rem; font-variant-numeric: tabular-nums; }
+#message { line-height: 1.5; min-height: 4.5em; overflow-wrap: anywhere; }
+progress { width: 100%; height: 12px; accent-color: #8cdbe0; }
+.controls { display: grid; gap: 10px; margin-top: 20px; }
+button { font: inherit; padding: 11px 14px; border-radius: 5px; border: 1px solid #5f7d8b; color: #e6edf1; background: #264552; cursor: pointer; }
+#dispatch { background: #90dbe1; color: #10252c; border-color: #90dbe1; font-weight: 650; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+button:hover:enabled { filter: brightness(1.12); }
+:focus-visible { outline: 3px solid #ffcd7a; outline-offset: -3px; }
+[hidden] { display: none !important; }
+@media (max-width: 760px) {
+  main { padding: 16px; }
+  header { align-items: flex-start; }
+  h1 { font-size: 1.15rem; }
+  #game { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .viewport { height: 340px; }
+  .hud { padding: 16px; }
+  .readouts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .readouts strong { font-size: 1rem; }
+  .controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #message { min-height: 0; }
+}
