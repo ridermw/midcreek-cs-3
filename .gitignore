@@ -8,6 +8,7 @@ probes/r2/node_modules
 /references/.midcreek-*
 /test-results/
 /playwright-report/
+.worktrees/
 # Unqualified local packages, receipts, locks and pointers are never public by default.
 # Qualified publication may force-add only reviewed release-allowlisted files.
 /assets/library/
