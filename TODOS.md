@@ -49,6 +49,10 @@ C3's equipment, grille atlas and irregular spill have passed source review
 and native/export/browser checks. The latest independent appearance review
 still requires technician/Repair, cabinet-detail, ink/shadow, liquid and
 safety-paint corrections; the fine-filter/ink studies do not authorize promotion.
+C4 specifically addresses the empty Repair reach with a carried diagnostic
+tablet and articulated working pose on the same rig. Its source/transport
+checks and source review pass; overall character likeness and delegated
+appearance acceptance remain open.
 U4's full approved local import and generated index are verified, including
 real filesystem rollback/interruption checks. Reference media remains ignored;
 the separate public-gallery projection and release allowlist are U9-U10 work.

@@ -3,7 +3,19 @@
 import math
 
 
+def repair_pose(phase):
+    return {
+        "Torso": (0.06, 0, 0),
+        "Head": (0.38, 0, -0.035),
+        "UpperArmL": (-0.25, 0, 0.35),
+        "ForearmL": (-1.75, 0, 0),
+        "UpperArmR": (-0.30, 0, -0.35),
+        "ForearmR": (-1.98+0.055*(1-math.cos(2*phase)), 0, 0),
+    }
+
+
 def build(builder, root):
+    from mathutils import Euler, Vector
     bpy = builder.bpy
     s = lambda parent, position, size, color, **kw: builder.shape(
         parent, position, size, color, segments=2, **kw)
@@ -49,6 +61,36 @@ def build(builder, root):
 
     def line(parent, points, color="ink", radius=0.0018):
         return builder.tube(parent, points, radius, color)
+
+    def diagnostic_tablet(forearm):
+        pose = repair_pose(0)
+        upper = Euler(pose["UpperArmL"], "XYZ").to_matrix()
+        rotation = upper @ Euler(pose["ForearmL"], "XYZ").to_matrix()
+        elbow = Vector((-0.21,0.008,0.41)) + upper @ Vector((0,0,-0.26))
+        inverse = rotation.transposed()
+        across = Vector((1,0,0))
+        along = Vector((0,0.86,-0.51)).normalized()
+        normal = across.cross(along)
+        center = Vector((0,-0.275,0.335))
+
+        def panel(width, height, depth, color, x=0, y=0, lift=0):
+            cut = min(width,height)*0.06
+            outline = [(-width/2+cut,-height/2),(width/2-cut,-height/2),
+                       (width/2,-height/2+cut),(width/2,height/2-cut),
+                       (width/2-cut,height/2),(-width/2+cut,height/2),
+                       (-width/2,height/2-cut),(-width/2,-height/2+cut)]
+            vertices = [inverse @ (center+across*(u+x)+along*(v+y)+normal*(w+lift)-elbow)
+                        for w in (-depth/2,depth/2) for u,v in outline]
+            faces = [tuple(reversed(range(8))), tuple(range(8,16)),
+                     *[(i,(i+1)%8,(i+1)%8+8,i+8) for i in range(8)]]
+            mesh(forearm, vertices, faces, color)
+
+        panel(0.276,0.190,0.016,"ink")
+        panel(0.244,0.158,0.002,"hose",lift=0.0095)
+        panel(0.166,0.006,0.001,"silver",x=-0.016,y=0.048,lift=0.011)
+        panel(0.041,0.013,0.001,"green",x=0.077,y=0.012,lift=0.011)
+        for y,width in ((-0.009,0.119),(-0.031,0.156),(-0.053,0.093)):
+            panel(width,0.005,0.001,"coolant-light",x=-0.017,y=y,lift=0.011)
 
     hips = builder.node("Hips", root, (0, 0, 0.90))
     torso = builder.node("Torso", hips)
@@ -114,6 +156,8 @@ def build(builder, root):
             line(forearm, [(x,-0.049,-0.285),(x,-0.048,-0.32)], "boots", 0.0009)
         for z in (-0.09,-0.16):
             line(forearm, [(-0.037,-0.035,z),(0,-0.053,z+0.008),(0.032,-0.034,z-0.004)])
+        if suffix == "L":
+            diagnostic_tablet(forearm)
 
         thigh = builder.node(f"Thigh{suffix}", hips, (sign*0.086,0,0))
         loft(thigh, [(-0.408,0.066,0.071,-0.004),(-0.34,0.072,0.080,0),

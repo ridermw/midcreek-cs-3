@@ -252,6 +252,7 @@ class Builder:
 
     def animate(self, nodes):
         bpy = self.bpy
+        technician = authoring_module("technician")
         rest = {n.name: (tuple(n.location), tuple(n.rotation_euler)) for n in nodes}
         for mode, frames in CLIPS:
             for obj in nodes:
@@ -289,14 +290,9 @@ class Builder:
                         elif obj.name.startswith("Forearm"):
                             obj.rotation_euler.x = -0.13
                     elif mode == "Repair":
-                        if obj.name == "Torso":
-                            obj.rotation_euler.x = 0.06
-                        elif obj.name.startswith("UpperArm"):
-                            obj.rotation_euler.x = -0.48+0.035*math.sin(phase)
-                        elif obj.name.startswith("Forearm"):
-                            obj.rotation_euler.x = -0.40+0.065*math.sin(phase+math.pi/2)
-                        elif obj.name == "Head":
-                            obj.rotation_euler.x = 0.13
+                        pose = technician.repair_pose(phase)
+                        if obj.name in pose:
+                            obj.rotation_euler = pose[obj.name]
                     obj.keyframe_insert(data_path="location", frame=frame)
                     obj.keyframe_insert(data_path="rotation_euler", frame=frame)
                 action, slot = obj.animation_data.action, obj.animation_data.action_slot

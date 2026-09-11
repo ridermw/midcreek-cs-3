@@ -182,6 +182,37 @@ class EvaluatedLibraryTests(unittest.TestCase):
             self.assertGreaterEqual(support, -2e-4, f"penetration at {half/2}")
             self.assertLessEqual(support, 0.002, f"both feet airborne at {half/2}")
 
+    def test_repair_hands_work_around_a_carried_diagnostic_surface(self):
+        from mathutils import Vector
+        library.activate_clip(self.record, "Repair")
+        screen_uv = library.palette_coordinate(list(self.spec["palette"]).index("hose"), self.spec)
+        forearm_mesh = bpy.data.objects["ForearmLMesh"]
+        screen_vertices = {
+            loop.vertex_index
+            for polygon in forearm_mesh.data.polygons
+            if all((forearm_mesh.data.uv_layers.active.data[index].uv-Vector(screen_uv)).length < 1e-6
+                   for index in polygon.loop_indices)
+            for loop in (forearm_mesh.data.loops[index] for index in polygon.loop_indices)
+        }
+        self.assertTrue(screen_vertices, "Repair needs its authored diagnostic surface, not an empty reach")
+        right_points = []
+        for frame in (1, 16, 31, 46, 61):
+            bpy.context.scene.frame_set(frame)
+            screen = sum((forearm_mesh.matrix_world @ forearm_mesh.data.vertices[index].co
+                          for index in screen_vertices), Vector())/len(screen_vertices)
+            for name in ("ForearmL", "ForearmR"):
+                arm = bpy.data.objects[name]
+                self.assertLess(arm.rotation_euler.x, -1.2, f"purposeful elbow articulation: {name}")
+                palm = arm.matrix_world @ Vector((0,-0.008,-0.288))
+                self.assertGreater(palm.z, 1.1, name)
+                self.assertLess(palm.z, 1.4, name)
+                self.assertLess(palm.y, -0.15, name)
+                self.assertLess((palm-screen).length, 0.17, f"hand misses diagnostic surface: {name}")
+                if name == "ForearmR":
+                    right_points.append(palm)
+        self.assertGreater((right_points[1]-right_points[0]).length, 0.008, "Repair needs a small working motion")
+        self.assertLess((right_points[1]-right_points[0]).length, 0.05, "Repair tapping should remain restrained")
+
 
 if __name__ == "__main__":
     if "--" in sys.argv:

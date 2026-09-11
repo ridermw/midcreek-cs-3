@@ -106,6 +106,15 @@ neither tolerances nor whole-model scaling were used to hide those failures.
 Source review found no correctness blocker, and the nine Blender checks plus
 the fresh 31-check/30-contact export/browser run pass.
 
+The focused C4 correction gives Repair an authored diagnostic tablet, bent
+elbows, directed gaze and restrained tapping, based on the existing work-pose
+reference. The tablet is joined into the existing forearm mesh and carried
+during rest/walk: no extra asset ID, rigid pivot, clip, root motion or gameplay
+is introduced. Ten native source checks and a fresh complete export/browser
+run pass, including hand proximity, loop endpoints and the unchanged swept
+envelope. Source review found no correctness blocker; this is not overall
+character or appearance acceptance.
+
 The latest private rendering study records 80 isolated images across eight
 profiles and 40 native-scale hall images across five profiles. Anisotropic
 filtering sharpens the vest, but the independent C3 appearance review still
