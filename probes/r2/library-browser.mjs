@@ -85,6 +85,15 @@ export function createLibraryPlayback(asset, declared) {
       return [expected.id, entry];
     }));
   }
+  function vertexUvs() {
+    return Object.fromEntries(declared.nodes.filter(n => n.triangles !== undefined).map(expected => {
+      const geometry = nodes.get(expected.index).geometry;
+      const positions = geometry.attributes.position, uv = geometry.attributes.uv;
+      requireThat(uv?.count === positions.count, `UV_COUNT: ${expected.id}`);
+      return [expected.id, Array.from({ length: positions.count }, (_, i) =>
+        [positions.getX(i), positions.getY(i), positions.getZ(i), uv.getX(i), uv.getY(i)])];
+    }));
+  }
   return {
     sample(clipName, time, repeat = false) {
       mixer.stopAllAction();
@@ -111,6 +120,22 @@ export function createLibraryPlayback(asset, declared) {
         const positions = nodes.get(expected.index).geometry.attributes.position;
         return [expected.id, Array.from({ length: positions.count }, (_, i) =>
           [positions.getX(i), positions.getY(i), positions.getZ(i)])];
+      }));
+    },
+    vertexUvs,
+    triangleUvs() {
+      const vertices = vertexUvs();
+      return Object.fromEntries(declared.nodes.filter(n => n.triangles !== undefined).map(expected => {
+        const index = nodes.get(expected.index).geometry.index;
+        const points = vertices[expected.id], count = index?.count ?? points.length;
+        requireThat(count % 3 === 0, `TRIANGLE_INDEX_COUNT: ${expected.id}`);
+        return [expected.id, Array.from({ length: count/3 }, (_, triangle) =>
+          Array.from({ length: 3 }, (_, corner) => {
+            const position = index ? index.getX(triangle*3+corner) : triangle*3+corner;
+            requireThat(Number.isInteger(position) && position >= 0 && position < points.length,
+              `TRIANGLE_INDEX_RANGE: ${expected.id}`);
+            return points[position];
+          }))];
       }));
     },
     dispose() { mixer.stopAllAction(); mixer.uncacheRoot(asset.scene); },

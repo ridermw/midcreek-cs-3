@@ -12,7 +12,7 @@ authorization to implement them or to expand the three-unit plan.
 | R3 / `write-cs3-blueprint` | Documentation deliverable complete at [cs3-blueprint.md](docs/architecture/cs3-blueprint.md); ten implementation units specified, not executed |
 | `approve-r3` | **Satisfied:** user supplied `approve-r3` for `732ff39` on September 10, 2026 at 18:26:14 EDT |
 | Launch preflight | **Satisfied:** user approved the launch envelope and source/publication uses September 10, 2026; subsequent credit amendment and exact limits remain in the ignored authorization receipt |
-| Blueprint execution | **U1-U4 complete; U5-U10 pending**; proceed without mid-run human checkpoints under `.artifacts/implementation/20260910T232859Z/authorization.json` |
+| Blueprint execution | **U1-U4 complete; U5 in progress; U6-U10 pending**; proceed without mid-run human checkpoints under `.artifacts/implementation/20260910T232859Z/authorization.json` |
 | Post-U10 human review | Final appearance/release review and deployment decision; no live deployment in the unattended run |
 
 The closed R2 allowance is not renewed. The new implementation
@@ -36,6 +36,10 @@ complete, pixel-identity-checked five-asset run (31 checks, 30 contacts), and
 the original eight-node R2 regression remains intact. Final-recipe repetition,
 remaining negative/promotion cases and near-reference appearance are not
 substituted by that technical pass.
+The current atlas-backed candidate also passes source/indexed-triangle UV
+agreement; a reviewed wrong-seam-index false-positive case is now rejected.
+These surface-integrity checks and the tested browser ink study do not
+constitute appearance acceptance or asset promotion.
 U4's full approved local import and generated index are verified, including
 real filesystem rollback/interruption checks. Reference media remains ignored;
 the separate public-gallery projection and release allowlist are U9-U10 work.

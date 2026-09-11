@@ -70,7 +70,9 @@ The U5 export/comparison procedure now has a complete technical prototype
 run: five real GLBs, three named rigid clips, 31 checks and 30 matched
 Blender/browser contacts. It validates default rest transforms before
 animation, every sampled key/midpoint, source vertices, material bindings and
-decoded texture-pixel identity. Capture inputs are hash-bound to the
+decoded texture-pixel identity. Surface checks also compare UVs at each
+indexed triangle corner, preserving seam assignments and winding rather than
+only checking that the expected position/UV pairs exist. Capture inputs are hash-bound to the
 authoring sidecar and builder. The original eight-node R2 regression,
 including expected direct-material incompatibility and FONT geometry,
 still passes. The procedure extends R2 rather than introducing another viewer.
@@ -81,13 +83,18 @@ authored prototype does not measure fidelity to the artwork.
 The current technician geometry study replaces the initial primitive assembly
 with shaped adult profiles, conforming PPE, garment seams and a closed hard-hat
 brim. It preserves the same rigid hierarchy, clip timing and physical envelope.
+An owned 512-by-512 surface atlas now supplies the conforming vest and face
+marks instead of raised reflective panels and facial strips. Shared profiles
+drive both geometry and chart coordinates; source artwork pixels and baked
+lighting are not used in the atlas.
 Its source and export agree, but its likeness, ink treatment and lighting still
 need work; it remains a prototype rather than an accepted visual direction.
 Walk now follows the supporting leg's height instead of lifting both feet,
 with the same one-second timing and unchanged footprint.
 A separate browser-only study compares recorded PBR/fill/cel/ink configurations
 without changing the source geometry or poses, and restores the baseline after
-each capture. It is exploratory evidence, not a selected production renderer,
+each capture. Its antialiased ink variant is also exercised against the
+atlas-backed candidate. It is exploratory evidence, not a selected production renderer,
 a source-material equivalence claim or appearance acceptance.
 
 U4 imports the exact approved Cel Shift set into an ignored, immutable local

@@ -40,8 +40,8 @@ def activate(name, authoring):
     builder.activate_clip(authoring, name)
 
 
-def vertices(objects):
-    result = {}
+def vertex_attributes(objects):
+    positions, surfaces, triangles = {}, {}, {}
     graph = bpy.context.evaluated_depsgraph_get()
     for obj in objects:
         if obj.type != "MESH":
@@ -50,9 +50,18 @@ def vertices(objects):
         mesh = evaluated.to_mesh()
         if not mesh or not mesh.vertices:
             raise ValueError(f"EMPTY_EVALUATED_GEOMETRY: {obj.name}")
-        result[obj.name] = [list(AXIS @ v.co) for v in mesh.vertices]
+        positions[obj.name] = [list(AXIS @ v.co) for v in mesh.vertices]
+        if mesh.uv_layers.active is None:
+            raise ValueError(f"SOURCE_UV_MISSING: {obj.name}")
+        uv = mesh.uv_layers.active.data
+        surfaces[obj.name] = [positions[obj.name][loop.vertex_index]
+                              + [uv[index].uv.x, 1-uv[index].uv.y]
+                              for index,loop in enumerate(mesh.loops)]
+        mesh.calc_loop_triangles()
+        triangles[obj.name] = [[surfaces[obj.name][index] for index in triangle.loops]
+                               for triangle in mesh.loop_triangles]
         evaluated.to_mesh_clear()
-    return result
+    return positions, surfaces, triangles
 
 
 def envelope(objects):
@@ -98,7 +107,7 @@ def scalar_times(document, binary, index):
             for i in range(accessor["count"])]
 
 
-def export_asset(spec, asset, authoring, output):
+def export_asset(spec, asset, authoring, output, texture):
     activate(None, authoring)
     root = bpy.data.objects.get(asset["root"])
     if root is None or root.parent or root.animation_data:
@@ -112,7 +121,7 @@ def export_asset(spec, asset, authoring, output):
             raise ValueError(f"RIGID_UNIT_SCALE: {obj.name}")
     measured = envelope(objects)
     within(measured, asset["restBounds"], asset["id"])
-    local_vertices = vertices(objects)
+    local_vertices, vertex_uvs, triangle_uvs = vertex_attributes(objects)
     clips = []
     for clip in asset["clips"]:
         activate(clip["name"], authoring)
@@ -172,9 +181,10 @@ def export_asset(spec, asset, authoring, output):
         "animatedBounds": {"min": dict(zip(("x","y","z"), asset["animatedBounds"][0])),
                            "max": dict(zip(("x","y","z"), asset["animatedBounds"][1]))},
         "geometry": {"meshes": len(local_vertices), "primitives": sum(len(n["materials"]) for n in rest.values()),
-                     "triangles": sum(n.get("triangles", 0) for n in rest.values()), "vertices": local_vertices},
+                     "triangles": sum(n.get("triangles", 0) for n in rest.values()),
+                     "vertices": local_vertices, "vertexUvs": vertex_uvs, "triangleUvs": triangle_uvs},
         "rest": rest, "clips": clips, "materials": r2.material_records(objects),
-        "textures": [texture_record(spec, output.parent)], "allowedExtensions": [],
+        "textures": [texture], "allowedExtensions": [],
         "permissions": {"publicAssetApproved": True, **spec["provenance"]},
     }
 
@@ -183,9 +193,7 @@ def texture_record(spec, source_directory):
     file = source_directory / f"{spec['texture']['name']}.png"
     if file.read_bytes() != builder.palette_png(spec):
         raise ValueError("SOURCE_TEXTURE")
-    colors = [bytes.fromhex(color[1:]) + b"\xff" for color in spec["palette"].values()]
-    colors += [colors[0]] * (32 - len(colors))
-    pixels = b"".join(color * 8 for color in colors) * 8
+    pixels = builder.atlas_pixels(spec)
     return {**spec["texture"], "sourceSha256": builder.checksum(file),
             "pixelFormat": "RGBA8", "pixelOrigin": "top-left",
             "pixelSha256": hashlib.sha256(pixels).hexdigest()}
@@ -221,8 +229,9 @@ def main(source, expected, output):
         "specification": spec, "blender": bpy.app.version_string, "blenderBuild": bpy.app.build_hash.decode(),
         "profile": spec["profile"], "settings": SETTINGS, "assets": [],
     }
+    texture = texture_record(spec, source.parent)
     for asset in spec["assets"]:
-        result["assets"].append(export_asset(spec, asset, authoring, output))
+        result["assets"].append(export_asset(spec, asset, authoring, output, texture))
     if builder.checksum(source) != expected or builder.checksum(owned) != expected:
         raise ValueError("SOURCE_MUTATED")
     result["complete"] = True

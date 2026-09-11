@@ -16,7 +16,7 @@ def build(builder, root):
         bpy.context.collection.objects.link(obj)
         return builder.paint(obj, parent, color)
 
-    def loft(parent, rings, color, sides=20, power=2):
+    def loft(parent, rings, color, sides=20, power=2, chart=None):
         vertices, faces = [], []
         for ring in rings:
             z, rx, ry, cy = ring[:4]
@@ -35,77 +35,24 @@ def build(builder, root):
         obj = mesh(parent, vertices, faces, color)
         for polygon in list(obj.data.polygons)[:-2]:
             polygon.use_smooth = True
+            if chart is not None:
+                indices = [obj.data.loops[index].vertex_index for index in polygon.loop_indices]
+                seam = any(index % sides == 0 for index in indices) and any(
+                    index % sides == sides-1 for index in indices)
+                for loop_index, vertex in zip(polygon.loop_indices, indices):
+                    u = (vertex % sides)/sides
+                    if seam and u == 0:
+                        u = 1
+                    obj.data.uv_layers.active.data[loop_index].uv = builder.atlas.chart_uv(
+                        chart, u, rings[vertex//sides][0])
         return obj
-
-    def surface(rings, z, x, extra=0, back=False, power=2):
-        for lower, upper in zip(rings, rings[1:]):
-            if lower[0] <= z <= upper[0]:
-                t = (z-lower[0])/(upper[0]-lower[0])
-                rx, ry, cy = [lower[i]*(1-t)+upper[i]*t for i in (1, 2, 3)]
-                extent = ry * max(0, 1-(abs(x)/rx)**power)**(1/power) + extra
-                return cy + (extent if back else -extent)
-        raise ValueError(f"PROFILE_HEIGHT: {z}")
 
     def line(parent, points, color="ink", radius=0.0018):
         return builder.tube(parent, points, radius, color)
 
     hips = builder.node("Hips", root, (0, 0, 0.90))
     torso = builder.node("Torso", hips)
-    body = [(-0.015,0.151,0.102,0), (0.055,0.165,0.116,0),
-            (0.18,0.171,0.123,0.006), (0.31,0.202,0.125,0.008),
-            (0.395,0.213,0.110,0.007), (0.45,0.168,0.089,0.006),
-            (0.475,0.074,0.062,0)]
-    loft(torso, body, "shirt", power=2.4)
-
-    vest = [(0.022,0.168,0.121,0), (0.085,0.175,0.131,0),
-            (0.20,0.181,0.138,0.006), (0.325,0.206,0.133,0.008),
-            (0.39,0.193,0.113,0.007)]
-    loft(torso, vest, "lime", power=2.4)
-    neckline = []
-    for z, width in ((0.266,0.001),(0.325,0.055),(0.389,0.095)):
-        for x in (-width, width):
-            neckline.append((x,surface(vest,z,x,0.005,power=2.4),z))
-    mesh(torso, neckline, [(0,1,3,2),(2,3,5,4)], "shirt")
-    for z in (0.025, 0.388):
-        rx, ry, cy = (vest[0][1:] if z < 0.1 else vest[-1][1:])
-        line(torso, [(rx*math.cos(a), cy+ry*math.sin(a), z)
-                     for a in [math.tau*i/32 for i in range(33)]], "orange", 0.004)
-    band = [(z, 0.179+(z-0.11)*0.055, 0.137+(z-0.11)*0.028, 0.003)
-            for z in (0.11, 0.157)]
-    loft(torso, band, "silver", power=2.4)
-    for back in (False, True):
-        for sign in (-1, 1):
-            vertices, faces = [], []
-            for z in (0.158, 0.24, 0.325, 0.385):
-                for x in (sign*0.078, sign*0.126):
-                    vertices.append((x, surface(vest, z, x, 0.003, back, 2.4), z))
-            for i in range(0, 6, 2):
-                face = (i, i+1, i+3, i+2)
-                faces.append(tuple(reversed(face)) if (back == (sign > 0)) else face)
-            mesh(torso, vertices, faces, "silver")
-    for sign in (-1, 1):
-        for width, extra, color in ((0.069,0.003,"orange"),(0.061,0.004,"lime"),
-                                    (0.047,0.005,"silver")):
-            vertices = []
-            for row in range(5):
-                for x in (sign*0.103-width/2, sign*0.103+width/2):
-                    if row == 2:
-                        z = 0.45+(0.168-abs(x))/0.094*0.025+extra
-                        y = 0.006
-                    else:
-                        z = 0.39 if row in (0,4) else 0.44
-                        y = surface(body,z,x,extra,back=row > 2,power=2.4)
-                    vertices.append((x,y,z))
-            mesh(torso, vertices, [(i,i+1,i+3,i+2) for i in range(0,8,2)], color)
-    line(torso, [(0, surface(vest,z,0,0.004), z) for z in (0.025,0.10,0.20,0.325,0.388)],
-         "orange", 0.004)
-    for sign in (-1, 1):
-        points = [(sign*x, surface(vest,z,sign*x,0.004), z)
-                  for x,z in ((0,0.265),(0.055,0.325),(0.095,0.387))]
-        line(torso, points, "orange", 0.004)
-    line(torso, [(-0.083,-0.128,0.39),(-0.073,-0.150,0.30),
-                 (-0.028,-0.151,0.235),(0.025,-0.151,0.24),
-                 (0.079,-0.142,0.365)], "orange", 0.003)
+    loft(torso, builder.profiles.TORSO, "shirt", power=2.4, chart="torso")
 
     loft(hips, [(-0.022,0.169,0.120,0),(0.019,0.169,0.120,0)], "ink", power=2.6)
     s(hips, (0,-0.127,0), (0.045,0.015,0.032), "steel", bevel=0.004)
@@ -120,27 +67,13 @@ def build(builder, root):
 
     head = builder.node("Head", torso, (0, 0, 0.60))
     s(head, (0,0.008,-0.098), (0.094,0.094,0.135), "skin", kind="cylinder", bevel=0.009)
-    skull = [(-0.068,0.044,0.041,-0.018), (-0.05,0.066,0.060,-0.011),
-             (-0.005,0.084,0.077,0), (0.045,0.093,0.080,0.003),
-             (0.087,0.096,0.078,0.008), (0.132,0.094,0.071,0.008),
-             (0.163,0.075,0.051,0.006)]
-    loft(head, skull, "skin", power=2.5)
-    s(head, (0,0.056,0.077), (0.178,0.075,0.145), "hair", bevel=0.028)
+    loft(head, builder.profiles.HEAD, "skin", power=2.5, chart="head")
     for sign in (-1, 1):
         s(head, (sign*0.092,0.012,0.025), (0.026,0.043,0.064), "skin", kind="sphere")
-        x = sign*0.040
-        y = surface(skull,0.063,x,0.002,power=2.5)
-        s(head, (x,y,0.063), (0.025,0.007,0.007), "ink", bevel=0.002)
-        s(head, (x,y-0.002,0.061), (0.014,0.005,0.003), "white")
-        s(head, (x,y-0.005,0.061), (0.005,0.003,0.005), "ink")
-        line(head, [(sign*0.025,y,0.079),(sign*0.043,y+0.001,0.082),
-                    (sign*0.057,y+0.004,0.078)], radius=0.0023)
     mesh(head, [(-0.016,-0.080,0.068),(0.016,-0.080,0.068),
                 (-0.018,-0.081,0.012),(0.018,-0.081,0.012),
                 (-0.010,-0.112,0.022),(0.010,-0.112,0.022)],
          [(0,1,5,4),(0,2,4),(1,5,3),(2,3,5,4)], "skin")
-    line(head, [(-0.023,-0.076,-0.013),(0,-0.083,-0.017),(0.022,-0.076,-0.013)],
-         "boots", 0.0012)
 
     hat = [(0.129,0.121,0.112,0), (0.146,0.132,0.116,0),
            (0.182,0.118,0.106,0), (0.21,0.077,0.075,0),

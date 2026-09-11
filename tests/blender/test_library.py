@@ -55,8 +55,8 @@ class SpecificationTests(unittest.TestCase):
         png = library.palette_png(self.spec)
         self.assertEqual(png, library.palette_png(self.spec))
         self.assertEqual(png[:8], b"\x89PNG\r\n\x1a\n")
-        self.assertEqual(int.from_bytes(png[16:20], "big"), 256)
-        self.assertEqual(int.from_bytes(png[20:24], "big"), 8)
+        self.assertEqual(int.from_bytes(png[16:20], "big"), 512)
+        self.assertEqual(int.from_bytes(png[20:24], "big"), 512)
         self.assertIn(b"sRGB", png)
 
 
@@ -120,7 +120,7 @@ class EvaluatedLibraryTests(unittest.TestCase):
                 self.assertEqual(set(n.type for n in material.node_tree.nodes),
                                  {"OUTPUT_MATERIAL", "BSDF_PRINCIPLED", "TEX_IMAGE"})
                 image = next(n.image for n in material.node_tree.nodes if n.type == "TEX_IMAGE")
-                self.assertEqual(tuple(image.size), (256, 8))
+                self.assertEqual(tuple(image.size), (512, 512))
                 self.assertEqual(image.colorspace_settings.name, "sRGB")
                 self.assertTrue(image.packed_file)
 

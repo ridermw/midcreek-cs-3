@@ -8,9 +8,7 @@ import math
 import os
 from pathlib import Path
 import re
-import struct
 import sys
-import zlib
 
 IDS = ("floor-slab", "rack-standard", "cooling-unit", "technician-man", "coolant-leak")
 ROOTS = ("FloorRoot", "RackRoot", "CoolingRoot", "TechnicianRoot", "CoolantRoot")
@@ -40,21 +38,30 @@ def validate_spec(spec):
     if len(spec["palette"]) > 32 or any(not re.fullmatch(r"#[0-9A-Fa-f]{6}", c)
                                       for c in spec["palette"].values()):
         raise ValueError("SPEC_PALETTE")
-    if spec["texture"] != {"name": "CS3-Palette", "width": 256, "height": 8, "uv": 0,
-                           "role": "base-color", "colorSpace": "sRGB", "filter": "nearest"}:
+    if spec["texture"] != {"name": "CS3-Atlas", "width": 512, "height": 512, "uv": 0,
+                           "role": "base-color", "colorSpace": "sRGB", "filter": "linear"}:
         raise ValueError("SPEC_TEXTURE")
 
 
+def authoring_module(name):
+    if name not in ("atlas", "profiles", "technician"):
+        raise ValueError("AUTHORING_MODULE")
+    module = importlib.util.spec_from_file_location(f"cs3_{name}", Path(__file__).with_name(f"{name}.py"))
+    loaded = importlib.util.module_from_spec(module)
+    module.loader.exec_module(loaded)
+    return loaded
+
+
+def atlas_pixels(spec):
+    return authoring_module("atlas").pixels(spec, authoring_module("profiles"))
+
+
 def palette_png(spec):
-    colors = [bytes.fromhex(c[1:]) for c in spec["palette"].values()]
-    colors += [colors[0]] * (32 - len(colors))
-    row = b"\0" + b"".join(c * 8 for c in colors)
+    return authoring_module("atlas").png(atlas_pixels(spec))
 
-    def chunk(kind, data):
-        return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data))
 
-    return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", 256, 8, 8, 2, 0, 0, 0))
-            + chunk(b"sRGB", b"\0") + chunk(b"IDAT", zlib.compress(row * 8, 9)) + chunk(b"IEND", b""))
+def palette_coordinate(index, spec):
+    return ((index*8+4)/spec["texture"]["width"], 1-4/spec["texture"]["height"])
 
 
 def checksum(file):
@@ -105,10 +112,12 @@ class Builder:
         self.parts = {}
         self.nodes = {}
         self.palette = list(spec["palette"])
+        self.profiles = authoring_module("profiles")
+        self.atlas = authoring_module("atlas")
         palette = output / f"{spec['texture']['name']}.png"
         palette.write_bytes(palette_png(spec))
         image = bpy.data.images.load(str(palette))
-        image.name = "CS3-Palette"
+        image.name = spec["texture"]["name"]
         image.colorspace_settings.name = "sRGB"
         image.pack()
         for name, values in spec["materials"].items():
@@ -121,7 +130,7 @@ class Builder:
             shader.inputs["Metallic"].default_value = values["metallic"]
             texture = material.node_tree.nodes.new("ShaderNodeTexImage")
             texture.image = image
-            texture.interpolation = "Closest"
+            texture.interpolation = "Linear"
             material.node_tree.links.new(texture.outputs["Color"], shader.inputs["Base Color"])
 
     def node(self, name, parent=None, position=(0, 0, 0)):
@@ -138,7 +147,7 @@ class Builder:
             obj.data.uv_layers.remove(layer)
         uv = obj.data.uv_layers.new(name="PaletteUV")
         uv.active_render = True
-        coordinate = ((self.palette.index(color) + 0.5) / 32, 0.5)
+        coordinate = palette_coordinate(self.palette.index(color), self.spec)
         for point in uv.data:
             point.uv = coordinate
         obj.data.materials.append(self.bpy.data.materials[self.material])
@@ -212,7 +221,7 @@ class Builder:
             for polygon in cap.data.polygons:
                 if max(abs(component) for component in polygon.normal) < 0.999:
                     for loop in polygon.loop_indices:
-                        cap.data.uv_layers.active.data[loop].uv = ((self.palette.index("ink")+0.5)/32,0.5)
+                        cap.data.uv_layers.active.data[loop].uv = palette_coordinate(self.palette.index("ink"),self.spec)
         for x in (-0.388, 0.388):
             s((x, 0, 1.05), (0.017, 0.72, 1.95), "white")
             for z in (1.36, 1.40, 1.44, 1.48):
@@ -282,14 +291,10 @@ class Builder:
         self.paint(obj, root, "floor")
         for polygon, color in zip(mesh.polygons, colors):
             for loop in polygon.loop_indices:
-                mesh.uv_layers.active.data[loop].uv = ((self.palette.index(color)+0.5)/32, 0.5)
+                mesh.uv_layers.active.data[loop].uv = palette_coordinate(self.palette.index(color),self.spec)
 
     def technician(self, root):
-        module = importlib.util.spec_from_file_location(
-            "cs3_technician", Path(__file__).with_name("technician.py"))
-        technician = importlib.util.module_from_spec(module)
-        module.loader.exec_module(technician)
-        return technician.build(self, root)
+        return authoring_module("technician").build(self, root)
 
     def coolant(self, root):
         self.shape(root, (0,0,0.005), (0.86,0.70,0.01), "teal", kind="cylinder")
@@ -398,6 +403,8 @@ def main(spec_file, output):
         "schema": 1, "complete": True, "sourceSha256": checksum(source),
         "inputs": {"blender/build_library.py": checksum(__file__), "blender/asset_spec.json": checksum(spec_file),
                    "blender/technician.py": checksum(Path(__file__).with_name("technician.py")),
+                   "blender/atlas.py": checksum(Path(__file__).with_name("atlas.py")),
+                   "blender/profiles.py": checksum(Path(__file__).with_name("profiles.py")),
                    f"{spec['texture']['name']}.png": checksum(output/f"{spec['texture']['name']}.png")},
         "blender": bpy.app.version_string, "blenderBuild": bpy.app.build_hash.decode(),
         "roots": list(ROOTS), "animatedNodes": [n.name for n in animated],

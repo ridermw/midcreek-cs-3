@@ -245,3 +245,52 @@ export function assertVertexAgreement(actual, expected, tolerance = 2e-4) {
   };
   return Math.max(compare(actual, expected), compare(expected, actual));
 }
+
+export function assertVertexUvAgreement(actual, expected) {
+  assert.ok(actual.length && expected.length, 'EMPTY_VERTEX_UV');
+  assert.ok([...actual, ...expected].every(point =>
+    point.length === 5 && point.every(Number.isFinite)), 'FINITE_VERTEX_UV');
+  let positionError = 0, uvError = 0;
+  for (const [from, to] of [[actual, expected], [expected, actual]]) {
+    for (const point of from) {
+      const match = to.find(target => point.every((value, index) =>
+        Math.abs(value - target[index]) <= (index < 3 ? 2e-4 : 1e-6)));
+      assert.ok(match, `VERTEX_UV_AGREEMENT: ${point}`);
+      for (let index = 0; index < 5; index++) {
+        const error = Math.abs(point[index] - match[index]);
+        if (index < 3) positionError = Math.max(positionError, error);
+        else uvError = Math.max(uvError, error);
+      }
+    }
+  }
+  return { positionError, uvError };
+}
+
+export function assertTriangleUvAgreement(actual, expected) {
+  assert.ok(actual.length > 0 && actual.length === expected.length, 'TRIANGLE_UV_COUNT');
+  assert.ok([...actual, ...expected].every(triangle => triangle.length === 3 &&
+    triangle.every(point => point.length === 5 && point.every(Number.isFinite))), 'FINITE_TRIANGLE_UV');
+  const remaining = new Set(expected.keys());
+  let positionError = 0, uvError = 0;
+  for (const triangle of actual) {
+    let matched = false;
+    for (const index of remaining) {
+      const source = expected[index];
+      for (let shift = 0; shift < 3; shift++) {
+        if (!triangle.every((point, corner) => point.every((value, axis) =>
+          Math.abs(value-source[(corner+shift)%3][axis]) <= (axis < 3 ? 2e-4 : 1e-6)))) continue;
+        triangle.forEach((point, corner) => point.forEach((value, axis) => {
+          const error = Math.abs(value-source[(corner+shift)%3][axis]);
+          if (axis < 3) positionError = Math.max(positionError, error);
+          else uvError = Math.max(uvError, error);
+        }));
+        remaining.delete(index);
+        matched = true;
+        break;
+      }
+      if (matched) break;
+    }
+    assert.ok(matched, `TRIANGLE_UV_AGREEMENT: ${JSON.stringify(triangle)}`);
+  }
+  return { positionError, uvError };
+}

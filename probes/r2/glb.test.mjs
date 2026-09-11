@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { crc32, deflateSync } from 'node:zlib';
 import { assertContent, assertVertexAgreement, decode, encode } from './glb.mjs';
+import * as glb from './glb.mjs';
+import * as THREE from 'three';
+import { createLibraryPlayback } from './library-browser.mjs';
 
 function pngFixture(color = [31, 97, 193]) {
   function chunk(type, data) {
@@ -202,4 +205,56 @@ test('evaluated vertex agreement allows export duplication/order, not missing or
   assert.throws(() => assertVertexAgreement([[0.01, 0, 0], ...source.slice(1)], source), /VERTEX_AGREEMENT/);
   assert.throws(() => assertVertexAgreement([[NaN, 0, 0]], source), /FINITE_VERTEX/);
   assert.throws(() => assertVertexAgreement([], source), /EMPTY_VERTEX_SET/);
+});
+
+test('surface agreement keeps UVs paired with positions across export seams and duplication', () => {
+  assert.equal(typeof glb.assertVertexUvAgreement, 'function');
+  const source = [[0,0,0,0.1,0.2],[1,0,0,0.3,0.4],[1,0,0,0.8,0.9]];
+  assert.deepEqual(glb.assertVertexUvAgreement([source[2],source[0],source[1],source[0]],source),
+    { positionError: 0, uvError: 0 });
+  assert.throws(() => glb.assertVertexUvAgreement(source.slice(1),source), /VERTEX_UV_AGREEMENT/);
+  assert.throws(() => glb.assertVertexUvAgreement(source.map(p => [...p.slice(0,4),1-p[4]]),source),
+    /VERTEX_UV_AGREEMENT/);
+  assert.throws(() => glb.assertVertexUvAgreement([[0,0,0,0.3,0.4],...source.slice(1)],source),
+    /VERTEX_UV_AGREEMENT/);
+  assert.throws(() => glb.assertVertexUvAgreement([[0,0,0,NaN,0]],source), /FINITE_VERTEX_UV/);
+  assert.throws(() => glb.assertVertexUvAgreement([],source), /EMPTY_VERTEX_UV/);
+});
+
+test('surface agreement rejects a wrong seam index even when every vertex/UV pair is unchanged', () => {
+  const vertices = [[0,0,0,0.1,0.2],[1,0,0,0.3,0.4],[0,1,0,0.5,0.6],
+    [0,0,0,0.8,0.9],[0,0,1,0.7,0.2]];
+  const expected = [[vertices[0],vertices[1],vertices[2]],[vertices[3],vertices[2],vertices[4]]];
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices.flatMap(v => v.slice(0,3)), 3));
+  geometry.setAttribute('uv', new THREE.Float32BufferAttribute(vertices.flatMap(v => v.slice(3)), 2));
+  geometry.setIndex([0,1,2,3,2,4]);
+  const mesh = new THREE.Mesh(geometry);
+  mesh.name = 'Surface';
+  const scene = new THREE.Group();
+  scene.add(mesh);
+  const playback = createLibraryPlayback({ scene, animations: [],
+    parser: { associations: new Map([[mesh, { nodes: 0 }]]) } },
+  { nodes: [{ index: 0, id: 'Surface', parent: null, triangles: 2 }] });
+  try {
+    assert.equal(typeof playback.triangleUvs, 'function');
+    assert.equal(typeof glb.assertTriangleUvAgreement, 'function');
+    glb.assertTriangleUvAgreement(playback.triangleUvs().Surface, expected);
+    geometry.index.setX(0,3);
+    glb.assertVertexUvAgreement(playback.vertexUvs().Surface, vertices);
+    assert.throws(() => glb.assertTriangleUvAgreement(playback.triangleUvs().Surface, expected),
+      /TRIANGLE_UV_AGREEMENT/);
+    glb.assertTriangleUvAgreement([[...expected[1].slice(1),expected[1][0]],expected[0]],expected);
+    assert.throws(() => glb.assertTriangleUvAgreement([expected[0],expected[0]],expected),
+      /TRIANGLE_UV_AGREEMENT/);
+    assert.throws(() => glb.assertTriangleUvAgreement([[...expected[0]].reverse(),expected[1]],expected),
+      /TRIANGLE_UV_AGREEMENT/);
+    assert.throws(() => glb.assertTriangleUvAgreement(expected.slice(1),expected), /TRIANGLE_UV_COUNT/);
+    assert.throws(() => glb.assertTriangleUvAgreement([[[NaN,0,0,0,0],...expected[0].slice(1)],expected[1]],expected),
+      /FINITE_TRIANGLE_UV/);
+  } finally {
+    playback.dispose();
+    geometry.dispose();
+    mesh.material.dispose();
+  }
 });

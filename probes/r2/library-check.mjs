@@ -5,7 +5,7 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { chromium } from 'playwright';
 import validator from 'gltf-validator';
-import { assertContent, assertVertexAgreement, decode, encode } from './glb.mjs';
+import { assertContent, assertVertexAgreement, assertVertexUvAgreement, assertTriangleUvAgreement, decode, encode } from './glb.mjs';
 
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 function closeEnough(actual, expected, label, tolerance = 2e-4) {
@@ -130,14 +130,20 @@ export async function checkLibrary({ receipt, run, tag, code, result, check, own
       result.renderer = await page.evaluate(() => window.r2.metadata());
       return state;
     });
-    await check(`${asset.id}: converted evaluated source vertices and rest matrices`, async () => {
-      const observed = await page.evaluate(() => ({ geometry: window.r2.geometry(), rest: window.r2.sampleClip(null, 0) }));
+    await check(`${asset.id}: converted evaluated source vertices, UV pairing and rest matrices`, async () => {
+      const observed = await page.evaluate(() => ({ geometry: window.r2.geometry(),
+        vertexUvs: window.r2.vertexUvs(), triangleUvs: window.r2.triangleUvs(),
+        rest: window.r2.sampleClip(null, 0) }));
       const restError = checkPose(observed.rest, asset.rest, 'rest');
-      const vertices = {};
+      const vertices = {}, vertexUvs = {}, triangleUvs = {};
+      assert.ok(asset.geometry.vertexUvs, 'SOURCE_VERTEX_UV_DECLARATION');
+      assert.ok(asset.geometry.triangleUvs, 'SOURCE_TRIANGLE_UV_DECLARATION');
       for (const [name, positions] of Object.entries(asset.geometry.vertices)) {
         vertices[name] = assertVertexAgreement(observed.geometry[name], positions);
+        vertexUvs[name] = assertVertexUvAgreement(observed.vertexUvs[name], asset.geometry.vertexUvs[name]);
+        triangleUvs[name] = assertTriangleUvAgreement(observed.triangleUvs[name], asset.geometry.triangleUvs[name]);
       }
-      return { restError, vertices };
+      return { restError, vertices, vertexUvs, triangleUvs };
     });
     for (const clip of asset.clips) {
       await check(`${asset.id}/${clip.name}: every key and midpoint agrees with actual source action`, async () => {

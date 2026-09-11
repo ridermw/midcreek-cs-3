@@ -193,6 +193,14 @@ window.r2 = {
     requireThat(libraryPlayback, 'LIBRARY_NOT_READY');
     return libraryPlayback.geometry();
   },
+  vertexUvs() {
+    requireThat(libraryPlayback, 'LIBRARY_NOT_READY');
+    return libraryPlayback.vertexUvs();
+  },
+  triangleUvs() {
+    requireThat(libraryPlayback, 'LIBRARY_NOT_READY');
+    return libraryPlayback.triangleUvs();
+  },
   view(capture, lighting) {
     requireThat(active.state === 'ready', 'NOT_READY');
     return draw(capture, lighting);
