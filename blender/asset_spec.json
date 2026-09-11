@@ -7,7 +7,7 @@
   "exportFront": "+Z",
   "profile": "cs3-standard-v1",
   "direction": "Cel Shift: clean white equipment, charcoal form breaks, yellow safety paint, teal coolant and adult blue-hard-hat technician in lime/orange/silver PPE.",
-  "adaptation": "Owned rigid geometry with an explicit nearest-filtered sRGB palette atlas and portable rough PBR. Graphic geometry outlines replace drawn ink; PBR lighting is an intentional adaptation, not exact cel-shader fidelity. No source image is used as a texture.",
+  "adaptation": "Visual prototype under reference-led reconstruction, not appearance accepted. Owned rigid geometry uses an explicit nearest-filtered sRGB palette atlas and portable rough PBR; this technical recipe does not waive the Cel Shift ink, shading or likeness requirements. No source image is used as a texture.",
   "palette": {
     "ink": "#23282D", "white": "#FBFCFD", "rack-shadow": "#C6D5E0",
     "floor": "#DEE6EB", "floor-edge": "#B2C0CB", "yellow": "#FFC93C",
@@ -37,7 +37,7 @@
   "provenance": {
     "sourceRepository": "williamsmat_microsoft/midcreek-concept",
     "sourceRevision": "870603632c4b6665c513d0fa692a3ee2dae2b683",
-    "referenceIds": ["character-man/02-facings", "turnaround/01-rack", "turnaround/02-cooling-unit", "floor/01-grid", "key-art/04-diamond-bright"],
+    "referenceIds": ["character-man/01-sheet", "character-man/02-facings", "turnaround/01-rack", "turnaround/02-cooling-unit", "floor/01-grid", "key-art/04-diamond-bright"],
     "attribution": "Cel Shift concept art - williamsmat_microsoft/midcreek-concept at 870603632c4b6665c513d0fa692a3ee2dae2b683. Owned CS3 geometry, palette texture and rigid animation.",
     "terms": "Explicit September 10, 2026 CS3 source/derived-asset/repository/gallery-staging grant; no broader reference license inferred.",
     "fonts": [],

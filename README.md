@@ -78,6 +78,11 @@ This is **not U5 completion**: final visual reconstruction, two fresh runs of
 the final recipe, remaining negative/promotion cases and independent
 appearance acceptance are still required. Technical agreement with an
 authored prototype does not measure fidelity to the artwork.
+The current technician geometry study replaces the initial primitive assembly
+with shaped adult profiles, conforming PPE, garment seams and a closed hard-hat
+brim. It preserves the same rigid hierarchy, clip timing and physical envelope.
+Its source and export agree, but its likeness, ink treatment and lighting still
+need work; it remains a prototype rather than an accepted visual direction.
 
 U4 imports the exact approved Cel Shift set into an ignored, immutable local
 package: 49 masters, 47 prompts, seven shared inputs, reviewed sanitized

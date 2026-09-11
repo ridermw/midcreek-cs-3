@@ -2,6 +2,7 @@
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import math
 import os
@@ -283,53 +284,11 @@ class Builder:
                 mesh.uv_layers.active.data[loop].uv = ((self.palette.index(color)+0.5)/32, 0.5)
 
     def technician(self, root):
-        hips = self.node("Hips", root, (0, 0, 0.87))
-        torso = self.node("Torso", hips)
-        s = lambda n, p, z, c, **kw: self.shape(n, p, z, c, segments=3, **kw)
-        s(torso, (0,0,0.21), (0.385,0.24,0.43), "shirt", bevel=0.04)
-        s(torso, (0,-0.008,0.205), (0.36,0.265,0.405), "orange", bevel=0.025)
-        s(torso, (0,-0.012,0.213), (0.345,0.271,0.382), "lime", bevel=0.02)
-        for y in (-0.15, 0.13):
-            for x in (-0.10, 0.10):
-                s(torso, (x,y,0.235), (0.055,0.008,0.33), "silver")
-            s(torso, (0,y,0.115), (0.344,0.008,0.05), "silver")
-        s(torso, (0,-0.153,0.21), (0.014,0.008,0.36), "orange")
-        self.tube(torso, [(-0.09,-0.158,0.40),(-0.07,-0.168,0.29),(0,-0.172,0.26),
-                         (0.07,-0.168,0.29),(0.09,-0.158,0.40)], 0.005, "orange")
-        s(hips, (0,0,0.005), (0.39,0.28,0.073), "ink", bevel=0.013)
-        s(hips, (0,-0.146,0.005), (0.052,0.015,0.049), "steel")
-        for x in (-0.215, 0.215):
-            s(hips, (x,0,-0.03), (0.08,0.12,0.16), "hose", bevel=0.014)
-            s(hips, (x,-0.019,0.062), (0.018,0.025,0.077), "orange")
-        head = self.node("Head", torso, (0, 0, 0.57))
-        s(head, (0,0,-0.06), (0.10,0.11,0.13), "skin", kind="cylinder")
-        s(head, (0,-0.002,0.06), (0.225,0.195,0.245), "skin", bevel=0.042)
-        s(head, (0,0.062,0.11), (0.224,0.075,0.16), "hair", bevel=0.025)
-        s(head, (0,0,0.195), (0.29,0.26,0.19), "hat", kind="sphere")
-        s(head, (0,-0.044,0.145), (0.31,0.295,0.016), "ink", kind="cylinder")
-        s(head, (0,-0.047,0.152), (0.305,0.295,0.016), "hat", kind="cylinder")
-        s(head, (0,0,0.253), (0.027,0.19,0.066), "hat", bevel=0.012)
-        for x in (-0.14, 0.14):
-            s(head, (x,0.016,0.115), (0.07,0.10,0.105), "ink", kind="sphere")
-            s(head, (x*1.10,0.016,0.12), (0.046,0.065,0.068), "hose", kind="sphere")
-        for x in (-0.046, 0.046):
-            s(head, (x,-0.101,0.068), (0.027,0.01,0.014), "ink", bevel=0.003)
-        s(head, (0,-0.112,0.036), (0.033,0.035,0.043), "skin", bevel=0.008)
-        s(head, (0,-0.103,-0.006), (0.052,0.008,0.005), "boots")
-        for suffix, sign in [("L",-1),("R",1)]:
-            arm = self.node(f"UpperArm{suffix}", torso, (sign*0.245,0,0.345))
-            s(arm, (0,0,-0.12), (0.145,0.155,0.29), "shirt", kind="cylinder", bevel=0.035)
-            elbow = self.node(f"Forearm{suffix}", arm, (0,0,-0.25))
-            s(elbow, (0,0,-0.09), (0.105,0.125,0.22), "shirt", kind="cylinder", bevel=0.025)
-            s(elbow, (0,-0.005,-0.231), (0.097,0.10,0.115), "skin", bevel=0.023)
-            thigh = self.node(f"Thigh{suffix}", hips, (sign*0.105,0,0))
-            s(thigh, (0,0,-0.18), (0.155,0.205,0.385), "denim", kind="cylinder", bevel=0.038)
-            shin = self.node(f"Shin{suffix}", thigh, (0,0,-0.37))
-            s(shin, (0,0,-0.17), (0.135,0.175,0.355), "denim", kind="cylinder", bevel=0.032)
-            foot = self.node(f"Foot{suffix}", shin, (0,0,-0.425))
-            s(foot, (0,-0.047,0), (0.16,0.27,0.15), "boots", bevel=0.025)
-            s(foot, (0,-0.047,-0.06), (0.165,0.28,0.03), "ink", bevel=0.007)
-        return sorted((n for n in root.children_recursive if n.type == "EMPTY"), key=lambda n: n.name)
+        module = importlib.util.spec_from_file_location(
+            "cs3_technician", Path(__file__).with_name("technician.py"))
+        technician = importlib.util.module_from_spec(module)
+        module.loader.exec_module(technician)
+        return technician.build(self, root)
 
     def coolant(self, root):
         self.shape(root, (0,0,0.005), (0.86,0.70,0.01), "teal", kind="cylinder")
@@ -427,6 +386,7 @@ def main(spec_file, output):
     write_json(output / "authoring.json", {
         "schema": 1, "complete": True, "sourceSha256": checksum(source),
         "inputs": {"blender/build_library.py": checksum(__file__), "blender/asset_spec.json": checksum(spec_file),
+                   "blender/technician.py": checksum(Path(__file__).with_name("technician.py")),
                    f"{spec['texture']['name']}.png": checksum(output/f"{spec['texture']['name']}.png")},
         "blender": bpy.app.version_string, "blenderBuild": bpy.app.build_hash.decode(),
         "roots": list(ROOTS), "animatedNodes": [n.name for n in animated],

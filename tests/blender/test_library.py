@@ -65,6 +65,9 @@ class EvaluatedLibraryTests(unittest.TestCase):
     def setUp(self):
         self.spec = json.loads((ROOT / "blender/asset_spec.json").read_text())
         self.record = json.loads(Path(bpy.data.filepath).with_name("authoring.json").read_text())
+        for name, expected in self.record["inputs"].items():
+            file = Path(bpy.data.filepath).with_name(name) if name.endswith(".png") else ROOT / name
+            self.assertEqual(library.checksum(file), expected, f"SOURCE_INPUT_CHANGED: {name}")
         library.activate_clip(self.record, None)
 
     def bounds(self, root):
@@ -128,6 +131,15 @@ class EvaluatedLibraryTests(unittest.TestCase):
             if asset["id"] in ("rack-standard", "cooling-unit", "technician-man"):
                 self.assertAlmostEqual(bounds[1][1], asset["restBounds"][1][1], delta=2e-4)
                 self.assertAlmostEqual(bounds[0][1], 0, delta=2e-4)
+
+    def test_mesh_faces_are_nonzero_and_have_no_duplicate_vertex_sets(self):
+        for obj in bpy.context.scene.objects:
+            if obj.type != "MESH":
+                continue
+            faces = [tuple(sorted(polygon.vertices)) for polygon in obj.data.polygons]
+            self.assertEqual(len(faces), len(set(faces)), f"DUPLICATE_FACE: {obj.name}")
+            self.assertTrue(all(polygon.area > 1e-12 for polygon in obj.data.polygons),
+                            f"DEGENERATE_FACE: {obj.name}")
 
     def test_three_named_rigid_tracks_and_duplicate_loop_end_poses(self):
         nodes = [bpy.data.objects[n] for n in self.record["animatedNodes"]]
