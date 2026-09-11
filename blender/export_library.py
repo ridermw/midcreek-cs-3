@@ -363,7 +363,7 @@ def finish_export(output, exit_code, node):
     provisional = strict.build_receipt(technical, documents, source, initial_inputs, pending["profile"],
                                        pending["tools"], {**pending["exporter"], "exitCode": exit_code})
     technical["strictSpecificationSha256"] = provisional["specificationSha256"]
-    builder.write_json(technical_file, technical)
+    technical_file.write_text(strict.canonical_json(technical) + "\n")
     inputs = [
         strict.file_record(technical_file, "technical.json", "script") if item["path"] == "technical.json" else item
         for item in pending["inputs"]
