@@ -273,10 +273,10 @@ npm test -- src/diagnostics/metrics.test.ts src/app/lifecycle.test.ts
 npm run test:e2e -- tests/e2e/evidence.spec.ts tests/e2e/performance.spec.ts
 
 # Consume retained raw reports only; never launches a browser.
-node --experimental-strip-types tools/qualification.ts \
-  --input .artifacts/qualification/run-1/report.json \
-  --input .artifacts/qualification/run-2/report.json \
-  --input .artifacts/qualification/run-3/report.json \
+node --experimental-strip-types --import ./tools/qualificationRuntime.ts tools/qualification.ts \
+  --input .artifacts/qualification/u8-dell-01/runs/1/report.json \
+  --input .artifacts/qualification/u8-dell-02/runs/1/report.json \
+  --input .artifacts/qualification/u8-dell-03/runs/1/report.json \
   --output .artifacts/qualification/review-1
 ```
 
@@ -307,6 +307,103 @@ profile/recipe identities. No performance, appearance or release pass is
 claimed. The normal play layout now produces the required 1280-by-600 CSS and
 drawing-buffer rectangle at a 1280-by-720 DPR1 browser viewport, with the
 remaining 120 pixels reserved for the HUD.
+
+#### Opt-in native named-target runner
+
+`npm run qualify:native` is a separate Node CLI, **never part of ordinary
+Vitest or Playwright test discovery**. It reuses the production-build server,
+CDP collector and U8 report evaluator; it neither changes the application nor
+replaces `requestAnimationFrame` or `performance.now`. Its in-page native
+RAF/ResizeObserver consumer sends pointer/keyboard/dispatch events through the
+existing UI. It captures ready/first-300, warmup until both >=12 simulation
+seconds and >=300 renders, 300 idle, 300 walking-loop renders, complete
+travel/arrival/120-tick repair/resolution, and exactly 300 orbit/resize renders.
+Orbit headings change every 60 renders; viewport 1024x768 is required at offsets
+120..179, with 1280x720 elsewhere. Actual resize renders count. An observer or
+CDP resize that misses a boundary invalidates the run; frames are never removed,
+retimed, paused for automation, or retried to manufacture an exact window.
+
+Before a real repetition, save explicit, current host metadata in a private JSON
+file such as `.artifacts/qualification/dell-target.json`:
+
+| JSON fields | Required declaration |
+| --- | --- |
+| `macModel`, `chip`, `macOS` | Exact Mac model, chip, OS version **and build**; named chip is `Apple M4 Pro` |
+| `cpuCores`, `gpuCores`, `ramGiB` | Observed positive integer counts; no inferred/default hardware |
+| `display`, `refreshHz` | `DELL U3821DW (3840x1600 @ 60.00Hz)` and numeric `60` for this target |
+| `displayBounds` | Object with integer `x`, `y`, `width`, `height` in desktop window-coordinate units; use the external display's actual origin/extent |
+| `powerMode`, `driver` | Observed AC/power mode and exact OS/Metal driver identification |
+
+Set `CS3_U8_WINDOW_X` and `CS3_U8_WINDOW_Y` to a top-left window position
+**inside the external display**, leaving room for the complete Chrome window
+and menu bar. Negative desktop coordinates are supported. Do not use the
+built-in main display's origin or its 120 Hz refresh declaration. Physical
+3840x1600 resolution alone does not establish the display's desktop origin or
+scaled coordinate extent. The CLI supplies `--window-position` to headed
+Playwright Chrome, explicitly sets/rechecks CDP window bounds, calls
+`bringToFront()`, and records page screen/window/WebGL evidence. Refresh and
+host hardware are operator declarations, not inferred from RAF or emulated
+screen dimensions.
+
+Run this exact command once per repetition, changing only `--run-id` to
+`u8-dell-02` and then `u8-dell-03`. Keep the window foreground and avoid input,
+moving windows, other heavy jobs, display changes or power-mode changes:
+
+```sh
+npm run qualify:native -- \
+  --run-id u8-dell-01 --repeat 1 \
+  --window-x "$CS3_U8_WINDOW_X" --window-y "$CS3_U8_WINDOW_Y" \
+  --target .artifacts/qualification/dell-target.json \
+  --application-commit 0c8760a --port 4188 --timeout-ms 180000
+```
+
+`--application-commit HEAD` (the default) resolves runtime git HEAD to a full
+SHA; an explicit SHA must match HEAD. Dirty application/build inputs or changes
+during capture invalidate the run and are retained in evidence. Runner-only
+edits do not change the application's commit. The served-content hash is
+computed from actual CDP response bodies; selection/profile/recipe identities
+come from the frozen ready receipt. Browser version, WebGL renderer/backend,
+DPR, focus and service-worker state come from observation, not target JSON.
+Missing target declarations remain unqualified rather than preventing a safe
+raw capture; malformed declarations/arguments are rejected before launch.
+
+All options also accept `CS3_U8_` environment names (`RUN_ID`, `REPEAT`,
+`WINDOW_X`, `WINDOW_Y`, `TARGET`, `APPLICATION_COMMIT`, `PORT`, `TIMEOUT_MS`);
+CLI options take precedence. `CS3_U8_TARGET_JSON` supplies inline metadata;
+fields in a target file override matching inline fields. Browser-observed fields
+cannot be supplied in either declaration. `--repeat 3 --run-id u8-dell` is an
+explicit serial alternative producing `u8-dell-01` through `u8-dell-03`, never
+parallel workers. Every attempt launches a fresh Chrome process/context with
+1280x720/DPR1, cache disabled and service workers blocked/bypassed. Port 4188
+is intentionally stable so ready-receipt asset URLs match across repetitions;
+if changing it, use the same free port for all runs. The active local selection
+is required; no synthetic assets or release build are substituted.
+
+Each fresh `.artifacts/qualification/<run-id>/` contains
+`runs/1/report.json` (the complete native `QualificationReport` after readiness),
+split target/startup/ready/frames/phases/network files, `evidence.json`, results,
+and checksums. Evidence includes launch/position declarations, actual browser/
+page/WebGL/window observations, source/runner/workload identities, resize request
+receipts and errors. Visibility/focus events and boundary misses remain in raw
+reports. Timeouts, unmet target conditions and signals retain whatever was
+safely captured; failure before readiness writes raw `ready: null`/`startup:
+null` with an explicit unqualified shape rejection, never fabricated receipts.
+
+The CLI prints the **individual** run result and exits 0 passed, 1 measured
+failure, or 2 unqualified/error. A one-report `result.json` aggregate is still
+unqualified until the three reports are evaluated together using the command
+above. Existing outputs are never overwritten. A private `.native-runner.lock`
+rejects concurrent invocations; SIGINT/SIGTERM attempt capture and cleanup.
+After an uncatchable crash, inspect its recorded PID before manually removing
+a stale lock. Nothing is staged, committed, published, optimized or retried.
+No native performance claim follows from portable tests:
+
+```sh
+npm run qualify:native -- --help  # no browser launch
+npm run typecheck
+npm test -- tests/qualification-native.test.ts src/diagnostics/metrics.test.ts
+git diff --check
+```
 
 ### U5 packaging API (not full library qualification)
 

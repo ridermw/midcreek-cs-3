@@ -17,7 +17,7 @@ declare global {
   }
 }
 
-export async function serveQualification() {
+export async function serveQualification(options: { port?: number } = {}) {
   const built = await build({ configFile: resolve('vite.config.ts'), logLevel: 'error', build: { write: false } })
   const files = new Map<string, { data: Buffer; type: string }>()
   for (const result of Array.isArray(built) ? built : [built]) {
@@ -48,7 +48,7 @@ export async function serveQualification() {
     })
     response.end(file?.data ?? 'Not found')
   })
-  await new Promise<void>((done, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', done) })
+  await new Promise<void>((done, reject) => { server.once('error', reject); server.listen(options.port ?? 0, '127.0.0.1', done) })
   const address = server.address()
   if (!address || typeof address === 'string') throw new Error('Expected loopback TCP server')
   return {
@@ -127,6 +127,7 @@ export async function observeQualificationNetwork(page: Page) {
   const cdp = await page.context().newCDPSession(page)
   await cdp.send('Network.enable')
   await cdp.send('Network.setCacheDisabled', { cacheDisabled: true })
+  await cdp.send('Network.setBypassServiceWorker', { bypass: true })
   type Request = {
     requestId: string; url: string; wallTime: number; timestamp: number;
     end: number | null; transferSize: number | null; encodedBodySize: number | null;
@@ -147,6 +148,7 @@ export async function observeQualificationNetwork(page: Page) {
   cdp.on('Network.responseReceived', (event) => {
     const request = requests.get(event.requestId)
     if (!request) return
+    if (event.response.status >= 400) request.failed = true
     const length = Object.entries(event.response.headers).find(([key]) => key.toLowerCase() === 'content-length')?.[1]
     request.encodedBodySize = length !== undefined ? Number(length) : null
     if (event.response.fromDiskCache || event.response.fromServiceWorker) request.cache = 'local'

@@ -114,7 +114,7 @@ function inside(root: string, path: string): boolean {
   const rel = relative(root, path)
   return rel !== '' && !isAbsolute(rel) && rel !== '..' && !rel.startsWith(`..${sep}`)
 }
-async function privateRoot(): Promise<string> {
+export async function qualificationRoot(): Promise<string> {
   const repository = await realpath(process.cwd())
   const artifacts = resolve(repository, '.artifacts')
   await mkdir(artifacts, { recursive: true })
@@ -125,8 +125,8 @@ async function privateRoot(): Promise<string> {
   if (actual !== root) throw new Error('OUTPUT_SCOPE: qualification root must be canonical and private')
   return actual
 }
-export async function writeQualification(raw: readonly unknown[], output: string) {
-  const root = await privateRoot()
+export async function writeQualification(raw: readonly unknown[], output: string, evidence?: unknown) {
+  const root = await qualificationRoot()
   const destination = resolve(output)
   if (!inside(root, destination)) throw new Error('OUTPUT_SCOPE: raw and sanitized output must remain under .artifacts/qualification')
   let ancestor = dirname(destination)
@@ -164,6 +164,7 @@ export async function writeQualification(raw: readonly unknown[], output: string
     await save(`${prefix}/network.json`, input.network)
     await save(`${prefix}/ready.json`, input.ready)
   }
+  if (evidence !== undefined) await save('evidence.json', evidence)
   await save('result.json', result)
   await save('sanitized/result.json', {
     schema: 1, target: NAMED_TARGET, status: result.status,
@@ -188,7 +189,7 @@ async function main(args: readonly string[]) {
     }
   }
   if (!inputs.length || !output) throw new Error('USAGE: --input and --output required; no browser launch is implicit')
-  const root = await privateRoot()
+  const root = await qualificationRoot()
   const reports: unknown[] = []
   for (const input of inputs) {
     const path = await realpath(input)
