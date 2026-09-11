@@ -1,4 +1,4 @@
-import type { AnimationClip, Object3D } from 'three'
+import type { AnimationClip, BufferGeometry, Material, Object3D, Texture } from 'three'
 
 export const ASSET_IDS = [
   'floor-slab', 'rack-standard', 'cooling-unit', 'technician-man', 'coolant-leak',
@@ -62,6 +62,12 @@ export interface AssetCandidate {
   readonly sha256: string
   readonly scene: Object3D
   readonly animations: readonly AnimationClip[]
+  // Includes parser-owned allocations not reachable from the selected scene.
+  readonly resources?: {
+    readonly geometries: Iterable<BufferGeometry>
+    readonly materials: Iterable<Material>
+    readonly textures: Iterable<Texture>
+  }
   readonly release?: () => void
 }
 

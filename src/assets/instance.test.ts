@@ -41,6 +41,9 @@ describe('asset instance animation and ownership', () => {
     instance.present('Walk')
     body!.position.y = 0.75
     instance.present('Repair')
+    expect(body!.position.y).toBeCloseTo(0.905)
+    expect(instance.animationTime).toBe(0)
+    instance.present(null)
     expect(body!.position.y).toBeCloseTo(0.865)
 
     instance.dispose()

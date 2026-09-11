@@ -12,7 +12,8 @@ verify the C5 source checkpoint `9844435` and remaining original allowance.
 Do not restart this session or duplicate AR1's separately launched appearance
 work in the concept repository.
 
-- Implement U6 guarded loading/resource ownership; U1/U2 already permit this.
+- U6 guarded loading/resource ownership is complete with unit and real-browser
+  failure/ownership coverage.
 - Complete U5 technical packaging and any explicitly recorded provisional
   development-library exception. Appearance remains unaccepted.
 - Implement U7, then U8-U10 with baseline-specific claims and unchanged gates.

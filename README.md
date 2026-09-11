@@ -2,10 +2,9 @@
 
 A Blender-authored, Three.js-based data-hall simulation.
 
-**Paused for a new session.** All source and handoff documentation is committed
-for the transfer. U1-U4 are complete. C5 source is checkpointed; U5 final
-qualification and U6-U10 remain unfinished. No production library is promoted,
-and the application entries are not yet a playable game.
+**Continuation active.** U1-U4 and U6 are complete. C5 source is checkpointed;
+U5 final technical packaging and U7-U10 remain unfinished. No production
+library is promoted, and the application entries are not yet a playable game.
 
 ## Start here
 
@@ -33,9 +32,16 @@ the earlier C3 candidate and needs work; C4/C5 have not received overall
 appearance acceptance.
 
 The user reports AR1 is running separately in the concept repository to solve
-authoring/rendering fidelity. This CS3 continuation owns U6 loading/lifetimes,
-remaining U5 technical packaging, and U7's actual playable, followed by U8-U10.
-No more broad aesthetic sweeps belong here.
+authoring/rendering fidelity. This CS3 continuation completed U6 loading/lifetimes and now owns remaining U5
+technical packaging and U7's actual playable, followed by U8-U10. No more broad
+aesthetic sweeps belong here.
+
+U6 now enforces the full required-ready deadline, stale-generation and context
+loss guards, strict manifest/GLB identity and animation envelopes, same-origin
+dependency loading, partial-failure cleanup and library-wide unique resource
+teardown. Its focused verification currently covers 53 unit checks and 30 real
+Chrome/WebGL browser cases, including delayed and failed loading, Reload/input
+gating, time-zero posing and two-instance ownership.
 
 Provisional development use requires a recorded, hash-bound exception and
 does not relax technical, appearance or release gates. Future AR1 replacements

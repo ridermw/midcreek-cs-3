@@ -91,6 +91,7 @@ export class AssetInstance {
       throw new Error(`Missing declared animation clip ${nextClip} for ${this.assetId}.`)
     }
     this.mixer.clipAction(clip).reset().setLoop(LoopRepeat, Infinity).play()
+    this.mixer.update(0)
   }
 
   advanceTick(): void {

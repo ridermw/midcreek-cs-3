@@ -25,13 +25,19 @@ export interface ApplicationLifecycleOptions {
   readonly showLoading: () => void
   readonly showReady: (receipt: ReadyReceipt) => void
   readonly showFailure: (error: AssetLoadError, reload: () => void) => void
-  readonly attach: (library: AssetLibrary) => void | Promise<void>
+  // Async attachment must check isActive before mutation and return its own cleanup.
+  readonly attach: (library: AssetLibrary, session: {
+    readonly signal: AbortSignal
+    readonly isActive: () => boolean
+    readonly onCleanup: (cleanup: () => void) => void
+  }) => void | (() => void) | Promise<void | (() => void)>
   readonly detach?: () => void
   readonly renderFirstFrame: () => FrameResult | Promise<FrameResult>
   readonly finishGpu: () => void | Promise<void>
   readonly installInteractive: () => void | (() => void)
   readonly nextAnimationFrame: () => void | Promise<void>
   readonly contextTarget?: EventTarget
+  readonly isContextLost?: () => boolean
   readonly reload?: () => void
   readonly now?: () => number
 }
@@ -70,7 +76,12 @@ export function createApplicationLifecycle(
   let readyReceipt: ReadyReceipt | undefined
   let library: AssetLibrary | undefined
   let interactiveDispose: (() => void) | undefined
+  let attachmentCleanups: (() => void)[] = []
+  let attaching = false
+  let attached = false
   let controller: AbortController | undefined
+  let endStart: (() => void) | undefined
+  let timeout: ReturnType<typeof setTimeout> | undefined
   let startTime = 0
   let failureShown = false
   let contextListener: ((event: Event) => void) | undefined
@@ -106,26 +117,62 @@ export function createApplicationLifecycle(
     contextListener = undefined
   }
 
-  const releaseResources = () => {
-    interactiveDispose?.()
-    interactiveDispose = undefined
-    options.detach?.()
-    if (library) {
-      library.dispose()
-      library = undefined
+  const cleanup = (actions: readonly (() => void)[]) => {
+    const errors: unknown[] = []
+    for (const action of actions) {
+      try { action() } catch (cause) { errors.push(cause) }
     }
+    if (errors.length) {
+      const cleanupError = new AggregateError(errors, 'Application cleanup failed')
+      if (error) {
+        error.cause = cleanupError
+        error.message += '; cleanup failed'
+      } else {
+        error = lifecycleError(cleanupError, 'CLEANUP')
+        error.cause = cleanupError
+      }
+    }
+  }
+
+  const releaseResources = () => {
+    const input = interactiveDispose
+    const attachments = attachmentCleanups
+    const shouldDetach = attached || attaching
+    interactiveDispose = undefined
+    attachmentCleanups = []
+    attached = false
+    cleanup([
+      () => input?.(),
+      ...attachments.reverse(),
+      () => { if (shouldDetach) options.detach?.() },
+      () => {
+        if (!library || (attaching && library.activeLeaseCount > 0)) return
+        const ownedLibrary = library
+        ownedLibrary.dispose()
+        if (library === ownedLibrary) library = undefined
+      },
+    ])
+  }
+
+  const invalidate = () => {
+    generation += 1
+    clearTimeout(timeout)
+    controller?.abort()
+    controller = undefined
+    removeContextListener()
+    endStart?.()
+    endStart = undefined
   }
 
   const fail = (token: number, nextError: AssetLoadError) => {
     if (token !== generation || state === 'disposed' || state === 'failed') return
-    generation += 1
     state = 'failed'
     error = nextError
     readyReceipt = undefined
-    controller?.abort()
-    controller = undefined
-    removeContextListener()
+    invalidate()
+    const failedGeneration = generation
     releaseResources()
+    if (generation !== failedGeneration || state !== 'failed') return
     if (!failureShown) {
       failureShown = true
       options.showFailure(nextError, reload)
@@ -133,6 +180,13 @@ export function createApplicationLifecycle(
   }
 
   const assertActive = (token: number) => {
+    if (token === generation && state === 'loading' && options.isContextLost?.()) {
+      fail(token, new AssetLoadError('CONTEXT_LOST', 'renderer', 'WebGL context was lost; reload required'))
+    }
+    if (token === generation && state === 'loading'
+      && now() - startTime >= (options.requiredLoadDeadlineMs ?? 30_000)) {
+      fail(token, new AssetLoadError('LOAD_TIMEOUT', 'application', 'required readiness deadline exceeded'))
+    }
     if (token !== generation || state !== 'loading') {
       throw new AssetLoadError('STALE_GENERATION', 'application', 'async continuation belongs to an inactive session')
     }
@@ -144,13 +198,12 @@ export function createApplicationLifecycle(
     get error() { return error },
     get readyReceipt() { return readyReceipt },
     async start() {
-      if (state === 'loading' || state === 'ready') {
+      if (state === 'loading' || state === 'ready' || state === 'failed') {
         throw new ContractError('LIFECYCLE_STATE', state, 'application session is already active')
       }
       if (state === 'disposed') {
         throw new ContractError('LIFECYCLE_DISPOSED', 'application', 'cannot start a disposed lifecycle')
       }
-      releaseResources()
       generation += 1
       const token = generation
       state = 'loading'
@@ -159,64 +212,89 @@ export function createApplicationLifecycle(
       failureShown = false
       installContextListener()
       startTime = now()
-      options.showLoading()
       const loadController = new AbortController()
       controller = loadController
-      let timedOut = false
-      const timeout = setTimeout(() => {
-        timedOut = true
-        loadController.abort()
+      const ended = new Promise<void>((resolve) => { endStart = resolve })
+      timeout = setTimeout(() => {
+        fail(token, new AssetLoadError('LOAD_TIMEOUT', 'application', 'required assets did not become ready before the deadline'))
       }, options.requiredLoadDeadlineMs ?? 30_000)
-      try {
-        library = await loadAssetLibrary(options.manifest, options.loader, {
-          signal: loadController.signal,
-        })
-        assertActive(token)
-        await options.attach(library)
-        assertActive(token)
-        const firstFrame = await options.renderFirstFrame()
-        if (!Number.isFinite(firstFrame.calls) || !Number.isFinite(firstFrame.triangles)
-          || firstFrame.calls <= 0 || firstFrame.triangles <= 0) {
-          throw new AssetLoadError('FIRST_FRAME_EMPTY', 'renderer', 'required first render was empty')
+      // loading -> attach -> render -> fence -> wiring -> RAF -> ready
+      // any failure/disposal invalidates first; late results only release.
+      const run = async () => {
+        try {
+          options.showLoading()
+          assertActive(token)
+          const resolvedLibrary = await loadAssetLibrary(options.manifest, options.loader, {
+            signal: loadController.signal,
+          })
+          if (token !== generation || state !== 'loading') {
+            cleanup([() => resolvedLibrary.dispose()])
+            return
+          }
+          library = resolvedLibrary
+          assertActive(token)
+          attaching = true
+          attached = true
+          try {
+            const detached = await options.attach(resolvedLibrary, {
+              signal: loadController.signal,
+              isActive: () => token === generation && state === 'loading' && !loadController.signal.aborted,
+              onCleanup: (attachmentCleanup) => {
+                if (token === generation && state === 'loading' && !loadController.signal.aborted) {
+                  attachmentCleanups.push(attachmentCleanup)
+                } else {
+                  cleanup([attachmentCleanup])
+                }
+              },
+            })
+            if (typeof detached === 'function') attachmentCleanups.push(detached)
+          } finally {
+            attaching = false
+            if (token !== generation || state !== 'loading') releaseResources()
+          }
+          assertActive(token)
+          const firstFrame = await options.renderFirstFrame()
+          assertActive(token)
+          if (!Number.isFinite(firstFrame.calls) || !Number.isFinite(firstFrame.triangles)
+            || firstFrame.calls <= 0 || firstFrame.triangles <= 0) {
+            throw new AssetLoadError('FIRST_FRAME_EMPTY', 'renderer', 'required first render was empty')
+          }
+          await options.finishGpu()
+          assertActive(token)
+          const installed = options.installInteractive()
+          if (typeof installed === 'function') {
+            if (token !== generation || state !== 'loading') cleanup([installed])
+            else interactiveDispose = installed
+          }
+          assertActive(token)
+          await options.nextAnimationFrame()
+          assertActive(token)
+          const interactiveAt = now()
+          readyReceipt = Object.freeze({
+            generation: token,
+            libraryDigest: options.manifest.libraryDigest,
+            firstFrame: Object.freeze({ ...firstFrame }),
+            readyAt: interactiveAt - startTime,
+            interactiveAt,
+          })
+          state = 'ready'
+          options.showReady(readyReceipt)
+        } catch (cause) {
+          if (token !== generation) return
+          fail(token, lifecycleError(cause, 'APPLICATION_LOAD'))
+        } finally {
+          clearTimeout(timeout)
+          if (controller === loadController) controller = undefined
         }
-        assertActive(token)
-        await options.finishGpu()
-        assertActive(token)
-        const installed = options.installInteractive()
-        interactiveDispose = typeof installed === 'function' ? installed : undefined
-        await options.nextAnimationFrame()
-        assertActive(token)
-        const interactiveAt = now()
-        readyReceipt = Object.freeze({
-          generation: token,
-          libraryDigest: options.manifest.libraryDigest,
-          firstFrame: Object.freeze({ ...firstFrame }),
-          readyAt: interactiveAt - startTime,
-          interactiveAt,
-        })
-        state = 'ready'
-        options.showReady(readyReceipt)
-      } catch (cause) {
-        if (token !== generation) return
-        const failure = timedOut
-          ? new AssetLoadError('LOAD_TIMEOUT', 'library', 'required assets did not become ready before the deadline')
-          : lifecycleError(cause, 'APPLICATION_LOAD')
-        fail(token, failure)
-      } finally {
-        clearTimeout(timeout)
-        if (controller === loadController) controller = undefined
       }
+      await Promise.race([run(), ended])
     },
     dispose() {
       if (state === 'disposed') return
-      generation += 1
-      controller?.abort()
-      controller = undefined
-      removeContextListener()
-      releaseResources()
       state = 'disposed'
-      error = undefined
       readyReceipt = undefined
+      invalidate()
+      releaseResources()
     },
   }
 

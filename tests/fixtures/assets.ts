@@ -4,7 +4,7 @@ import {
   Group,
   Mesh,
   MeshBasicMaterial,
-  NumberKeyframeTrack,
+  VectorKeyframeTrack,
 } from 'three'
 import type {
   AssetCandidate,
@@ -125,10 +125,14 @@ export function createTestCandidate(
   const animations = entry.clips.map((clip) => new AnimationClip(
     clip.name,
     clip.duration,
-    [new NumberKeyframeTrack(
+    [new VectorKeyframeTrack(
       options.rootMotion ? `${entry.rootName}.position` : `${body.name}.position`,
-      [0, clip.duration],
-      [0, 0, 0, 0, 0, 0],
+      [0, clip.duration / 2, clip.duration],
+      [
+        0, body.position.y + (clip.name === 'Repair' ? 0.04 : 0), 0,
+        0, body.position.y + 0.06, 0,
+        0, body.position.y + (clip.name === 'Repair' ? 0.04 : 0), 0,
+      ],
     )],
   ))
 

@@ -1,4 +1,5 @@
-import { Box3 } from 'three'
+import { AnimationMixer, Box3, LoopOnce, Object3D, PropertyBinding, Texture } from 'three'
+import type { Mesh } from 'three'
 import { ASSET_IDS, AssetLoadError, ContractError } from './contracts'
 import type {
   AssetCandidate,
@@ -24,6 +25,11 @@ const PERMITTED: Record<AssetId, Bounds> = {
   'coolant-leak': { min: { x: -0.45, y: 0, z: -0.45 }, max: { x: 0.45, y: 0.02, z: 0.45 } },
 }
 const SHA256 = /^[a-f0-9]{64}$/
+const TECHNICIAN_CLIPS = new Map([
+  ['Idle', 2],
+  ['Walk', 1],
+  ['Repair', 2],
+] as const)
 
 function fail(code: string, subject: string, message: string): never {
   throw new ContractError(code, subject, message)
@@ -93,8 +99,8 @@ export function validateShape(asset: AssetShape): void {
   }
 }
 
-function validateRelativeAssetPath(file: string): void {
-  if (!file || file.startsWith('/') || file.includes('\\')
+export function validateRelativeAssetPath(file: string): void {
+  if (!file || !/^[A-Za-z0-9_./-]+$/.test(file) || file.startsWith('/')
     || /^[a-z][a-z\d+.-]*:/i.test(file)) {
     fail('PATH', file || 'asset', 'asset files must be relative same-origin paths')
   }
@@ -119,6 +125,7 @@ export function validateManifest(manifest: AssetManifest): void {
     if (!ASSET_IDS.includes(entry.id)) fail('UNKNOWN_ASSET', entry.id, 'not in the required library')
     if (seen.has(entry.id)) fail('DUPLICATE_ASSET', entry.id, 'one manifest entry per visual ID required')
     seen.add(entry.id)
+    if (entry.shape.id !== entry.id) fail('SHAPE_IDENTITY', entry.id, 'shape must identify its manifest entry')
     validateRelativeAssetPath(entry.file)
     if (!SHA256.test(entry.sha256)) fail('HASH', entry.id, 'asset hash must be a lowercase SHA-256')
     if (!entry.rootName || !entry.requiredNodeNames.includes(entry.rootName)) {
@@ -137,16 +144,19 @@ export function validateManifest(manifest: AssetManifest): void {
       }
       clipNames.add(clip.name)
     }
+    if (entry.id === 'technician-man') {
+      if (entry.clips.length !== TECHNICIAN_CLIPS.size
+        || entry.clips.some((clip) => TECHNICIAN_CLIPS.get(clip.name as 'Idle' | 'Walk' | 'Repair') !== clip.duration)) {
+        fail('CLIP_SET', entry.id, 'technician requires exact Idle 2s, Walk 1s and Repair 2s clips')
+      }
+    } else if (entry.clips.length !== 0) {
+      fail('CLIP_SET', entry.id, 'only the technician may declare animation clips')
+    }
     validateShape(entry.shape)
   }
   for (const id of ASSET_IDS) {
     if (!seen.has(id)) fail('MISSING_ASSET', id, 'required manifest entry absent')
   }
-}
-
-function rootMotionTrack(trackName: string, rootName: string): boolean {
-  const target = trackName.split('.')[0] ?? ''
-  return target === rootName
 }
 
 export function validateAssetCandidate(
@@ -163,7 +173,30 @@ export function validateAssetCandidate(
     throw new AssetLoadError('SCENE_ROOT', entry.id, 'exactly one declared root child is required', entry.id)
   }
   const names = new Map<string, number>()
-  candidate.scene.traverse((object) => names.set(object.name, (names.get(object.name) ?? 0) + 1))
+  candidate.scene.traverse((object) => {
+    names.set(object.name, (names.get(object.name) ?? 0) + 1)
+    const mesh = object as Mesh
+    if ('isSkinnedMesh' in object || (mesh.isMesh && Object.keys(mesh.geometry.morphAttributes).length)) {
+      throw new AssetLoadError('RIGID_ANIMATION', entry.id, 'skins and morphs are not supported', entry.id)
+    }
+    if (![...object.position, ...object.quaternion, ...object.scale].every(Number.isFinite)
+      || !AXES.every((axis) => object.scale[axis] > 0)
+      || !near(object.quaternion.lengthSq(), 1, UNIT_TOLERANCE)) {
+      throw new AssetLoadError('RIGID_ANIMATION', entry.id, 'finite transforms, normalized rotation and positive scale are required', entry.id)
+    }
+    if (mesh.isMesh) {
+      for (const material of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
+        for (const value of Object.values(material)) {
+          if (!(value instanceof Texture)) continue
+          const uv = mesh.geometry.getAttribute(value.channel === 0 ? 'uv' : `uv${value.channel}`)
+          if (!uv || uv.itemSize !== 2 || uv.count !== mesh.geometry.getAttribute('position')?.count
+            || !uv.array.every(Number.isFinite)) {
+            throw new AssetLoadError('TEXTURE_UV', entry.id, 'required texture coordinates are missing or invalid', entry.id)
+          }
+        }
+      }
+    }
+  })
   for (const name of entry.requiredNodeNames) {
     if (names.get(name) !== 1) {
       throw new AssetLoadError('DECLARED_NODE', `${entry.id}/${name}`, 'required node is missing or duplicated', entry.id)
@@ -189,17 +222,100 @@ export function validateAssetCandidate(
   if (candidate.animations.length !== expectedClips.size) {
     throw new AssetLoadError('CLIP_COUNT', entry.id, 'loaded clips do not match the manifest', entry.id)
   }
+  const loadedClips = new Set<string>()
   for (const clip of candidate.animations) {
-    const expected = expectedClips.get(clip.name)
-    if (!expected || Math.abs(clip.duration - expected.duration) > GEOMETRY_TOLERANCE) {
-      throw new AssetLoadError('CLIP_CONTRACT', `${entry.id}/${clip.name}`, 'clip name or duration differs from the manifest', entry.id)
+    if (loadedClips.has(clip.name)) {
+      throw new AssetLoadError('CLIP_IDENTITY', entry.id, 'loaded clip names must be unique', entry.id)
     }
-    if (clip.tracks.some((track) => rootMotionTrack(track.name, entry.rootName))) {
-      throw new AssetLoadError('ROOT_MOTION', `${entry.id}/${clip.name}`, 'animation may not write the instance root', entry.id)
+    loadedClips.add(clip.name)
+    const expected = expectedClips.get(clip.name)
+    if (!expected || !Number.isFinite(clip.duration) || Math.abs(clip.duration - expected.duration) > 1e-5) {
+      throw new AssetLoadError('CLIP_CONTRACT', `${entry.id}/${clip.name}`, 'clip name or duration differs from the manifest', entry.id)
     }
     if (clip.tracks.some((track) => !track.values.every(Number.isFinite))) {
       throw new AssetLoadError('TRACK_FINITE', `${entry.id}/${clip.name}`, 'animation tracks must contain finite values', entry.id)
     }
+    for (const track of clip.tracks) {
+      const binding = PropertyBinding.parseTrackName(track.name)
+      const target = PropertyBinding.findNode(candidate.scene, binding.nodeName)
+      if (!(target instanceof Object3D) || (target.name && names.get(target.name) !== 1)) {
+        throw new AssetLoadError('TRACK_TARGET', entry.id, 'animation target is missing or ambiguous', entry.id)
+      }
+      if (target === root || target === candidate.scene) {
+        throw new AssetLoadError('ROOT_MOTION', entry.id, 'animation may only write descendants', entry.id)
+      }
+      const size = binding.propertyName === 'quaternion' ? 4 : 3
+      if (binding.objectName || binding.propertyIndex !== undefined
+        || !['position', 'quaternion', 'scale'].includes(binding.propertyName)
+        || track.getValueSize() !== size
+        || (binding.propertyName === 'scale' && !track.values.every((value, i) =>
+          value > 0 && near(value, target.scale.getComponent(i % 3), UNIT_TOLERANCE)))) {
+        throw new AssetLoadError('RIGID_ANIMATION', entry.id, 'only rigid transforms with unchanged positive scale are supported', entry.id)
+      }
+      if (binding.propertyName === 'quaternion') {
+        for (let i = 0; i < track.values.length; i += 4) {
+          const lengthSq = track.values[i]! * track.values[i]!
+            + track.values[i + 1]! * track.values[i + 1]!
+            + track.values[i + 2]! * track.values[i + 2]!
+            + track.values[i + 3]! * track.values[i + 3]!
+          if (!near(lengthSq, 1, UNIT_TOLERANCE)) {
+            throw new AssetLoadError('RIGID_ANIMATION', entry.id, 'rotation keys must be normalized quaternions', entry.id)
+          }
+        }
+      }
+      if (!track.times.length || !track.times.every((time, i) =>
+        Number.isFinite(time) && time >= 0 && time <= clip.duration
+        && (i === 0 || time > track.times[i - 1]!))) {
+        throw new AssetLoadError('TRACK_TIME', entry.id, 'keys must have finite, ordered times inside the clip', entry.id)
+      }
+    }
+  }
+  validateAnimatedPoses(candidate, entry)
+}
+
+function validateAnimatedPoses(candidate: AssetCandidate, entry: AssetManifestEntry): void {
+  const rest = new Map<Object3D, {
+    position: Object3D['position']; quaternion: Object3D['quaternion']; scale: Object3D['scale']
+  }>()
+  candidate.scene.traverse((object) => rest.set(object, {
+    position: object.position.clone(), quaternion: object.quaternion.clone(), scale: object.scale.clone(),
+  }))
+  const restore = () => {
+    for (const [object, pose] of rest) {
+      object.position.copy(pose.position)
+      object.quaternion.copy(pose.quaternion)
+      object.scale.copy(pose.scale)
+      object.updateMatrix()
+    }
+    candidate.scene.updateMatrixWorld(true)
+  }
+  const mixer = new AnimationMixer(candidate.scene)
+  try {
+    for (const clip of candidate.animations) {
+      const keys = [...new Set([0, clip.duration, ...clip.tracks.flatMap((track) => [...track.times])])].sort((a, b) => a - b)
+      // Keys + interval midpoints validate the declared swept envelope, not all continuous time.
+      const samples = [...keys, ...keys.slice(1).map((time, i) => (keys[i]! + time) / 2)]
+      for (const time of samples) {
+        mixer.stopAllAction()
+        restore()
+        const action = mixer.clipAction(clip).reset().setLoop(LoopOnce, 1)
+        action.clampWhenFinished = true
+        action.play()
+        mixer.setTime(time)
+        candidate.scene.updateMatrixWorld(true)
+        const box = new Box3().setFromObject(candidate.scene.children[0]!, true)
+        const bounds = entry.shape.animatedBounds
+        if (!AXES.every((axis) => Number.isFinite(box.min[axis]) && Number.isFinite(box.max[axis])
+          && box.min[axis] >= bounds.min[axis] - GEOMETRY_TOLERANCE
+          && box.max[axis] <= bounds.max[axis] + GEOMETRY_TOLERANCE)) {
+          throw new AssetLoadError('ANIMATED_BOUNDS', `${entry.id}/${clip.name}`, `pose at ${time} escapes the animated envelope`, entry.id)
+        }
+      }
+    }
+  } finally {
+    mixer.stopAllAction()
+    mixer.uncacheRoot(candidate.scene)
+    restore()
   }
 }
 
