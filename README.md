@@ -66,6 +66,19 @@ interpretation. Export/loader qualification, near-reference appearance and
 atomic promotion remain in progress; passing source tests establishes none
 of those gates. No candidate media is published in Git.
 
+The U5 export/comparison procedure now has a complete technical prototype
+run: five real GLBs, three named rigid clips, 31 checks and 30 matched
+Blender/browser contacts. It validates default rest transforms before
+animation, every sampled key/midpoint, source vertices, material bindings and
+decoded texture-pixel identity. Capture inputs are hash-bound to the
+authoring sidecar and builder. The original eight-node R2 regression,
+including expected direct-material incompatibility and FONT geometry,
+still passes. The procedure extends R2 rather than introducing another viewer.
+This is **not U5 completion**: final visual reconstruction, two fresh runs of
+the final recipe, remaining negative/promotion cases and independent
+appearance acceptance are still required. Technical agreement with an
+authored prototype does not measure fidelity to the artwork.
+
 U4 imports the exact approved Cel Shift set into an ignored, immutable local
 package: 49 masters, 47 prompts, seven shared inputs, reviewed sanitized
 provenance and three support documents. The source inventory matches the

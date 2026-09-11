@@ -31,7 +31,11 @@ U5 authoring has checked actual action-slot evaluation, linear keys and moving
 foot envelopes for the five-template source candidate. Its visuals remain
 prototypes, not a faithful Cel Shift reproduction or appearance acceptance.
 Export/loader qualification, comparative appearance and atomic promotion
-are still pending.
+are still pending. The prototype export/comparison procedure passes its first
+complete, pixel-identity-checked five-asset run (31 checks, 30 contacts), and
+the original eight-node R2 regression remains intact. Final-recipe repetition,
+remaining negative/promotion cases and near-reference appearance are not
+substituted by that technical pass.
 U4's full approved local import and generated index are verified, including
 real filesystem rollback/interruption checks. Reference media remains ignored;
 the separate public-gallery projection and release allowlist are U9-U10 work.

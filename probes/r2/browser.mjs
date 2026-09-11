@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createLoad } from './lifecycle.mjs';
+import { createLibraryLighting, createLibraryPlayback, validateLibrary } from './library-browser.mjs';
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
@@ -18,6 +19,9 @@ let receipt;
 let released = 0;
 let attached = 0;
 let errors = [];
+let libraryPlayback;
+let libraryLighting;
+const libraryOwners = new WeakMap();
 const environmentScene = new THREE.Scene();
 environmentScene.background = new THREE.Color().setRGB(0.06, 0.06, 0.06);
 const pmrem = new THREE.PMREMGenerator(renderer);
@@ -30,6 +34,8 @@ function requireThat(condition, message) {
 }
 
 function release(asset) {
+  libraryOwners.get(asset)?.dispose();
+  libraryOwners.delete(asset);
   asset.scene.removeFromParent();
   const geometries = new Set();
   const materials = new Set();
@@ -48,6 +54,7 @@ function release(asset) {
 }
 
 function validate(asset, declared, loadErrors) {
+  if (declared.kind === 'cs3-library-asset') return validateLibrary(asset, declared, loadErrors);
   requireThat(loadErrors.length === 0, `TEXTURE_LOAD: ${loadErrors.join(', ')}`);
   for (const [name, expected] of Object.entries(declared.poses[0].objects)) {
     const object = asset.scene.getObjectByName(name);
@@ -76,6 +83,7 @@ function validate(asset, declared, loadErrors) {
 }
 
 function sample(time) {
+  if (libraryPlayback) return libraryPlayback.sample(null, time);
   // A previous end-pose sample clamps/pauses LoopOnce; each probe sample is independent.
   mixer.clipAction(currentAsset.animations[0]).reset().play();
   mixer.setTime(time);
@@ -94,17 +102,27 @@ function sample(time) {
 }
 
 function draw(capture, lighting) {
-  const pose = sample(capture.time);
-  renderer.toneMapping = capture.profile === 'standard' ? THREE.NoToneMapping : THREE.AgXToneMapping;
-  renderer.toneMappingExposure = capture.profile === 'standard' ? 1 : 2 ** 0.3;
+  const pose = libraryPlayback ? libraryPlayback.sample(capture.clip, capture.time, capture.repeat) : sample(capture.time);
+  const standard = capture.profile === 'standard' || capture.profile === 'cs3-standard-v1';
+  renderer.toneMapping = standard ? THREE.NoToneMapping : THREE.AgXToneMapping;
+  renderer.toneMappingExposure = standard ? 1 : 2 ** 0.3;
   currentAsset.scene.traverse(node => {
     if (node.isMesh) node.visible = capture.visible.includes(node.name) ||
       capture.visible.includes(node.parent?.name);
   });
   for (const light of [...scene.children].filter(n => n.isLight)) scene.remove(light);
-  const sun = new THREE.DirectionalLight(0xffffff, lighting.sun_energy);
-  sun.position.fromArray(lighting.sun_direction).multiplyScalar(-1);
-  scene.add(sun);
+  if (libraryPlayback) {
+    libraryLighting ??= createLibraryLighting(scene, renderer, lighting);
+    libraryLighting.view(capture, { scene: currentAsset.scene, id: receipt.id });
+  } else {
+    libraryLighting?.hide();
+    renderer.shadowMap.enabled = false;
+    scene.environment = environment.texture;
+    scene.background = new THREE.Color().setRGB(0.06, 0.06, 0.06);
+    const sun = new THREE.DirectionalLight(0xffffff, lighting.sun_energy);
+    sun.position.fromArray(lighting.sun_direction).multiplyScalar(-1);
+    scene.add(sun);
+  }
   const c = capture.camera;
   const width = c.ortho_width;
   const camera = new THREE.OrthographicCamera(-width / 2, width / 2,
@@ -123,6 +141,7 @@ window.r2 = {
   async load(url, declared, options = {}) {
     active?.dispose();
     currentAsset = null;
+    libraryPlayback = null;
     receipt = declared;
     const loadErrors = [];
     errors = loadErrors;
@@ -136,11 +155,16 @@ window.r2 = {
       attach(asset) {
         currentAsset = asset;
         scene.add(asset.scene);
-        mixer = new THREE.AnimationMixer(asset.scene);
-        const action = mixer.clipAction(asset.animations[0]);
-        action.setLoop(THREE.LoopOnce, 1);
-        action.clampWhenFinished = true;
-        action.play();
+        if (declared.kind === 'cs3-library-asset') {
+          libraryPlayback = createLibraryPlayback(asset, declared);
+          libraryOwners.set(asset, libraryPlayback);
+        } else {
+          mixer = new THREE.AnimationMixer(asset.scene);
+          const action = mixer.clipAction(asset.animations[0]);
+          action.setLoop(THREE.LoopOnce, 1);
+          action.clampWhenFinished = true;
+          action.play();
+        }
         firstFrame = draw(declared.captures.portable[0], declared.lighting);
         requireThat(firstFrame.calls > 0 && firstFrame.triangles > 0, 'FIRST_FRAME_EMPTY');
         renderer.getContext().finish();
@@ -160,6 +184,14 @@ window.r2 = {
     return { state: active?.state, error: active?.error, released, attached, errors: [...errors] };
   },
   sample,
+  sampleClip(name, time, repeat = false) {
+    requireThat(libraryPlayback, 'LIBRARY_NOT_READY');
+    return libraryPlayback.sample(name, time, repeat);
+  },
+  geometry() {
+    requireThat(libraryPlayback, 'LIBRARY_NOT_READY');
+    return libraryPlayback.geometry();
+  },
   view(capture, lighting) {
     requireThat(active.state === 'ready', 'NOT_READY');
     return draw(capture, lighting);
@@ -175,7 +207,8 @@ window.r2 = {
       version: gl.getParameter(gl.VERSION),
     };
   },
-  async compare(urls) {
+  async compare(urls, labels = ['Source material / Blender', 'Adapted material / Blender', 'Adapted GLB / Three.js']) {
+    requireThat((urls.length === 2 || urls.length === 3) && labels.length === urls.length, 'COMPARE_COLUMNS');
     const images = await Promise.all(urls.map(async url => {
       const image = new Image();
       image.src = url;
@@ -199,7 +232,7 @@ window.r2 = {
       }
       return mask;
     });
-    const pairs = [[0, 1], [1, 2], [0, 2]].map(([a, b]) => {
+    const pairs = (urls.length === 2 ? [[0, 1]] : [[0, 1], [1, 2], [0, 2]]).map(([a, b]) => {
       let absolute = 0;
       let foregroundAbsolute = 0;
       let intersection = 0;
@@ -220,17 +253,17 @@ window.r2 = {
     });
     const counts = foreground.map(mask => mask.reduce((sum, n) => sum + n, 0));
     requireThat(counts.every(n => n >= 100), `BLANK_CAPTURE: ${counts}`);
-    canvas.width = 1920;
+    canvas.width = 640 * images.length;
     canvas.height = 390;
     context.fillStyle = '#171717';
-    context.fillRect(0, 0, 1920, 390);
+    context.fillRect(0, 0, canvas.width, 390);
     context.fillStyle = '#ffffff';
     context.font = '16px sans-serif';
-    ['Source material / Blender', 'Adapted material / Blender', 'Adapted GLB / Three.js'].forEach((text, i) => {
+    labels.forEach((text, i) => {
       context.fillText(text, i * 640 + 10, 21);
       context.drawImage(images[i], i * 640, 30);
     });
     return { pairs, foregroundPixels: counts, contact: canvas.toDataURL('image/png') };
   },
-  dispose() { active?.dispose(); environment.dispose(); renderer.dispose(); },
+  dispose() { active?.dispose(); libraryLighting?.dispose(); environment.dispose(); renderer.dispose(); },
 };

@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import validator from 'gltf-validator';
 import { assertContent, decode, encode } from './glb.mjs';
+import { checkLibrary } from './library-check.mjs';
 
 const code = path.dirname(fileURLToPath(import.meta.url));
 const run = path.resolve(process.argv[2]);
@@ -34,6 +35,11 @@ function closeEnough(actual, expected, tolerance, name) {
 
 async function main() {
   const receipt = await readJSON(path.join(run, 'export.json'));
+  if (receipt.kind === 'cs3-library-export') {
+    return checkLibrary({ receipt, run, tag, code, result, check,
+      ownBrowser: value => { browser = value; }, ownServer: value => { server = value; },
+      captureDirectory: process.argv[4] });
+  }
   assert.ok(receipt.complete, 'EXPORT_INCOMPLETE');
   for (const [name, artifact] of Object.entries(receipt.artifacts)) {
     const bytes = await fs.readFile(path.join(run, name));
@@ -46,7 +52,7 @@ async function main() {
   for (const name of ['three', 'playwright', 'gltf-validator']) {
     result.versions[name] = (await readJSON(path.join(code, 'node_modules', name, 'package.json'))).version;
   }
-  for (const file of ['package.json', 'package-lock.json', 'browser.mjs', 'lifecycle.mjs', 'glb.mjs', 'check.mjs']) {
+  for (const file of ['package.json', 'package-lock.json', 'browser.mjs', 'lifecycle.mjs', 'glb.mjs', 'png.mjs', 'check.mjs']) {
     result.code ??= {};
     result.code[file] = hash(await fs.readFile(path.join(code, file)));
   }
@@ -89,6 +95,7 @@ async function main() {
   const routes = new Map([
     ['/', path.join(code, 'probe.html')],
     ['/browser.mjs', path.join(code, 'browser.mjs')],
+    ['/library-browser.mjs', path.join(code, 'library-browser.mjs')],
     ['/lifecycle.mjs', path.join(code, 'lifecycle.mjs')],
     ['/portable.glb', path.join(run, 'portable.glb')],
   ]);
