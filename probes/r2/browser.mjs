@@ -101,7 +101,7 @@ function sample(time) {
   return result;
 }
 
-function draw(capture, lighting) {
+export function draw(capture, lighting, studyRender) {
   const pose = libraryPlayback ? libraryPlayback.sample(capture.clip, capture.time, capture.repeat) : sample(capture.time);
   const standard = capture.profile === 'standard' || capture.profile === 'cs3-standard-v1';
   renderer.toneMapping = standard ? THREE.NoToneMapping : THREE.AgXToneMapping;
@@ -131,7 +131,8 @@ function draw(capture, lighting) {
   camera.matrix.fromArray(c.matrix_world);
   camera.updateMatrixWorld(true);
   document.getElementById('status').hidden = true;
-  renderer.render(scene, camera);
+  if (studyRender === undefined) renderer.render(scene, camera);
+  else studyRender({ scene, camera, renderer, asset: currentAsset });
   return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, pose,
     toneMapping: renderer.toneMapping, exposure: renderer.toneMappingExposure,
     camera: camera.matrixWorld.elements, renderer: renderer.getSize(new THREE.Vector2()).toArray() };

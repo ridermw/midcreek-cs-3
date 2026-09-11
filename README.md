@@ -85,6 +85,10 @@ Its source and export agree, but its likeness, ink treatment and lighting still
 need work; it remains a prototype rather than an accepted visual direction.
 Walk now follows the supporting leg's height instead of lifting both feet,
 with the same one-second timing and unchanged footprint.
+A separate browser-only study compares recorded PBR/fill/cel/ink configurations
+without changing the source geometry or poses, and restores the baseline after
+each capture. It is exploratory evidence, not a selected production renderer,
+a source-material equivalence claim or appearance acceptance.
 
 U4 imports the exact approved Cel Shift set into an ignored, immutable local
 package: 49 masters, 47 prompts, seven shared inputs, reviewed sanitized
