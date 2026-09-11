@@ -19,16 +19,15 @@ launched appearance work.
   identical export/manifest/technical/five-GLB bytes, plus the 16-check
   `checks-strict-9213c63` eight-node regression. Full U5 appearance acceptance
   remains pending; technical checks do not decide appearance.
-- Orchestrator: create the local ignored qualification receipt with
-  `node --experimental-strip-types tools/qualify-assets.ts`; optionally append
-  `--select local-playable` to activate the separately authorized provisional
-  development package. The [dated amendment](docs/architecture/cs3-provisional-development-use-2026-09-11.json)
-  records the actual user instruction and exact baseline. Neither persistent
-  receipt creation nor selection was activated by the worker.
+- The canonical local qualification receipt and `local-playable` provisional
+  development selection are active under the
+  [dated amendment](docs/architecture/cs3-provisional-development-use-2026-09-11.json).
 - Performance qualification, qualified production promotion, the release
   allowlist, public publication and final human appearance/release approval
   remain blocked/pending. Ignored development artifacts are not release inputs.
-- Implement U7, then U8-U10 with baseline-specific claims and unchanged gates.
+- U7 first playable and U8 deterministic readiness/request/frame ledgers are
+  complete. Run the three prescribed headed 60 Hz named-target repetitions,
+  then implement U9 and U10 with baseline-specific claims and unchanged gates.
 - Import any later AR1 replacement only through a pinned, reviewed handoff;
   rerun affected qualification rather than inheriting the old results.
 

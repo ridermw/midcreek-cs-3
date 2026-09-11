@@ -16,6 +16,8 @@ export interface ReadyReceipt {
   readonly firstFrame: FrameResult
   readonly readyAt: number
   readonly interactiveAt: number
+  readonly gpuFinishedAt: number
+  readonly timeOrigin: number
 }
 
 export interface ApplicationLifecycleOptions {
@@ -261,6 +263,7 @@ export function createApplicationLifecycle(
           }
           await options.finishGpu()
           assertActive(token)
+          const gpuFinishedAt = now()
           const installed = options.installInteractive()
           if (typeof installed === 'function') {
             if (token !== generation || state !== 'loading') cleanup([installed])
@@ -274,8 +277,10 @@ export function createApplicationLifecycle(
             generation: token,
             libraryDigest: options.manifest.libraryDigest,
             firstFrame: Object.freeze({ ...firstFrame }),
-            readyAt: interactiveAt - startTime,
+            readyAt: interactiveAt,
             interactiveAt,
+            gpuFinishedAt,
+            timeOrigin: performance.timeOrigin,
           })
           state = 'ready'
           options.showReady(readyReceipt)

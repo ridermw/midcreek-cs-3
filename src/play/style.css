@@ -6,38 +6,59 @@
   font-synthesis: none;
 }
 * { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; }
 body { margin: 0; }
-main { max-width: 1440px; margin: auto; padding: 20px 24px; }
-header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+main { width: 100%; height: 100vh; margin: 0; padding: 0; position: relative; overflow: hidden; }
+header {
+  position: absolute; z-index: 2; top: 14px; left: 20px; right: 20px;
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  pointer-events: none;
+}
+header a { pointer-events: auto; }
 h1 { font-size: 1.4rem; margin: 0; }
 a { color: #92daed; }
-.intro, .help { color: #afc2cd; font-size: .9rem; line-height: 1.6; }
-#game { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 20px; }
-.viewport { min-width: 0; height: clamp(360px, 68vh, 780px); background: #182932; border-radius: 8px; overflow: hidden; }
+.intro, .help {
+  position: absolute; z-index: 2; left: 20px; margin: 0;
+  color: #afc2cd; font-size: .85rem; line-height: 1.4; pointer-events: none;
+}
+.intro { top: 48px; }
+.help { top: 76px; right: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#game { width: 100%; height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) 120px; }
+.viewport { min-width: 0; min-height: 0; background: #182932; overflow: hidden; }
 canvas { display: block; width: 100%; height: 100%; }
-.hud { padding: 20px; border: 1px solid #364952; border-radius: 8px; background: #172932; min-width: 0; }
-#load-status { font-size: .85rem; line-height: 1.5; margin-top: 0; color: #b6d7df; }
-.readouts { display: grid; gap: 16px; }
+.hud {
+  min-width: 0; height: 120px; padding: 10px 20px;
+  border-top: 1px solid #364952; background: #172932;
+  display: grid; grid-template-columns: 220px minmax(320px, 1fr) minmax(260px, 1fr);
+  grid-template-rows: 48px 42px; gap: 8px 20px;
+}
+#load-status { font-size: .85rem; line-height: 1.35; margin: 0; color: #b6d7df; }
+.readouts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .readouts span { display: block; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: #afc2cd; }
 .readouts strong { display: block; margin-top: 4px; font-size: 1.2rem; font-variant-numeric: tabular-nums; }
-#message { line-height: 1.5; min-height: 4.5em; overflow-wrap: anywhere; }
-progress { width: 100%; height: 12px; accent-color: #8cdbe0; }
-.controls { display: grid; gap: 10px; margin-top: 20px; }
-button { font: inherit; padding: 11px 14px; border-radius: 5px; border: 1px solid #5f7d8b; color: #e6edf1; background: #264552; cursor: pointer; }
+#message { line-height: 1.35; margin: 0; overflow-wrap: anywhere; }
+progress { width: 100%; height: 10px; accent-color: #8cdbe0; align-self: center; }
+.controls { grid-column: 2 / 4; display: flex; gap: 10px; align-items: center; }
+button { font: inherit; padding: 8px 12px; border-radius: 5px; border: 1px solid #5f7d8b; color: #e6edf1; background: #264552; cursor: pointer; }
 #dispatch { background: #90dbe1; color: #10252c; border-color: #90dbe1; font-weight: 650; }
 button:disabled { opacity: .45; cursor: not-allowed; }
 button:hover:enabled { filter: brightness(1.12); }
 :focus-visible { outline: 3px solid #ffcd7a; outline-offset: -3px; }
 [hidden] { display: none !important; }
 @media (max-width: 760px) {
-  main { padding: 16px; }
+  main { height: auto; min-height: 100vh; overflow: visible; padding: 16px; }
+  header, .intro, .help { position: static; pointer-events: auto; }
   header { align-items: flex-start; }
+  .intro, .help { margin-top: 10px; white-space: normal; }
   h1 { font-size: 1.15rem; }
-  #game { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  #game { height: auto; display: grid; grid-template-rows: 340px auto; gap: 12px; margin-top: 12px; }
   .viewport { height: 340px; }
-  .hud { padding: 16px; }
+  .hud {
+    height: auto; padding: 16px; border: 1px solid #364952; border-radius: 8px;
+    display: block;
+  }
   .readouts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
   .readouts strong { font-size: 1rem; }
-  .controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 14px; }
   #message { min-height: 0; }
 }

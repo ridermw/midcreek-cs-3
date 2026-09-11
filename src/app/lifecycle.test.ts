@@ -33,6 +33,19 @@ function optionsFor(overrides: Partial<ApplicationLifecycleOptions> = {}): Appli
 }
 
 describe('application loading lifecycle', () => {
+  it('marks readiness relative to navigation rather than lifecycle start', async () => {
+    let now = 500
+    const lifecycle = createApplicationLifecycle(optionsFor({
+      now: () => now,
+      finishGpu: () => { now = 650 },
+      nextAnimationFrame: () => { now = 700 },
+    }))
+    await lifecycle.start()
+    expect(lifecycle.readyReceipt?.readyAt).toBe(700)
+    expect(lifecycle.readyReceipt?.gpuFinishedAt).toBe(650)
+    expect(lifecycle.readyReceipt?.interactiveAt).toBe(700)
+    lifecycle.dispose()
+  })
   it('releases leases registered during a partial attachment failure', async () => {
     let releases = 0
     const lifecycle = createApplicationLifecycle(optionsFor({

@@ -17,6 +17,9 @@ import type { WorldCommand } from '../world/contracts'
 import { createApplicationLifecycle } from './lifecycle'
 import type { ApplicationLifecycle, ApplicationState, FrameResult } from './lifecycle'
 import { createSession } from './session'
+import { createInspection } from '../diagnostics/inspection'
+import type { FrameReceipt, ReadyReceipt as DiagnosticReady, RequiredRequest } from '../diagnostics/metrics'
+import type { WorldSnapshot } from '../world/contracts'
 
 export interface GameOptions {
   readonly seed?: number
@@ -25,6 +28,7 @@ export interface GameOptions {
   readonly zoom?: number
   readonly baseUrl: string
   readonly manifestUrl?: string
+  readonly diagnostics?: boolean
 }
 
 export function normalizeGameSeed(seed: number | undefined): number {
@@ -47,7 +51,10 @@ function immutable<T>(value: T): Readonly<T> {
   return value
 }
 
-export async function loadSelectedManifest(baseUrl: string, path: string, signal: AbortSignal): Promise<AssetManifest> {
+export async function loadSelectedManifest(
+  baseUrl: string, path: string, signal: AbortSignal,
+  onSelection?: (identity: DiagnosticReady['identity'], requests: readonly RequiredRequest[]) => void,
+): Promise<AssetManifest> {
   const pointerUrl = resolveAssetUrl(baseUrl, path)
   if (!['localhost', '127.0.0.1', '[::1]'].includes(new URL(pointerUrl).hostname)) {
     throw new AssetLoadError('LOCAL_ONLY', 'selection', 'provisional assets are authorized for local use only')
@@ -64,7 +71,8 @@ export async function loadSelectedManifest(baseUrl: string, path: string, signal
       throw new AssetLoadError('MANIFEST_JSON', 'selection', 'expected valid JSON')
     }
   }
-  const pointer = json(await request(pointerUrl))
+  const pointerBytes = await request(pointerUrl)
+  const pointer = json(pointerBytes)
   const binding = selectionAmendment.binding
   if (!record(pointer) || pointer.schema !== 1 || pointer.kind !== 'cs3-asset-pointer'
     || pointer.qualification !== 'provisional-development'
@@ -87,6 +95,17 @@ export async function loadSelectedManifest(baseUrl: string, path: string, signal
     || validated.assets.some((entry) => entry.file !== `packages/${binding.libraryDigest}/${entry.id}.glb`)) {
     throw new AssetLoadError('PACKAGE_BINDING', 'selection', 'manifest escaped the authorized package/profile')
   }
+  const selectionSha256 = [...new Uint8Array(await crypto.subtle.digest('SHA-256', pointerBytes))]
+    .map((byte) => byte.toString(16).padStart(2, '0')).join('')
+  const assets = validated.assets.map((entry) => ({ url: resolveAssetUrl(baseUrl, entry.file), sha256: entry.sha256 }))
+  onSelection?.({
+    selectionSha256, manifestSha256: digest, libraryDigest: validated.libraryDigest,
+    profile: validated.profile, profileSha256: binding.profileSha256, recipeSha256: binding.recipeSha256, assets,
+  }, [
+    { url: pointerUrl, role: 'selection', sha256: selectionSha256 },
+    { url: resolveAssetUrl(baseUrl, pointer.manifest), role: 'manifest', sha256: digest },
+    ...assets.map((entry) => ({ ...entry, role: 'asset' as const })),
+  ])
   return validated
 }
 
@@ -105,6 +124,8 @@ export async function startGame(container: HTMLElement, options: GameOptions) {
   panel.className = 'hud'
   panel.setAttribute('aria-label', 'Shift controls')
   container.replaceChildren(viewport, panel)
+  const inspection = createInspection(document, canvas)
+  if (!options.diagnostics) inspection.stop()
   let renderer: GameRenderer | undefined
   let presentation: Presentation | undefined
   let lifecycle: ApplicationLifecycle | undefined
@@ -152,6 +173,7 @@ export async function startGame(container: HTMLElement, options: GameOptions) {
     if (disposed || state === 'failed') return
     state = 'failed'
     code = cause instanceof ContractError ? cause.code : 'APPLICATION_LOAD'
+    inspection.interrupt('error', cause instanceof Error ? cause.message : String(cause))
     loading.abort()
     release()
     lifecycle?.dispose()
@@ -170,7 +192,9 @@ export async function startGame(container: HTMLElement, options: GameOptions) {
       || zoom < ISOMETRIC_CAMERA.zoom.minimum || zoom > ISOMETRIC_CAMERA.zoom.maximum) {
       throw new ContractError('CAMERA_CONFIG', 'play', 'heading 0..3 and zoom 0.65..2.25 required')
     }
-    const manifest = await loadSelectedManifest(options.baseUrl, options.manifestUrl ?? 'development/selection.json', loading.signal)
+    const manifest = await loadSelectedManifest(
+      options.baseUrl, options.manifestUrl ?? 'development/selection.json', loading.signal, inspection.bind,
+    )
     if (loading.signal.aborted) throw new AssetLoadError('LOAD_ABORTED', 'play', 'selection no longer active')
     renderer = createRenderer(canvas)
     const view = renderer
@@ -181,7 +205,7 @@ export async function startGame(container: HTMLElement, options: GameOptions) {
       try {
         const rect = viewport.getBoundingClientRect()
         view.resize(rect.width, rect.height, window.devicePixelRatio)
-        if (state === 'ready' && !hidden) view.render()
+        if (state === 'ready' && !hidden) render('resize')
       } catch (cause) { fail(cause) }
     }
     resize()
@@ -202,6 +226,8 @@ export async function startGame(container: HTMLElement, options: GameOptions) {
         session.setReady(true)
         hud.ready()
         updateHud()
+        const interactiveAt = performance.now()
+        inspection.markReady(session.snapshot(), { ...receipt, readyAt: interactiveAt, interactiveAt })
         frameId = window.requestAnimationFrame(frame)
       },
       attach: (library, generation) => {
@@ -210,7 +236,7 @@ export async function startGame(container: HTMLElement, options: GameOptions) {
         presentation = attached
         view.scene.add(attached.root)
       },
-      renderFirstFrame: view.render, finishGpu: view.finishGpu,
+      renderFirstFrame: () => render('startup'), finishGpu: view.finishGpu,
       nextAnimationFrame: () => new Promise<void>((resolve) => { frameId = window.requestAnimationFrame(() => resolve()) }),
       installInteractive: () => {
         const input = bindGameInput(canvas, {
@@ -249,13 +275,24 @@ export async function startGame(container: HTMLElement, options: GameOptions) {
   function frame(now: number) {
     if (state !== 'ready' || disposed) return
     try {
-      for (const snapshot of session.pump(now)) presentation!.present(snapshot)
+      const steps = session.pump(now)
+      for (const snapshot of steps) presentation!.present(snapshot)
       if (restarting) { presentation!.reset(session.snapshot()); restarting = false }
       else presentation!.present(session.snapshot())
       updateHud()
-      if (!hidden) renderer!.render()
+      if (!hidden) render('raf', steps)
       frameId = window.requestAnimationFrame(frame)
     } catch (cause) { fail(cause) }
+  }
+  function render(trigger: FrameReceipt['trigger'], steps: readonly WorldSnapshot[] = []) {
+    const view = renderer!
+    const result = view.render()
+    if (inspection.active()) {
+      const state = view.frameView()
+      inspection.rendered(result, session.snapshot(), steps, trigger, state.camera,
+        inspection.dimensions(state.logical, state.applicationDpr))
+    }
+    return { calls: result.calls, triangles: result.triangles }
   }
   function inspect() {
     const actor = presentation?.instances.get('actor/technician')
@@ -298,6 +335,7 @@ export async function startGame(container: HTMLElement, options: GameOptions) {
   function dispose() {
     if (disposed) return
     disposed = true
+    inspection.dispose()
     state = 'disposed'
     loading.abort()
     release()
@@ -308,7 +346,9 @@ export async function startGame(container: HTMLElement, options: GameOptions) {
     hud.dispose()
     renderer?.dispose()
   }
-  return { inspect, dispose }
+  return { inspect, dispose, diagnostics: {
+    snapshot: inspection.snapshot, stop: inspection.stop,
+  } }
 }
 
 export type GameHandle = Awaited<ReturnType<typeof startGame>>

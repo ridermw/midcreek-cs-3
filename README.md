@@ -4,8 +4,9 @@ A Blender-authored, Three.js-based data-hall simulation.
 
 **Continuation active.** U1-U4 and U6 are complete. The frozen C5 U5 two-run
 technical checkpoint passes. U7 supplies a local first playable using the active,
-ignored provisional development selection. Appearance remains pending and U8-U10
-remain unfinished. No qualified production library is promoted.
+ignored provisional development selection. U8 instrumentation and deterministic
+evidence are complete; named-target timing, U9 and U10 remain. Appearance remains
+pending and no qualified production library is promoted.
 
 ## Start here
 
@@ -105,6 +106,69 @@ npm run test:e2e -- tests/e2e/game.spec.ts tests/e2e/assets.spec.ts tests/e2e/in
 The selection tests and game browser tests require the authorized local package;
 they fail explicitly if it is absent. These checks do not qualify U8 performance,
 appearance, publication or release.
+
+### U8 instrumentation and deterministic qualification
+
+`window.midcreek.diagnostics.snapshot()` exposes immutable navigation-relative
+readiness, the frozen startup request/byte ledger, actual completed-render
+receipts, simulation steps, interruptions and completed workload boundaries.
+`diagnostics.stop()` freezes capture without stopping gameplay. Render counters
+reset once before all production passes, including shadows. RAF callbacks that
+do not render do not create receipts. Hidden/background/error events invalidate
+a run even when no frame is rendered during the interruption.
+
+The deterministic evidence/performance specs use the real built entry and
+WebGL submissions with a controlled clock. They retain first-300, the >=12
+simulation-second warmup, 300 idle and scripted-loop frames, complete dispatch
+travel/arrival/120-tick repair/resolution, and 300 orbit/resize frames. The
+1024-by-768 browser window covers precisely orbit frames 120..179; the remaining
+frames use 1280-by-720. These tests are **not named-target timing runs**.
+Statistics use completed intervals divided by elapsed time and nearest-rank
+p95, without dropping long samples. First-300 timing remains descriptive;
+each post-warmup window (including separate travel, repair, combined and
+fixed/resized orbit sections) is gated independently. Byte/call/triangle
+ceilings are exact integer limits, without rounding or best-run selection.
+
+```sh
+npm test -- src/diagnostics/metrics.test.ts src/app/lifecycle.test.ts
+# Run these browser specs through tools/run_guard.py with a fresh job name:
+npm run test:e2e -- tests/e2e/evidence.spec.ts tests/e2e/performance.spec.ts
+
+# Consume retained raw reports only; never launches a browser.
+node --experimental-strip-types tools/qualification.ts \
+  --input .artifacts/qualification/run-1/report.json \
+  --input .artifacts/qualification/run-2/report.json \
+  --input .artifacts/qualification/run-3/report.json \
+  --output .artifacts/qualification/review-1
+```
+
+Each raw `QualificationReport` carries target metadata, ready/startup receipts,
+all frames and simulation steps, exact phase boundaries, ordered move/dispatch
+actions and an independent CDP response ledger. The required list binds the
+entry HTML/JS/CSS, selection pointer, strict manifest and five GLBs. A collector
+must enable CDP before navigation, record cold/cache/service-worker and serving
+conditions, and retain pending/failed requests as well as completed responses.
+Resource Timing's transfer size is the startup budget authority; CDP retains its
+own wire byte count and reconciles URLs, timing and encoded bodies (header
+accounting is not assumed identical). Embedded GLB image decodes are not extra
+network transfers. Missing/zero data, changed ledgers, incomplete windows,
+interruptions or target prerequisites are unqualified, never passes.
+
+The CLI validates raw shapes and recomputes results, writes per-run raw files and
+checksums to a **fresh** private output directory, and writes a separate
+allowlisted `sanitized/result.json`. Exit codes are 0 passed, 1 measured failure,
+2 unqualified/error. Three fresh, identically configured complete runs are
+required for an aggregate pass; individual misses remain visible. Raw logs,
+paths and host details are never copied into the sanitized projection, and
+neither projection nor raw output is automatically published.
+
+Named-target qualification remains pending orchestrator review and **three
+headed, foreground, 60 Hz CS3-M4Pro-Chrome153-DPR1 repetitions** with complete
+Mac/CPU/GPU/RAM/macOS/display/power/browser/WebGL/backend and application/content/
+profile/recipe identities. No performance, appearance or release pass is
+claimed. The normal play layout now produces the required 1280-by-600 CSS and
+drawing-buffer rectangle at a 1280-by-720 DPR1 browser viewport, with the
+remaining 120 pixels reserved for the HUD.
 
 ### U5 packaging API (not full library qualification)
 

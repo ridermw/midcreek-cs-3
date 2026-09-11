@@ -8,6 +8,7 @@ import { normalRendering } from '../../blender/render_profile.json'
 
 export function createRenderer(canvas: HTMLCanvasElement) {
   const renderer = new WebGLRenderer({ canvas, antialias: true })
+  renderer.info.autoReset = false
   renderer.outputColorSpace = SRGBColorSpace
   renderer.toneMapping = NoToneMapping
   renderer.toneMappingExposure = 1
@@ -32,6 +33,8 @@ export function createRenderer(canvas: HTMLCanvasElement) {
   let height = 1
   let pixelRatio = 1
   let disposed = false
+  let renderCount = 0
+  let frameOpen = false
 
   function resize(w: number, h: number, dpr: number) {
     const nextWidth = Math.max(1, w)
@@ -57,9 +60,33 @@ export function createRenderer(canvas: HTMLCanvasElement) {
   function setRay(x: number, y: number) {
     raycaster.setFromCamera(new Vector2(x / width * 2 - 1, 1 - y / height * 2), camera)
   }
+  function beginFrame() {
+    if (frameOpen || disposed) throw new Error('RENDER_FRAME: invalid begin')
+    frameOpen = true
+    renderer.info.reset()
+    return performance.now()
+  }
+  function endFrame(startedAt: number) {
+    if (!frameOpen) throw new Error('RENDER_FRAME: missing begin')
+    frameOpen = false
+    if (renderer.info.render.calls <= 0 || renderer.info.render.triangles <= 0) {
+      throw new Error('RENDER_EMPTY: no geometry submitted; no completed-frame receipt')
+    }
+    return {
+      calls: renderer.info.render.calls, triangles: renderer.info.render.triangles,
+      renderCount: ++renderCount, startedAt, completedAt: performance.now(),
+    }
+  }
   function render() {
-    renderer.render(scene, camera)
-    return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }
+    const startedAt = beginFrame()
+    // Keep info alive across shadow and main passes; end only after real submission.
+    try {
+      renderer.render(scene, camera)
+    } catch (error) {
+      frameOpen = false
+      throw error
+    }
+    return endFrame(startedAt)
   }
   return {
     scene, camera, resize, render, project,
@@ -88,6 +115,15 @@ export function createRenderer(canvas: HTMLCanvasElement) {
     },
     finishGpu: () => renderer.getContext().finish(),
     isContextLost: () => renderer.getContext().isContextLost(),
+    frameView() {
+      return {
+        camera: {
+          heading: cameraHeading(camera), zoom: camera.zoom,
+          projection: camera.projectionMatrix.toArray(), matrixWorld: camera.matrixWorld.toArray(),
+        },
+        logical: [width, height] as const, applicationDpr: renderer.getPixelRatio(),
+      }
+    },
     inspect() {
       let nativeDepth = true
       scene.traverse((node) => {

@@ -9,7 +9,10 @@ if (!link || !container) throw new Error('PLAY_DOM: missing required entry eleme
 link.href = assetUrl('')
 
 declare global { interface Window { midcreek: GameHandle } }
-const game = await startGame(container, { baseUrl: assetUrl('assets/library/') })
+const game = await startGame(container, {
+  baseUrl: assetUrl('assets/library/'),
+  diagnostics: new URLSearchParams(window.location.search).has('qualification'),
+})
 window.midcreek = game
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) window.location.reload()
