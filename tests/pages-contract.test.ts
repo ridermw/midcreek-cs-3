@@ -252,3 +252,140 @@ describe('Pages validation fails closed', () => {
     await expect(validatePages(root)).rejects.toThrow(/PAGES_FORBIDDEN/)
   })
 })
+
+async function pagesWorkflow() {
+  const workflow = await readFile('.github/workflows/pages.yml', 'utf8')
+  const [header, jobs] = workflow.split('\njobs:\n')
+  expect(header).toBeDefined()
+  expect(jobs).toBeDefined()
+  expect([...jobs!.matchAll(/^  ([\w-]+):$/gm)].map((match) => match[1])).toEqual(['build', 'deploy'])
+  const [build, deploy] = jobs!.split('\n  deploy:\n')
+  return { workflow, header: header!, build: build!, deploy: deploy! }
+}
+
+describe('Pages workflow contract', () => {
+  it('restricts publication to main with least-privilege build and deploy jobs', async () => {
+    const { workflow, header, build, deploy } = await pagesWorkflow()
+    expect(header).toMatch(/^on:\n  push:\n    branches: \[main\]\n  workflow_dispatch:\s*$/m)
+    expect(header).toMatch(/^permissions:\n  contents: read\n(?:\n|$)/m)
+    expect(header).toMatch(/^concurrency:\n  group: pages\n  cancel-in-progress: false$/m)
+    expect(build).toMatch(/^    if: github\.ref == 'refs\/heads\/main'$/m)
+    expect(deploy).toMatch(/^    if: github\.ref == 'refs\/heads\/main'$/m)
+    expect(build).toMatch(/^    runs-on: ubuntu-24\.04$/m)
+    expect(build).toMatch(/^    timeout-minutes: 20$/m)
+    expect(build).not.toMatch(/permissions:|pages: write|id-token: write|environment:/)
+    expect(deploy).toMatch(/^    needs: build$/m)
+    expect(deploy).toMatch(/^    permissions:\n      pages: write\n      id-token: write\n(?:\n|    \S)/m)
+    expect(deploy).toMatch(/^    environment:\n      name: github-pages\n      url: \$\{\{ steps\.deployment\.outputs\.page_url \}\}$/m)
+    expect(deploy).toMatch(/^        id: deployment$/m)
+    expect(deploy).not.toMatch(/^\s+(?:run|env):|actions\/(?:checkout|setup-node|upload-pages-artifact)@/m)
+    expect(workflow).not.toMatch(/pull_request|workflow_run|secrets\.|write-all|continue-on-error|always\(\)|enablement: true/)
+    expect(workflow).not.toMatch(/assets\/library|\.artifacts\/release|gallery:build|npm run build\b|download-artifact|actions\/cache@/)
+  })
+
+  it('pins every action to the verified official release commit and isolates credentials', async () => {
+    const { workflow, build, deploy } = await pagesWorkflow()
+    const uses = [...workflow.matchAll(/^\s+(?:- )?uses: (.+)$/gm)].map((match) => match[1])
+    expect(uses).toEqual([
+      'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1',
+      'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0',
+      'actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0',
+      'actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0',
+      'actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1',
+    ])
+    expect(build).toMatch(/actions\/checkout@[^\n]+\n        with:\n          persist-credentials: false\n/)
+    expect(build).toMatch(/actions\/setup-node@[^\n]+\n        with:\n          node-version: '22\.23\.1'\n          check-latest: false\n          package-manager-cache: false\n/)
+    expect(build).toContain('test "$(node --version)" = "v22.23.1"')
+    expect(build).toContain('test "$(npm --version)" = "10.9.8"')
+    expect(deploy).toMatch(/actions\/configure-pages@[^\n]+\n        with:\n          enablement: false\n/)
+  })
+
+  it('uploads only the exact source-only generation that passed all build and browser gates', async () => {
+    const { build } = await pagesWorkflow()
+    const gates = [
+      'npm ci',
+      'npm run typecheck',
+      'npm run test:portable',
+      'npx --no-install playwright install --with-deps chrome',
+      'npm run pages:build',
+      'cp .artifacts/pages/current/pages-manifest.json "$RUNNER_TEMP/pages-tested-manifest.json"',
+      'npm run test:pages:e2e',
+      "const artifact = await validatePages('.artifacts/pages/current/dist')",
+      'deepStrictEqual(current, tested)',
+      'deepStrictEqual({ files: artifact.files }, tested)',
+      'uses: actions/upload-pages-artifact@',
+    ]
+    let previous = -1
+    for (const gate of gates) {
+      const position = build.indexOf(gate)
+      expect(position, `missing or reordered gate: ${gate}`).toBeGreaterThan(previous)
+      previous = position
+    }
+    expect(build).toContain('node --experimental-strip-types --input-type=module <<\'NODE\'')
+    expect(build).toContain("import { deepStrictEqual } from 'node:assert/strict'")
+    expect(build).toContain("import { validatePages } from './tools/pages.ts'")
+    expect(build).toContain("const tested = JSON.parse(await readFile(`${process.env.RUNNER_TEMP}/pages-tested-manifest.json`, 'utf8'))")
+    expect(build).toContain("const current = JSON.parse(await readFile('.artifacts/pages/current/pages-manifest.json', 'utf8'))")
+    expect(build.match(/npm run pages:build/g)).toHaveLength(1)
+    expect(build.match(/npm run test:pages:e2e/g)).toHaveLength(1)
+    expect(build.slice(build.indexOf('uses: actions/upload-pages-artifact@'))).toMatch(
+      /^uses: actions\/upload-pages-artifact@[^\n]+\n        with:\n          path: \.artifacts\/pages\/current\/dist\n          include-hidden-files: true\n          retention-days: 1\s*$/,
+    )
+    const config = await readFile('playwright.pages.config.ts', 'utf8')
+    expect(config).toContain("command: 'npm run pages:build && node --experimental-strip-types playwright.pages.config.ts --serve'")
+    expect(config).toContain("const current = join(repository, '.artifacts/pages/current')")
+    expect(config).toContain("const artifact = await validatePages(join(current, 'dist'))")
+    expect(config).toContain('reuseExistingServer: false')
+  })
+
+  it.each(['unchanged', 'changed files', 'changed manifest', 'replaced generation', 'forbidden output'] as const)(
+    'executes the workflow upload gate against %s', async (change) => {
+      const { build } = await pagesWorkflow()
+      const gate = build.match(
+        /^      - name: Verify tested artifact identities before upload\n        run: \|\n((?:          .*\n|\n)+)/m,
+      )
+      expect(gate, 'the actual pre-upload verification script must run in this test').not.toBeNull()
+      const command = gate![1]!.replace(/^          /gm, '')
+      const root = join(workspace, randomUUID())
+      const dist = join(root, '.artifacts/pages/current/dist')
+      await cp(artifact.root, dist, { recursive: true })
+      await symlink(resolve('tools'), join(root, 'tools'), 'dir')
+      const manifest = await readFile(join(artifact.root, '../pages-manifest.json'), 'utf8')
+      await put(root, 'pages-tested-manifest.json', manifest)
+      await put(root, '.artifacts/pages/current/pages-manifest.json', manifest)
+      if (change === 'changed files' || change === 'replaced generation') {
+        await put(dist, 'index.html', `${await readFile(join(dist, 'index.html'), 'utf8')}\n<!-- untested -->`)
+      }
+      if (change === 'replaced generation') {
+        const changed = await validatePages(dist)
+        await put(root, '.artifacts/pages/current/pages-manifest.json', JSON.stringify({ files: changed.files }))
+      }
+      if (change === 'changed manifest') {
+        await put(root, '.artifacts/pages/current/pages-manifest.json', JSON.stringify({ files: [] }))
+      }
+      if (change === 'forbidden output') await put(dist, 'receipt.json', '{}')
+      const result = exec('bash', ['--noprofile', '--norc', '-e', '-o', 'pipefail', '-c', command], {
+        cwd: root, env: { ...process.env, RUNNER_TEMP: root },
+      })
+      if (change === 'unchanged') await expect(result).resolves.toMatchObject({ stdout: '' })
+      else await expect(result).rejects.toMatchObject({
+        code: 1,
+        stderr: expect.stringMatching(change === 'forbidden output' ? /PAGES_FORBIDDEN/ : /AssertionError/),
+      })
+    },
+  )
+
+  it('keeps Pages contracts in portable quality validation without publication privileges', async () => {
+    const [quality, packageText, config] = await Promise.all([
+      readFile('.github/workflows/quality.yml', 'utf8'),
+      readFile('package.json', 'utf8'),
+      readFile('vitest.config.ts', 'utf8'),
+    ])
+    const { scripts } = JSON.parse(packageText)
+    expect(scripts['test:portable']).toBe('vitest run')
+    expect(config).toContain("'tests/**/*.test.ts'")
+    expect(quality).toContain('npm run test:portable')
+    expect(quality).toMatch(/^permissions:\n  contents: read\n(?:\n|$)/m)
+    expect(quality).not.toMatch(/pages: write|id-token: write|actions\/(?:configure-pages|upload-pages-artifact|deploy-pages)@/)
+  })
+})

@@ -1,0 +1,81 @@
+name: Deploy source-only playable showcase
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22.23.1'
+          check-latest: false
+          package-manager-cache: false
+      - name: Restore exact dependency graph
+        run: |
+          test "$(node --version)" = "v22.23.1"
+          test "$(npm --version)" = "10.9.8"
+          npm ci
+      - run: npm run typecheck
+      - run: npm run test:portable
+      - name: Install browser for Pages contracts
+        run: npx --no-install playwright install --with-deps chrome
+      - name: Build and browser-test source-only Pages
+        run: |
+          npm run pages:build
+          cp .artifacts/pages/current/pages-manifest.json "$RUNNER_TEMP/pages-tested-manifest.json"
+          npm run test:pages:e2e
+      - name: Verify tested artifact identities before upload
+        run: |
+          node --experimental-strip-types --input-type=module <<'NODE'
+          import { deepStrictEqual } from 'node:assert/strict'
+          import { readFile } from 'node:fs/promises'
+          import { validatePages } from './tools/pages.ts'
+
+          const tested = JSON.parse(await readFile(`${process.env.RUNNER_TEMP}/pages-tested-manifest.json`, 'utf8'))
+          const current = JSON.parse(await readFile('.artifacts/pages/current/pages-manifest.json', 'utf8'))
+          const artifact = await validatePages('.artifacts/pages/current/dist')
+          deepStrictEqual(current, tested)
+          deepStrictEqual({ files: artifact.files }, tested)
+          NODE
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: .artifacts/pages/current/dist
+          include-hidden-files: true
+          retention-days: 1
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+        with:
+          enablement: false
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

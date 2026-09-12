@@ -1,5 +1,10 @@
 # Mid Creek CS3
 
+**[Play the live Three.js showcase](https://ridermw.github.io/midcreek-cs-3/)**
+
+The hosted demo is built only from tracked source code. It publishes no ignored
+asset library, reference media, or local qualification evidence.
+
 A Blender-authored, Three.js-based data-hall simulation.
 
 **Continuation active.** U1-U4 and U6 are complete. The frozen C5 U5 two-run
@@ -72,6 +77,39 @@ npm run dev -- --host 127.0.0.1
 
 Install/restore dependencies only when needed. Heavy jobs run through
 `tools/run_guard.py` with the original authorization and finite job timeouts.
+
+### Source-only GitHub Pages playable
+
+The public showcase and `/midcreek-cs-3/play/` use procedural Three.js geometry
+and the existing simulation, camera, input and HUD. This separate demo requires
+no GLBs, reference gallery, Blender exports or private qualification inputs.
+It is not C5 appearance acceptance, named-target performance qualification or
+an asset-backed production release; the ordinary U10 build remains blocked.
+
+```sh
+npm run pages:test
+npm run pages:build
+npm run test:pages:e2e
+```
+
+The Pages build validates and publishes a local generation at
+`.artifacts/pages/current/dist`, with its private file-identity manifest beside
+`dist`, not inside it. Browser tests require Chrome
+(`npx --no-install playwright install chrome` if missing), rebuild the Pages
+generation and serve it through a strict loopback server under the repository
+prefix. They check the built files, allowed requests and playable interactions;
+these commands never deploy or enable GitHub Pages.
+
+`.github/workflows/pages.yml` runs on pushes to `main` or manual dispatch from
+`main`. Its read-only build job installs the pinned toolchain, runs typecheck
+and portable contracts, builds and browser-tests Pages, then checks that the
+file identities still match before uploading only that `dist`. The upload
+preserves the validated `.vite` build manifest, but excludes the adjacent
+private Pages manifest and browser evidence. Only the dependent `github-pages`
+deployment job receives Pages/OIDC write permissions; it does not check out or
+execute repository code. GitHub Pages must be enabled separately with GitHub
+Actions as its source; the workflow explicitly disables automatic enablement.
+Adding this workflow does not itself verify that the live URL is deployed.
 
 ### U9 isolated showcase and reference gallery
 
@@ -201,10 +239,11 @@ Clean CI needs no private qualification artifacts and never substitutes
 fixture success for missing qualification. Only retained-artifact checks are
 opt-in (`CS3_U5_RETAINED=1`, `CS3_U7_RETAINED=1`, `CS3_U9_RETAINED=1`);
 all portable rejection and synthetic contracts run unconditionally. CI has
-read-only repository permission, no secrets, deployment job, artifact
-publication or Pages workflow.
+read-only repository permission in `quality.yml`, with no secrets, deployment
+job, artifact publication or Pages permissions. Its portable suite also includes
+the Pages contracts; the separate workflow above owns source-only publication.
 
-**Real status:** U5 technical passed on the retained frozen baseline;
+**Asset-backed release status:** U5 technical passed on the retained frozen baseline;
 appearance pending; U7 local playable; U8 named-target unqualified; U9 staging
 approved with local reviewed inputs (awaiting approval on clean CI);
 production library blocked; release blocked; deployment unauthorized.
