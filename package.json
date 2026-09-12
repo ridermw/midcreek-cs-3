@@ -10,6 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "build": "node --experimental-strip-types tools/release.ts --build",
+    "pages:build": "CS3_PAGES_DEMO=1 node --experimental-strip-types tools/pages.ts",
+    "pages:test": "vitest run tests/pages-contract.test.ts",
     "gallery:build": "node --experimental-strip-types tools/site/build.ts --prepare-only",
     "preview": "vite preview",
     "test:e2e": "playwright test",

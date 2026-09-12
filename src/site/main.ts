@@ -1,5 +1,5 @@
 import { assetUrl } from '../shared/urls.ts'
-import { architecture, controls, results } from './content.ts'
+import { architecture, controls, pagesArchitecture, pagesCopy, pagesResults, results } from './content.ts'
 import { element as required, initializeGallery } from './gallery.ts'
 import { freezeShowcaseStartup } from './accounting.ts'
 import type { SiteResource, SiteStartup } from './accounting.ts'
@@ -10,8 +10,10 @@ declare global {
     showcase: { readonly startup: SiteStartup; readonly laterBytes: () => number }
   }
 }
+const pagesDemo = import.meta.env.CS3_PAGES_DEMO === true
 for (const [selector, entries] of [
-  ['#architecture-list', architecture], ['#controls-list', controls], ['#results-list', results],
+  ['#architecture-list', pagesDemo ? pagesArchitecture : architecture],
+  ['#controls-list', controls], ['#results-list', pagesDemo ? pagesResults : results],
 ] as const) {
   const root = required(selector)
   for (const [title, detail] of entries) {
@@ -22,7 +24,12 @@ for (const [selector, entries] of [
   }
 }
 required<HTMLAnchorElement>('#play-link').href = assetUrl('play/')
-initializeGallery(document.documentElement.dataset.publication === 'approved-for-staging')
+if (pagesDemo) {
+  for (const node of document.querySelectorAll('#references, #studies, #image-dialog, a[href="#references"]')) node.remove()
+  required('#hero-muted').textContent = pagesCopy.muted
+} else {
+  initializeGallery(!pagesDemo && document.documentElement.dataset.publication === 'approved-for-staging')
+}
 
 let overflow = false
 performance.setResourceTimingBufferSize(2000)
@@ -57,14 +64,14 @@ const ready = () => requestAnimationFrame(() => {
   Object.defineProperty(window, 'showcase', {
     value: Object.freeze({
       startup,
-      laterBytes: () => performance.getEntriesByType('resource')
+      laterBytes: pagesDemo ? () => 0 : () => performance.getEntriesByType('resource')
         .filter((r): r is PerformanceResourceTiming => r instanceof PerformanceResourceTiming
           && r.startTime > readyAt && r.name.startsWith(new URL(assetUrl('gallery/'), location.origin).href))
         .reduce((sum, r) => sum + r.transferSize, 0),
     }),
   })
-  required<HTMLButtonElement>('#gallery-toggle').disabled = false
-  required('#build-status').textContent = 'Showcase ready.'
+  if (!pagesDemo) required<HTMLButtonElement>('#gallery-toggle').disabled = false
+  required('#build-status').textContent = pagesDemo ? pagesCopy.status : 'Showcase ready.'
   performance.mark('showcase-interactive')
 })
 if (document.readyState === 'complete') ready()

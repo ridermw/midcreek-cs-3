@@ -5,8 +5,9 @@ const revision = '870603632c4b6665c513d0fa692a3ee2dae2b683'
 const attribution = `Cel Shift concept art - ${repository} at ${revision}`
 const terms = 'Approved for CS3 use and release staging only; no broader license inferred.'
 
+const simulationArchitecture = ['One authoritative simulation', 'TypeScript owns the 17-by-15-cell hall, 32 racks, one technician and seed-417 coolant-leak scenario. Visual geometry does not decide placement, collision or repair state.'] as const
 export const architecture = [
-  ['One authoritative simulation', 'TypeScript owns the 17-by-15-cell hall, 32 racks, one technician and seed-417 coolant-leak scenario. Visual geometry does not decide placement, collision or repair state.'],
+  simulationArchitecture,
   ['Authored asset pipeline', 'Approved references inform owned Blender sources. Export checks bind units, bounds, materials and Idle / Walk / Repair clips to exact asset identities before runtime loading.'],
   ['Readiness before play', 'The playable waits for its complete required library and first interactive render. Missing, changed or failed inputs disable play and expose Reload rather than substituting assets.'],
   ['Independent delivery', 'This showcase is a DOM/CSS entry. The separate Play demo entry owns Three.js and the game. Reference previews are built offline; originals load only after selection.'],
@@ -21,13 +22,43 @@ export const controls = [
   ['Restart', 'Reset the seeded scenario without reloading assets or resetting the view.'],
 ] as const
 
+const technicalResult = ['U5 technical passed', 'The frozen C5 two-run technical checkpoint passed. Numeric and transport agreement are not visual fidelity acceptance.'] as const
+const appearanceResult = ['Appearance pending', 'The current development baseline has not received overall appearance acceptance.'] as const
+const instrumentationResult = ['U8 deterministic instrumentation passed', 'Deterministic readiness, request ledgers, completed-render counters and scripted workload evidence passed locally. These are not wall-clock timing qualifications.'] as const
+const timingResult = ['Named-target timing unqualified', 'The required three headed, foreground, 60 Hz target repetitions have not been qualified.'] as const
 export const results = [
-  ['U5 technical passed', 'The frozen C5 two-run technical checkpoint passed. Numeric and transport agreement are not visual fidelity acceptance.'],
-  ['Appearance pending', 'The current development baseline has not received overall appearance acceptance.'],
+  technicalResult,
+  appearanceResult,
   ['U7 playable passed locally', 'The first playable passed locally with the hash-bound provisional development selection. The ordinary build does not publish that library.'],
-  ['U8 deterministic instrumentation passed', 'Deterministic readiness, request ledgers, completed-render counters and scripted workload evidence passed locally. These are not wall-clock timing qualifications.'],
-  ['Named-target timing unqualified', 'The required three headed, foreground, 60 Hz target repetitions have not been qualified.'],
+  instrumentationResult,
+  timingResult,
   ['Production/release blocked', 'Production promotion, release-content gates and final appearance/deployment decisions remain outstanding. Build success is not a release approval.'],
+] as const
+
+export const pagesCopy = {
+  description: 'Mid Creek: a reproducible data-hall repair scenario built entirely from tracked source with Three.js.',
+  hero: 'Source-built Three.js visuals meet a deterministic TypeScript simulation. Explore the architecture, then open the separate playable entry.',
+  muted: 'Public Three.js demo built entirely from tracked source.',
+  status: 'Source-only playable showcase ready.',
+  timing: 'Targets, not results: at least 59 mean FPS and at most 18 ms p95 frame interval. The showcase cold-start transfer cap is 2,000,000 bytes through its interactive shell.',
+  footer: 'Mid Creek CS3 / Source-only public demo. No appearance acceptance or named-target timing qualification claimed.',
+  noscript: 'This showcase needs JavaScript for its interactive shell. The separate playable entry also requires JavaScript.',
+} as const
+
+export const pagesArchitecture = [
+  simulationArchitecture,
+  ['Source-only presentation', 'Tracked TypeScript creates the hall, racks and technician with Three.js geometry and materials. No external game library or reference media is loaded.'],
+  ['Readiness before play', 'The playable enables controls after its procedural scene and first interactive render are ready. Startup failure exposes Reload rather than reporting a ready game.'],
+  ['Independent delivery', 'This showcase is a DOM/CSS entry. The separate Play demo entry owns Three.js and the game.'],
+] as const
+
+export const pagesResults = [
+  ['Source-only playable', 'The public demo uses tracked procedural presentation with the deterministic seed-417 coolant-leak scenario. It is separate from the authored-asset release pipeline.'],
+  technicalResult,
+  appearanceResult,
+  instrumentationResult,
+  timingResult,
+  ['Independent release qualification', 'This demo does not claim authored-asset production qualification, final appearance acceptance or named-target timing results.'],
 ] as const
 
 export interface PublicArtwork {

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Mid Creek: a reproducible data-hall repair scenario built with Blender and Three.js.">
+    <!-- pages:description --><meta name="description" content="Mid Creek: a reproducible data-hall repair scenario built with Blender and Three.js."><!-- /pages:description -->
     <title>Mid Creek | CS3</title>
     <link rel="icon" href="data:,">
     <script>
@@ -75,7 +75,7 @@ html[data-theme="dark"] {
       <a class="wordmark" href="#main">Mid Creek <span>CS3</span></a>
       <nav aria-label="Showcase sections">
         <a href="#architecture">Architecture</a>
-        <a href="#references">References</a>
+        <!-- pages:omit --><a href="#references">References</a><!-- /pages:omit -->
         <a href="#mechanics">Controls</a>
         <a href="#results">Results</a>
       </nav>
@@ -84,19 +84,19 @@ html[data-theme="dark"] {
       <section class="hero" aria-labelledby="title">
         <p class="eyebrow">A reproducible data-hall repair scenario</p>
         <h1 id="title">One hall. One fault.<br>A traceable repair.</h1>
-        <p class="lede">Blender-authored visuals meet a deterministic TypeScript simulation.
-          Explore the pipeline and approved concept references, then open the separate playable entry.</p>
+        <!-- pages:hero --><p class="lede">Blender-authored visuals meet a deterministic TypeScript simulation.
+          Explore the pipeline and approved concept references, then open the separate playable entry.</p><!-- /pages:hero -->
         <div class="actions"><a class="primary" id="play-link">Play demo</a><a href="#architecture">Explore the architecture</a></div>
         <p class="notice">Keyboard required for gameplay.</p>
-        <p class="muted">Local provisional demo only. The standard preview contains no qualified production game library.</p>
-        <p id="build-status" role="status">Preparing the showcase entry.</p>
+        <!-- pages:muted --><p class="muted" id="hero-muted">Local provisional demo only. The standard preview contains no qualified production game library.</p><!-- /pages:muted -->
+        <!-- pages:status --><p id="build-status" role="status">Preparing the showcase entry.</p><!-- /pages:status -->
       </section>
       <section id="architecture" aria-labelledby="architecture-title">
         <p class="eyebrow">01 / Architecture &amp; pipeline</p>
         <h2 id="architecture-title">Separate state, presentation and evidence.</h2>
         <div id="architecture-list" class="text-grid"></div>
       </section>
-      <section id="references" aria-labelledby="reference-title">
+      <!-- pages:omit --><section id="references" aria-labelledby="reference-title">
         <p class="eyebrow">02 / Concept references</p>
         <h2 id="reference-title">The visual specification, not a fidelity verdict.</h2>
         <p>The original concept studies include historical revisions and both character studies.
@@ -121,7 +121,7 @@ html[data-theme="dark"] {
         <p>Blender render, adapted export study and game capture are distinct evidence roles, not concept references.
           No policy-qualified captures are approved in this gallery. Provisional local assets and raw comparison logs are not public media.</p>
         <p>The historical R2 comparison is a transport and export regression, not a Cel Shift or full-game fidelity result.</p>
-      </section>
+      </section><!-- /pages:omit -->
       <section id="mechanics" aria-labelledby="mechanics-title">
         <p class="eyebrow">04 / Mechanics &amp; controls</p>
         <h2 id="mechanics-title">Dispatch. Travel. Repair.</h2>
@@ -135,13 +135,13 @@ html[data-theme="dark"] {
         <div id="results-list" class="text-grid result-grid"></div>
         <h3>Qualified named-target timing</h3>
         <p class="measurement">Not measured yet</p>
-        <p>Targets, not results: at least 59 mean FPS and at most 18 ms p95 frame interval.
+        <!-- pages:timing --><p>Targets, not results: at least 59 mean FPS and at most 18 ms p95 frame interval.
           The showcase cold-start transfer cap is 2,000,000 bytes through its interactive shell;
-          subsequent gallery and original transfers are accounted separately.</p>
+          subsequent gallery and original transfers are accounted separately.</p><!-- /pages:timing -->
       </section>
     </main>
-    <footer>Mid Creek CS3 / Local showcase staging. No appearance acceptance or live release approval.</footer>
-    <dialog id="image-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-caption">
+    <!-- pages:footer --><footer>Mid Creek CS3 / Local showcase staging. No appearance acceptance or live release approval.</footer><!-- /pages:footer -->
+    <!-- pages:omit --><dialog id="image-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-caption">
       <div class="dialog-toolbar"><h2 id="dialog-title">Concept reference</h2><button id="dialog-close" type="button" autofocus>Close image</button></div>
       <p id="dialog-status" role="status"></p>
       <img id="original-image" alt="" hidden>
@@ -152,8 +152,8 @@ html[data-theme="dark"] {
         <button id="dialog-retry" type="button" hidden>Retry original</button>
         <button id="image-next" type="button">Next image</button>
       </div>
-    </dialog>
-    <noscript>This showcase needs JavaScript for its interactive shell and deferred gallery. No reference images are preloaded.</noscript>
+    </dialog><!-- /pages:omit -->
+    <!-- pages:noscript --><noscript>This showcase needs JavaScript for its interactive shell and deferred gallery. No reference images are preloaded.</noscript><!-- /pages:noscript -->
     <script type="module" src="/src/site/main.ts"></script>
   </body>
 </html>
