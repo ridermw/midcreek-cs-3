@@ -23,7 +23,11 @@ export function hudState(world: WorldSnapshot, load: ApplicationState, hidden: b
   }
 }
 
-export function createHud(container: HTMLElement, onCommand: (command: WorldCommand) => void) {
+export function createHud(
+  container: HTMLElement,
+  onCommand: (command: WorldCommand) => void,
+  readyMessage = 'Ready - local provisional assets; appearance pending.',
+) {
   container.innerHTML = `
     <p id="load-status" role="status">Loading required assets...</p>
     <div class="readouts">
@@ -77,7 +81,7 @@ export function createHud(container: HTMLElement, onCommand: (command: WorldComm
       reload.hidden = !view.reloadVisible
     },
     loading() { text(status, 'Loading required assets...') },
-    ready() { text(status, 'Ready - local provisional assets; appearance pending.') },
+    ready() { text(status, readyMessage) },
     failure(code: string, action: () => void) {
       text(status, `Unable to start (${code}). Reload to try again.`)
       reloadAction = action

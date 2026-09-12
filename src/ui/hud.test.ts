@@ -1,6 +1,23 @@
 import { describe, expect, it } from 'vitest'
 import { createWorld, commandWorld } from '../world/simulation'
-import { hudState } from './hud'
+import { createHud, hudState } from './hud'
+
+describe('HUD ready copy', () => {
+  it.each([
+    [undefined, 'Ready - local provisional assets; appearance pending.'],
+    ['Ready - source-only public Three.js demo.', 'Ready - source-only public Three.js demo.'],
+  ])('renders the explicit ready message %s without changing the default', (message, expected) => {
+    const status = { textContent: '' }
+    const container = {
+      innerHTML: '',
+      querySelector: (selector: string) => selector === '#load-status' ? status : new EventTarget(),
+    } as unknown as HTMLElement
+    const hud = createHud(container, () => {}, message)
+    hud.ready()
+    expect(status.textContent).toBe(expected)
+    hud.dispose()
+  })
+})
 
 describe('HUD state projection', () => {
   it('disables all gameplay until ready and exposes Reload only on failure', () => {
