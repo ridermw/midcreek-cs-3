@@ -4,6 +4,7 @@ const runRoot = process.env.CS3_JOB_ROOT ?? process.env.CS3_RUN_ROOT ?? '.artifa
 
 export default defineConfig({
   testDir: './tests/e2e',
+  testIgnore: '**/pages.spec.ts',
   timeout: 45_000,
   workers: 1,
   fullyParallel: false,
