@@ -22,6 +22,8 @@ import { createSession } from './session'
 import { createInspection } from '../diagnostics/inspection'
 import type { FrameReceipt, ReadyReceipt as DiagnosticReady, RequiredRequest } from '../diagnostics/metrics'
 import type { WorldSnapshot } from '../world/contracts'
+export { normalizeGameSeed } from './options'
+import { normalizeGameSeed } from './options'
 
 export interface GameOptions {
   readonly seed?: number
@@ -32,14 +34,6 @@ export interface GameOptions {
   readonly manifestUrl?: string
   readonly releaseBinding?: ReleaseManifestBinding | null
   readonly diagnostics?: boolean
-}
-
-export function normalizeGameSeed(seed: number | undefined): number {
-  const value = seed ?? 417
-  if (!Number.isSafeInteger(value)) {
-    throw new ContractError('SEED', String(value), 'expected a finite safe integer')
-  }
-  return value
 }
 
 function record(value: unknown): value is Record<string, unknown> {

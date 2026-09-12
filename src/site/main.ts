@@ -24,12 +24,7 @@ for (const [selector, entries] of [
   }
 }
 required<HTMLAnchorElement>('#play-link').href = assetUrl('play/')
-if (pagesDemo) {
-  for (const node of document.querySelectorAll('#references, #studies, #image-dialog, a[href="#references"]')) node.remove()
-  required('#hero-muted').textContent = pagesCopy.muted
-} else {
-  initializeGallery(!pagesDemo && document.documentElement.dataset.publication === 'approved-for-staging')
-}
+if (!pagesDemo) initializeGallery(document.documentElement.dataset.publication === 'approved-for-staging')
 
 let overflow = false
 performance.setResourceTimingBufferSize(2000)

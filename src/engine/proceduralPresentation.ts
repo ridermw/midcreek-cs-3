@@ -76,8 +76,6 @@ export function createProceduralPresentation(initial: WorldSnapshot): Procedural
     const root = new Group()
     const shell = new Mesh(rackGeometry, rackMaterial)
     shell.position.y = 1.2
-    shell.castShadow = true
-    shell.receiveShadow = true
     root.add(shell)
     for (let y = 0.32; y < 2.2; y += 0.28) {
       const server = new Mesh(serverGeometry, serverMaterial)

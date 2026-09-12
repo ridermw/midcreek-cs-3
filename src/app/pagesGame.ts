@@ -16,6 +16,7 @@ import type { WorldCommand, WorldSnapshot } from '../world/contracts'
 import { createPlacements } from '../world/layout'
 import type { GameHandle } from './game'
 import type { ApplicationState, FrameResult } from './lifecycle'
+import { normalizeGameSeed } from './options'
 import { createSession } from './session'
 
 export interface PagesGameOptions {
@@ -33,10 +34,7 @@ export async function startPagesGame(
   const document = container.ownerDocument
   const window = document.defaultView!
   if (!window) throw new ContractError('GAME_WINDOW', 'play', 'a live document is required')
-  const seed = options.seed ?? 417
-  if (!Number.isSafeInteger(seed)) {
-    throw new ContractError('SEED', String(seed), 'expected a finite safe integer')
-  }
+  const seed = normalizeGameSeed(options.seed)
   let renderer: GameRenderer | undefined
   const session = createSession({
     identity: 'source-only-pages-demo-v1', seed, scenario: options.scenario,

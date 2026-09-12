@@ -26,7 +26,9 @@ export function hudState(world: WorldSnapshot, load: ApplicationState, hidden: b
 export function createHud(
   container: HTMLElement,
   onCommand: (command: WorldCommand) => void,
-  readyMessage = 'Ready - local provisional assets; appearance pending.',
+  readyMessage = import.meta.env.CS3_PAGES_DEMO
+    ? 'Ready - source-only public Three.js demo.'
+    : 'Ready - local provisional assets; appearance pending.',
 ) {
   container.innerHTML = `
     <p id="load-status" role="status">Loading required assets...</p>

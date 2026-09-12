@@ -27,7 +27,7 @@ const types: Readonly<Record<string, string>> = {
 }
 
 async function servePages() {
-  // Task 3 publishes the dist/manifest pair atomically; no separate current.json pointer.
+  // The publisher atomically swaps the dist/manifest pair.
   const current = join(repository, '.artifacts/pages/current')
   const artifact = await validatePages(join(current, 'dist'))
   const manifest: unknown = JSON.parse(await readFile(join(current, 'pages-manifest.json'), 'utf8'))

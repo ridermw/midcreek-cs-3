@@ -41,13 +41,6 @@ export default defineConfig({
         throw new Error('PAGES_FORBIDDEN: only tracked, non-symlink source inputs are allowed')
       }
     },
-    transform(code, id) {
-      if (id !== resolve(repository, 'src/ui/hud.ts')) return
-      // The shared HUD's unused default survives bundling even when Pages passes its own ready copy.
-      const localDefault = "readyMessage = 'Ready - local provisional assets; appearance pending.'"
-      if (!code.includes(localDefault)) throw new Error('PAGES_TEMPLATE: shared HUD default changed')
-      return { code: code.replace(localDefault, "readyMessage = 'Ready - source-only public Three.js demo.'"), map: null }
-    },
     transformIndexHtml: {
       order: 'pre',
       handler(html) {
