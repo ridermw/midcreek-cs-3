@@ -92,7 +92,16 @@ npm run pages:build
 npm run test:pages:e2e
 ```
 
-The Pages build validates and publishes a local generation at
+Before Vite starts, the Pages builder copies only tracked, non-ignored regular
+files into a disposable source snapshot, rejecting symlinks and symlink
+ancestors before opening source files. Only the installed dependency directory
+is linked into that snapshot. Vite's Node filesystem permissions restrict reads
+to the isolated generation and installed dependencies, and writes to the
+generation; HTML assets and CSS URLs/imports cannot read excluded checkout
+files. Use `pages:build`, not a direct Vite invocation with the Pages flag.
+Ordinary non-Pages builds are unchanged.
+
+The Pages build then validates and publishes a local generation at
 `.artifacts/pages/current/dist`, with its private file-identity manifest beside
 `dist`, not inside it. Browser tests require Chrome
 (`npx --no-install playwright install chrome` if missing), rebuild the Pages

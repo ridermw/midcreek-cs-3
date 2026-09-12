@@ -129,6 +129,117 @@ describe('source-only Pages generation', () => {
     } finally { await put(repository, 'src/site/main.ts', main) }
   })
 
+  it.each([
+    ['HTML image', 'index.html', '<img src="/.artifacts/denied.png?no-inline">', 'denied.png'],
+    ['CSS URL', 'src/site/style.css', 'body{background:url("../../.artifacts/denied.png?no-inline")}', 'denied.png'],
+    ['CSS import', 'src/site/style.css', '@import "../../.artifacts/denied.css";', 'denied.css'],
+  ])('rejects an ignored %s before attempting to read it', async (_, source, reference, filename) => {
+    const original = await readFile(join(repository, source), 'utf8')
+    const before = await readFile(join(artifact.root, '../pages-manifest.json'), 'utf8')
+    const forbidden = join(repository, '.artifacts', filename)
+    const marker = join(workspace, `read-attempt-${randomUUID()}`)
+    const sentinel = (await readFile(resolve('tests/fixtures/pages-read-sentinel.mjs'))).toString('base64')
+    // Empty sentinels contain no private data. The preload throws before any read/open/copy.
+    await writeFile(forbidden, '')
+    const ignored = await exec('git', ['-C', repository, 'check-ignore', forbidden])
+    expect(ignored.stdout.trim()).toBe(forbidden)
+    await put(repository, source, `${reference}\n${original}`)
+    let failure: unknown
+    try {
+      await exec(process.execPath, ['--experimental-strip-types', resolve('tools/pages.ts')], {
+        cwd: repository,
+        env: {
+          ...process.env,
+          NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --import=data:text/javascript;base64,${sentinel}`,
+          PAGES_TEST_FORBIDDEN_INPUT: forbidden,
+          PAGES_TEST_READ_MARKER: marker,
+        },
+      }).catch((error: unknown) => { failure = error })
+      await expect(lstat(marker), 'the build must reject provenance before opening the ignored input')
+        .rejects.toThrow(/ENOENT/)
+      expect(failure).toMatchObject({ code: 1, stderr: expect.stringMatching(/PAGES_(?:FORBIDDEN|BUILD)/) })
+      expect(failure).toMatchObject({ stderr: expect.not.stringContaining('PAGES_TEST_READ_ATTEMPT') })
+      expect(await readFile(join(artifact.root, '../pages-manifest.json'), 'utf8')).toBe(before)
+      expect(await validatePages(artifact.root)).toEqual(artifact)
+      expect(await readdir(join(repository, '.artifacts/pages'))).toEqual(['current'])
+    } finally {
+      await put(repository, source, original)
+      await rm(forbidden)
+      await rm(marker, { force: true })
+    }
+  })
+
+  it('requires the isolated builder instead of accepting a direct Pages Vite build', async () => {
+    await expect(exec(process.execPath, [resolve('node_modules/vite/bin/vite.js'), 'build',
+      '--outDir', join(workspace, 'direct-build')], {
+      cwd: repository,
+      env: { ...process.env, CS3_PAGES_DEMO: '1', CS3_PAGES_SNAPSHOT: '' },
+    })).rejects.toMatchObject({ code: 1, stderr: expect.stringContaining('PAGES_SNAPSHOT') })
+  })
+
+  it.each(['file', 'ancestor', 'indexed link'])('rejects a tracked source symlink (%s) before following it', async (kind) => {
+    const directory = join(repository, 'src/provenance')
+    const path = 'src/provenance/input.css'
+    await put(repository, path, '')
+    await exec('git', ['-C', repository, 'add', path])
+    await rm(kind === 'ancestor' ? directory : join(repository, path), { recursive: true })
+    await symlink('/nonexistent-pages-private-source', kind === 'ancestor' ? directory : join(repository, path))
+    if (kind === 'indexed link') await exec('git', ['-C', repository, 'add', path])
+    try {
+      await expect(buildPages(repository)).rejects.toThrow(/PAGES_FORBIDDEN/)
+      expect(await readdir(join(repository, '.artifacts/pages'))).toEqual(['current'])
+    } finally {
+      await rm(directory, { recursive: true })
+      await exec('git', ['-C', repository, 'update-index', '--force-remove', path])
+    }
+  })
+
+  it('builds tracked HTML images, CSS URLs and CSS imports with the exact Pages prefix', async () => {
+    const html = await readFile(join(repository, 'index.html'), 'utf8')
+    const css = await readFile(join(repository, 'src/site/style.css'), 'utf8')
+    const image = 'public-image-fixture'.repeat(300)
+    await put(repository, 'src/provenance/image.png', image)
+    await put(repository, 'src/provenance/theme.css', ':root{--tracked-probe:314159}')
+    await exec('git', ['-C', repository, 'add', 'src/provenance'])
+    await put(repository, 'index.html', html.replace('</main>',
+      '<img src="/src/provenance/image.png?no-inline"></main>'))
+    await put(repository, 'src/site/style.css', '@import "../provenance/theme.css";\n'
+      + `${css}\n.probe{background:url("../provenance/image.png?no-inline")}`)
+    try {
+      const built = await buildPages(repository)
+      const png = built.files.find((file) => file.path.endsWith('.png'))!
+      expect(png).toMatchObject({ bytes: Buffer.byteLength(image), sha256: createHash('sha256').update(image).digest('hex') })
+      const url = `/midcreek-cs-3/${png.path}`
+      expect(await readFile(join(built.root, 'index.html'), 'utf8')).toContain(`src="${url}"`)
+      const styles = await Promise.all(built.files.filter((file) => file.path.endsWith('.css'))
+        .map((file) => readFile(join(built.root, file.path), 'utf8')))
+      expect(styles.join('\n')).toContain(url)
+      expect(styles.join('\n')).toContain('--tracked-probe:314159')
+      expect(await readdir(dirname(built.root))).toEqual(['dist', 'pages-manifest.json'])
+    } finally {
+      await put(repository, 'index.html', html)
+      await put(repository, 'src/site/style.css', css)
+      await rm(join(repository, 'src/provenance'), { recursive: true })
+      await exec('git', ['-C', repository, 'update-index', '--force-remove',
+        'src/provenance/image.png', 'src/provenance/theme.css'])
+      artifact = await buildPages(repository)
+    }
+  })
+
+  it('denies absolute CSS imports outside the snapshot before following private symlinks', async () => {
+    const original = await readFile(join(repository, 'src/site/style.css'), 'utf8')
+    const path = join(workspace, 'outside.css')
+    await symlink('/nonexistent-pages-private-css', path)
+    await put(repository, 'src/site/style.css', `@import "${path}";\n${original}`)
+    try {
+      await expect(buildPages(repository)).rejects.toThrow(/Access to this API has been restricted.*--allow-fs-read/)
+      expect(await validatePages(artifact.root)).toEqual(artifact)
+    } finally {
+      await put(repository, 'src/site/style.css', original)
+      await rm(path)
+    }
+  })
+
   it('does not mistake a nested ignored node_modules directory for installed dependencies', async () => {
     const main = await readFile(join(repository, 'src/site/main.ts'), 'utf8')
     await put(repository, 'src/site/main.ts', `import '../../.artifacts/node_modules/secret.ts'\n${main}`)

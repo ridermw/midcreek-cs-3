@@ -1,8 +1,8 @@
 import { execFile } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { constants } from 'node:fs'
-import { lstat, mkdir, open, readdir, rename, rm, rmdir, writeFile } from 'node:fs/promises'
-import { extname, join, resolve, sep } from 'node:path'
+import { lstat, mkdir, open, readdir, realpath, rename, rm, rmdir, symlink, writeFile } from 'node:fs/promises'
+import { dirname, extname, join, resolve, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { promisify } from 'node:util'
 import ts from 'typescript'
@@ -201,6 +201,41 @@ if swap(*args) != 0:
 `, generation, current])
 }
 
+async function snapshotSources(repository: string, root: string): Promise<string> {
+  const options = { cwd: repository, maxBuffer: 8_000_000 }
+  const [index, excluded] = await Promise.all([
+    exec('git', ['ls-files', '--stage', '-z'], options),
+    exec('git', ['ls-files', '--cached', '--ignored', '--exclude-standard', '-z'], options),
+  ])
+  const ignored = new Set(excluded.stdout.split('\0').filter(Boolean))
+  await mkdir(root)
+  for (const entry of index.stdout.split('\0').filter(Boolean)) {
+    const [metadata, ...name] = entry.split('\t')
+    const path = name.join('\t')
+    if (ignored.has(path)) continue
+    requirePages(/^100(?:644|755) [a-f0-9]+ 0$/.test(metadata!), 'FORBIDDEN', 'non-regular or unmerged source')
+    const target = resolve(root, path)
+    requirePages(target.startsWith(`${root}${sep}`) && path.split('/')[0] !== 'node_modules',
+      'FORBIDDEN', 'source outside snapshot or overlapping installed dependencies')
+    const source = resolve(repository, path)
+    await noSymlinks(source)
+    const status = await lstat(source)
+    requirePages(status.isFile(), 'FORBIDDEN', 'source must be a regular file')
+    const file = await open(source, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK)
+    try {
+      const opened = await file.stat()
+      requirePages(opened.isFile() && opened.dev === status.dev && opened.ino === status.ino,
+        'FORBIDDEN', 'source changed before snapshot read')
+      await mkdir(dirname(target), { recursive: true })
+      await writeFile(target, await file.readFile(), { flag: 'wx', mode: status.mode & 0o777 })
+    } finally { await file.close() }
+  }
+  const dependencies = await realpath(join(repository, 'node_modules'))
+  requirePages((await lstat(dependencies)).isDirectory(), 'FORBIDDEN', 'installed dependencies must be a directory')
+  await symlink(dependencies, join(root, 'node_modules'), 'dir')
+  return dependencies
+}
+
 export async function buildPages(repository = resolve('.')): Promise<PagesArtifact> {
   repository = resolve(repository)
   const parent = join(repository, '.artifacts/pages')
@@ -216,10 +251,28 @@ export async function buildPages(repository = resolve('.')): Promise<PagesArtifa
   try {
     const dist = join(generation, 'dist')
     await mkdir(dist, { recursive: true })
-    await exec(process.execPath, [
-      join(repository, 'node_modules/vite/bin/vite.js'), 'build',
-      '--config', join(repository, 'vite.config.ts'), '--outDir', dist, '--emptyOutDir',
-    ], { cwd: repository, env: { ...process.env, CS3_PAGES_DEMO: '1' }, maxBuffer: 8_000_000 })
+    const source = join(generation, 'source')
+    const dependencies = await snapshotSources(repository, source)
+    // Stop Vite's workspace/config discovery before it can inspect checkout ancestors.
+    const workspaceBoundary = join(generation, 'pnpm-workspace.yaml')
+    await writeFile(workspaceBoundary, 'packages: []\n', { flag: 'wx' })
+    try {
+      await exec(process.execPath, [
+        '--permission', `--allow-fs-read=${generation}`, `--allow-fs-read=${dependencies}`,
+        `--allow-fs-write=${generation}`, '--allow-addons',
+        '--experimental-strip-types', join(dependencies, 'vite/bin/vite.js'), 'build', '--configLoader', 'native',
+        '--config', join(source, 'vite.config.ts'), '--outDir', dist, '--emptyOutDir',
+      ], {
+        cwd: source,
+        env: { ...process.env, CS3_PAGES_DEMO: '1', CS3_PAGES_SNAPSHOT: source },
+        maxBuffer: 8_000_000,
+      })
+    } catch (error) {
+      throw new Error(`PAGES_BUILD: isolated source build failed\n${error instanceof Error ? error.message : String(error)}`,
+        { cause: error })
+    }
+    await rm(source, { recursive: true })
+    await rm(workspaceBoundary)
     const artifact = await validatePages(dist)
     await writeFile(join(generation, 'pages-manifest.json'), `${canonicalJson({ files: artifact.files })}\n`, { flag: 'wx' })
     const current = join(parent, 'current')
