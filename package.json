@@ -18,6 +18,7 @@
     "test:portable": "vitest run",
     "test:release": "vitest run tests/release-contract.test.ts",
     "test:release:e2e": "playwright test --config playwright.release.config.ts",
+    "test:pages:e2e": "playwright test --config playwright.pages.config.ts",
     "qualify:native": "node --experimental-strip-types --import ./tools/qualificationRuntime.ts tools/qualification-native.ts",
     "release:validate": "node --experimental-strip-types tools/release.ts --validate",
     "release:expect-blocked": "node --experimental-strip-types tools/release.ts --expect-blocked",
